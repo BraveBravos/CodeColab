@@ -6,5 +6,7 @@
   - __Scrum Master__: [enjareyes](https://github.com/enjareyes)
   
 -[adamlg] (https://github.com/adamlg)
--[sFoskitt](https://github.com/SFoskitt)
--[pat-dalberg](https://github.com/pat-dalberg)
+
+-[sFoskitt] (https://github.com/SFoskitt)
+
+-[pat-dalberg] (https://github.com/pat-dalberg)
