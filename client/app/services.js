@@ -26,3 +26,10 @@ var loadShare = function ($scope) {
     loadShare: loadShare
   }
 })
+
+
+.factory('Auth' function(){
+
+
+
+})
