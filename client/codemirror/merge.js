@@ -2973,3 +2973,5 @@ this['DIFF_EQUAL'] = DIFF_EQUAL;
     return goNearbyDiff(cm, -1);
   };
 });
+
+
