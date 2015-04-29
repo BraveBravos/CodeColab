@@ -32,8 +32,8 @@
   color: white !important;
 }*/
 
-.cm-s-erlang-dark.CodeMirror { background: #002240; color: white; }
-.cm-s-erlang-dark div.CodeMirror-selected { background: #b36539 !important; }
+.cm-s-erlang-dark.CodeMirror { background: #002240; color: white; font-family:  Arial, Helvetica, sans-serif; }
+.cm-s-erlang-dark div.CodeMirror-selected { background: #2B4F81 !important; }
 .cm-s-erlang-dark.CodeMirror ::selection { background: rgba(179, 101, 57, .99); }
 .cm-s-erlang-dark.CodeMirror ::-moz-selection { background: rgba(179, 101, 57, .99); }
 .cm-s-erlang-dark .CodeMirror-gutters { background: #002240; border-right: 1px solid #aaa; }
@@ -66,8 +66,6 @@
 
 .cm-s-erlang-dark .CodeMirror-activeline-background {background: #013461 !important;}
 .cm-s-erlang-dark .CodeMirror-matchingbracket {outline:1px solid grey; color:white !important;}
-
-
 
 
 
