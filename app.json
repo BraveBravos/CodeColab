@@ -1,0 +1,6 @@
+{
+  "name": "CodeCollab",
+  "description": "Share Code",
+  "repository": "https://github.com/BraveBravos/CodeColab",
+  "keywords": ["node", "express", "static"]
+}
