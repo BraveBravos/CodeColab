@@ -4,9 +4,11 @@
   "description": "Real-time code collaboration",
   "main": "server/server.js",
   "scripts": {
-    "start": "node server/server.js"
+    "postinstall": "bower install"
   },
   "dependencies": {
+    "body-parser": "^1.12.3",
+    "bower": "^1.4.1",
     "express": "~4.9.x"
   },
   "devDependencies": {

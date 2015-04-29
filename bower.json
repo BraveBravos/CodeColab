@@ -1,0 +1,22 @@
+{
+  "name": "CodeColab",
+  "version": "0.0.0",
+  "homepage": "https://github.com/BraveBravos/CodeColab",
+  "authors": [
+    "Phil Dornfeld <phillydorn75@gmail.com>"
+  ],
+  "description": "Code Collaboration",
+  "main": "client/app.js",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.3.15",
+    "angular-route": "~1.3.15"
+  }
+}
