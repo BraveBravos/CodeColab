@@ -1,0 +1,25 @@
+/*.CodeMirror-merge-pane {
+	width: 0
+}
+
+.CodeMirror-merge-pane-rightmost {
+	width: 100%
+}
+*/
+
+html, body {
+	height:100%;
+}
+
+#files {
+	width: 200px; 
+	height: 100%; 
+	display:inline-block; 
+	vertical-align:top
+}
+
+#area {
+	width: 80%; 
+	height: 100%; 
+	display:inline-block
+}
