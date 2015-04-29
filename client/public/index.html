@@ -2,18 +2,36 @@
 <html>
 <head>
 	<script src="app/app.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script src="public/jquery.treetable.js"></script>
 	<script src="codemirror/codemirror.js"></script>
 	<script src="codemirror/sublimekeymap.js"></script>
 	<script src="codemirror/javascript.js"></script>
 	<script src="codemirror/merge.js"></script>
 	<link rel="stylesheet" href="codemirror/codemirror.css">
-	<link rel="stylesheet" href="codemirror/monokai.css">
+	<link rel="stylesheet" href="codemirror/erlang-dark.css">
 	<link rel="stylesheet" href="codemirror/merge.css">
 	<link rel="stylesheet" href="styles/styles.css">
+	<link rel="stylesheet" href="styles/jquery.treetable.theme.default.css">
 </head>
 <body>
 	<script>console.log('page loaded')</script>
-	<div id="files">This is where the files will go.</div>
+	<div id="files">This is where the files will go.
+		<table id="fileTree">
+			<tr data-tt-id="1">
+		    <td>Parent</td>
+		  </tr>
+		  <tr data-tt-id="2" data-tt-parent-id="1">
+		    <td>Child1</td>
+		  </tr>
+		  <tr data-tt-id="4" data-tt-parent-id="2">
+		    <td>Child3</td>
+		  </tr>
+		  <tr data-tt-id="3" data-tt-parent-id="1">
+		    <td>Child2</td>
+		  </tr>
+		</table>
+	</div>
 	<div id="area"></div>
 	<!-- <div id="changes" style="width: 40%; height: 100%; display:inline-block"></div> -->
 </body>
