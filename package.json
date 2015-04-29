@@ -17,6 +17,8 @@
     "grunt-open": "^0.2.3",
     "grunt-run": "^0.3.0",
     "grunt-serve": "^0.1.6",
+    "jasmine-node": "^1.14.5",
+    "jasmine-node-karma": "^1.6.1",
     "karma": "^0.12.31",
     "karma-chrome-launcher": "^0.1.8",
     "karma-firefox-launcher": "^0.1.4",
