@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html ng-app = "codeColab">
 <head>
 	<script src="../app/app.js"></script>
 	<script src="../codemirror/codemirror.js"></script>
@@ -19,7 +19,9 @@
 </head>
 
 <body>
+	<div ng-view></div>
 	<script>console.log('page loaded')</script>
+	<h1>HELLO</h1>
 	<div id="files">This is where the files will go.</div>
 	<div id="area"></div>
 	<!-- <div id="changes" style="width: 40%; height: 100%; display:inline-block"></div> -->
