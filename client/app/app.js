@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded',function() {
 	// })
 	
 	CodeMirror.MergeView(document.getElementById('area'), {
-		'origRight':'testing', //this will be a hidden pane, containing the original code
+		'origRight':'testing\n\nmore stuff', //this will be a hidden pane, containing the original code
 		'value':'other', 			//this will be the updated value with the users' changes
 		'theme':'monokai',
 		lineNumbers: true,

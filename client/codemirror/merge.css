@@ -27,6 +27,11 @@
   z-index: 1;
 }
 
+/* so that we don't show the cursor in the non-editable code */
+.CodeMirror-merge-pane-rightmost .CodeMirror-cursors { 
+  display:none;
+}
+
 .CodeMirror-merge-gap {
   z-index: 2;
   display: inline-block;
