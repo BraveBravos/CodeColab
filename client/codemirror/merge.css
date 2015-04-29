@@ -5,7 +5,7 @@
 }
 
 .CodeMirror-merge, .CodeMirror-merge .CodeMirror {
-  height: 350px;
+  height: 700px;
 }
 
 .CodeMirror-merge-2pane .CodeMirror-merge-pane { width: 47%; }
@@ -79,13 +79,13 @@
 .CodeMirror-merge-copybuttons-left .CodeMirror-merge-copy { left: 2px; }
 .CodeMirror-merge-copybuttons-right .CodeMirror-merge-copy { right: 2px; }
 
-.CodeMirror-merge-r-inserted, .CodeMirror-merge-l-inserted {
+/*.CodeMirror-merge-r-inserted, .CodeMirror-merge-l-inserted {
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAACCAYAAACddGYaAAAAGUlEQVQI12MwuCXy3+CWyH8GBgYGJgYkAABZbAQ9ELXurwAAAABJRU5ErkJggg==);
   background-position: bottom left;
   background-repeat: repeat-x;
-}
+}*/
 
-.CodeMirror-merge-r-deleted, .CodeMirror-merge-l-deleted {
+.CodeMirror-merge-r-deleted {
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAMAAAACCAYAAACddGYaAAAAGUlEQVQI12M4Kyb2/6yY2H8GBgYGJgYkAABURgPz6Ks7wQAAAABJRU5ErkJggg==);
   background-position: bottom left;
   background-repeat: repeat-x;
