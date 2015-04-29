@@ -1,16 +1,16 @@
 document.addEventListener('DOMContentLoaded',function() {
 	console.log('js')
-	var edits = CodeMirror(document.getElementById('area'), {
-		mode: {'name': 'javascript'},
-		value: 'console.log("Type your code here.")',
-		keyMap: 'sublime',
-		theme: 'monokai',
-		autoCloseBrackets: true,
-		matchBrackets: true,
-		lineNumbers: true,
-		showCursorWhenSelecting: true,
-		autofocus: true
-	})
+	// var edits = CodeMirror(document.getElementById('area'), {
+	// 	mode: {'name': 'javascript'},
+	// 	value: 'console.log("Type your code here.")',
+	// 	keyMap: 'sublime',
+	// 	theme: 'monokai',
+	// 	autoCloseBrackets: true,
+	// 	matchBrackets: true,
+	// 	lineNumbers: true,
+	// 	showCursorWhenSelecting: true,
+	// 	autofocus: true
+	// })
 	// var changes = CodeMirror(document.getElementById('changes'), {
 	// 	mode: {'name': 'javascript'},
 	// 	value: 'console.log("This is where the changes will be shown.")',
@@ -20,12 +20,12 @@ document.addEventListener('DOMContentLoaded',function() {
 	// 	readOnly: true
 	// })
 	
-	CodeMirror.MergeView(document.getElementById('changes'), {
-		'origLeft':'testing', //this will be a hidden pane, containing the original code
+	CodeMirror.MergeView(document.getElementById('area'), {
+		'origRight':'testing', //this will be a hidden pane, containing the original code
 		'value':'other', 			//this will be the updated value with the users' changes
 		'theme':'monokai',
 		lineNumbers: true,
-		readOnly: 'nocursor',
+		// readOnly: 'nocursor',
 		// showCursorWhenSelecting: false
 	})
 
