@@ -96,10 +96,10 @@
   z-index:-5;
 }
 
-.CodeMirror-merge-r-chunk { background: #c52d2d; left:-30px;}
+.CodeMirror-merge-r-chunk { background: #26466D; left:-30px;}
 .CodeMirror-merge-r-chunk-start { border-top: 1px solid #ee8; }
 .CodeMirror-merge-r-chunk-end { border-bottom: 1px solid #ee8; }
-.CodeMirror-merge-r-connect { fill: #c52d2d; stroke: #ee8; stroke-width: 1px; }
+.CodeMirror-merge-r-connect { fill: #26466D; stroke: #ee8; stroke-width: 1px; }
 
 .CodeMirror-merge-l-chunk { background: #c52d2d; }
 .CodeMirror-merge-l-chunk-start { border-top: 1px solid #88e; }
@@ -123,3 +123,7 @@
   border-radius: 4px;
 }
 .CodeMirror-merge-collapsed-line .CodeMirror-gutter-elt { display: none; }
+
+
+
+
