@@ -4,6 +4,9 @@ angular.module('codeColab.main', [])
 
 .controller('codeCtrl', function ($scope, Share) {
   $scope.loadShare = function () {
-    Share.loadShare($scope);
+    $scope.cm = Share.loadShare($scope);
   }()
+
+
+  console.log(CodeMirror);
 })
