@@ -1,6 +1,7 @@
-var codeColab = angular.module('codeColab.main', [])
+// var codeColab = angular.module('codeColab.main', [])
+angular.module('codeColab.main', [])
 
 
-codeColab.controller('codeCtrl', function ($scope) {
+.controller('codeCtrl', function ($scope) {
 
 })

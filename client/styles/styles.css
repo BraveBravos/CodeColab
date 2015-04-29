@@ -7,19 +7,20 @@
 }
 */
 
-/*html, body {
+
+html, body {
 	height:100%;
 }
-*/
+
 #files {
-	width: 200px; 
-	height: 100%; 
-	display:inline-block; 
+	width: 200px;
+	/*height: 100%; */
+	display:inline-block;
 	vertical-align:top;
 	border: 2px solid black;
 }
 
 #area {
-	width: 80%; 
+	width: 80%;
 	display:inline-block
 }

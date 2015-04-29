@@ -1,12 +1,13 @@
 angular.module('codeColab', [
-	'nomNow.main'
+	'codeColab.main',
+	'ngRoute'
 	])
 
 .config(function ($routeProvider) {
 	$routeProvider
 		.when ('/main', {
-			templateURL : 'app/main/main.html',
-			controller:'mainCtrl'
+			templateUrl : '/app/main/main.html',
+			controller: 'codeCtrl'
 		})
 
 		.otherwise({
