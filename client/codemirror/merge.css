@@ -39,8 +39,8 @@
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   overflow: hidden;
-  border-left: 1px solid #ddd;
-  border-right: 1px solid #ddd;
+/*  border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;*/
   position: relative;
   background: #f8f8f8;
 }
@@ -96,19 +96,19 @@
   z-index:-5;
 }
 
-.CodeMirror-merge-r-chunk { background: #26466D; left:-30px;}
-.CodeMirror-merge-r-chunk-start { border-top: 1px solid #ee8; }
-.CodeMirror-merge-r-chunk-end { border-bottom: 1px solid #ee8; }
+.CodeMirror-merge-r-chunk { background: #26466D; left:-32px;}
+/*.CodeMirror-merge-r-chunk-start { border-top: 1px solid #ee8; }*/
+/*.CodeMirror-merge-r-chunk-end { border-bottom: 1px solid #ee8; }*/
 .CodeMirror-merge-r-connect { fill: #26466D; stroke: #ee8; stroke-width: 1px; }
 
-.CodeMirror-merge-l-chunk { background: #c52d2d; }
-.CodeMirror-merge-l-chunk-start { border-top: 1px solid #88e; }
-.CodeMirror-merge-l-chunk-end { border-bottom: 1px solid #88e; }
+.CodeMirror-merge-l-chunk { background: #c52d2d; right:2px;}
+/*.CodeMirror-merge-l-chunk-start { border-top: 1px solid #88e; }
+.CodeMirror-merge-l-chunk-end { border-bottom: 1px solid #88e; }*/
 .CodeMirror-merge-l-connect { fill: #c52d2d; stroke: #88e; stroke-width: 1px; }
 
 .CodeMirror-merge-l-chunk.CodeMirror-merge-r-chunk { background: #dfd; }
-.CodeMirror-merge-l-chunk-start.CodeMirror-merge-r-chunk-start { border-top: 1px solid #4e4; }
-.CodeMirror-merge-l-chunk-end.CodeMirror-merge-r-chunk-end { border-bottom: 1px solid #4e4; }
+/*.CodeMirror-merge-l-chunk-start.CodeMirror-merge-r-chunk-start { border-top: 1px solid #4e4; }
+.CodeMirror-merge-l-chunk-end.CodeMirror-merge-r-chunk-end { border-bottom: 1px solid #4e4; }*/
 
 .CodeMirror-merge-collapsed-widget:before {
   content: "(...)";

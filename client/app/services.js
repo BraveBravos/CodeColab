@@ -19,7 +19,7 @@ var loadShare = function ($scope) {
     // this is the syntax needed for .getValue and .setValue.  rightOriginal, leftOriginal, and editor are all
     // of the possible CodeMirror instances; we only use editor and rightOriginal in our version right now.
     console.log('editor: ',codeEditor.editor().getValue(),"\n",'original: ',codeEditor.rightOriginal().getValue())
-    codeEditor.editor().setValue('this is a test')
+    // codeEditor.editor().setValue('this is a test')
     return codeEditor
   }
   return {
