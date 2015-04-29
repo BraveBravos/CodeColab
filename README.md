@@ -1,4 +1,5 @@
 
+[![Build Status](https://travis-ci.org/BraveBravos/CodeColab.svg?branch=fixingServer)](https://travis-ci.org/BraveBravos/CodeColab)
 http://code-colab.herokuapp.com/
 
 ## Team Members
