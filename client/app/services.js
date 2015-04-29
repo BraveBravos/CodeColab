@@ -36,3 +36,10 @@ var loadShare = function ($scope) {
     sendFile: sendFile
   }
 })
+
+
+.factory('Auth' function(){
+
+
+
+})
