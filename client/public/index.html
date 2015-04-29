@@ -6,6 +6,11 @@
 	<script src="../codemirror/sublimekeymap.js"></script>
 	<script src="../codemirror/javascript.js"></script>
 	<script src="../codemirror/merge.js"></script>
+	<script>
+	  TogetherJSConfig_autoStart = true;
+	  TogetherJSConfig_suppressJoinConfirmation = false;
+	</script>
+	<script src="https://togetherjs.com/togetherjs-min.js"></script>
 	<link rel="stylesheet" href="codemirror/codemirror.css">
 	<link rel="stylesheet" href="codemirror/erlang-dark.css">
 	<link rel="stylesheet" href="codemirror/merge.css">
@@ -13,6 +18,7 @@
 </head>
 
 <body>
+	<button id="start-togetherjs">Start TogetherJS</button>
 	<script>console.log('page loaded')</script>
 	<div id="files">This is where the files will go.</div>
 	<div id="area"></div>
