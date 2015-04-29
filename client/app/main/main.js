@@ -2,8 +2,8 @@
 angular.module('codeColab.main', [])
 
 
-.controller('codeCtrl', function ($scope) {
+.controller('codeCtrl', function ($scope, Share) {
   $scope.loadShare = function () {
     Share.loadShare($scope);
-  }
+  }()
 })

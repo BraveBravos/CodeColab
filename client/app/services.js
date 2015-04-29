@@ -4,7 +4,6 @@ angular.module('codeColab.services', [])
 .factory('Share', function () {
 
 var loadShare = function ($scope) {
-  document.addEventListener('DOMContentLoaded',function() {
     console.log('js')
     // var edits = CodeMirror(document.getElementById('area'), {
     //  mode: {'name': 'javascript'},
@@ -69,6 +68,9 @@ var loadShare = function ($scope) {
 
 
     //need to finish importing all of the sublime shortcuts and whatnot: http://codemirror.net/doc/manual.html#addons
-  })
+
+  }
+  return {
+    loadShare: loadShare
   }
 })
