@@ -4,7 +4,6 @@
   "description": "Real-time code collaboration",
   "main": "server/server.js",
   "scripts": {
-    "start": "node server/server.js",
     "postinstall" : "bower install"
   },
   "dependencies": {
