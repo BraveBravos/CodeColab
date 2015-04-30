@@ -37,25 +37,27 @@ passport.use(new GitHubStrategy({
     clientID: 'b127ac98c63ddde943a4',
     clientSecret: '3d1734cea8816504187c53db26ef8530bab85c7f',
     callbackURL: "http://127.0.0.1:3000/auth/github/callback"
-    callbackURL: "https://code-colab.herokuapp.com/#/auth/github/callback"
+    // callbackURL: "https://code-colab.herokuapp.com/#/auth/github/callback"
   },
   function(accessToken, refreshToken, profile, done) {
     console.log('inside gitHubStrategy')
 
-    User.findOrCreate({ githubId: profile.id }, function (err, user) {
-      //store githubID (profile.id) in DB 
-      return done(err, user);
-    });
+    // User.findOrCreate({ githubId: profile.id }, function (err, user) {
+    //   //store githubID (profile.id) in DB 
+    //   return done(err, user);
+    // });
 
-    //create users table / doc ?
-
-    db.get('Users')
-    db.Users.find({githubId: profile.id}, function(err, found){
+    var collection = db.get('Users');
+    collection.find({githubId: profile.id}, function(err, found){
       if (found.length > 0){ //if user exists
-        console.log('user found: ',found);
+        console.log('user found: ', found);
+        console.log('profile: ',profile)
+        // found[0].githubId
       } else { //if user doesn't exist in db
         console.log('user not found')
-        users.insert({githubId: profile.id}) //store their gitID
+        collection.insert({
+          githubId: profile.id
+        }) //store their gitID
       }
     })
 
@@ -74,7 +76,7 @@ app.get('/auth/github',
 );
 
 app.get('/auth/github/callback', 
-  passport.authenticate('github', { failureRedirect: '/login' }),
+  passport.authenticate('github', { failureRedirect: '/signin' }),
   function(req, res) {
     console.log('inside redirect for /auth/github/callback')
     // Successful authentication, redirect home.
