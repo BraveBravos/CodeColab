@@ -1,7 +1,7 @@
 angular.module('codeColab.services', [])
 
 
-.factory('Share', function () {
+.factory('Share', function ($http) {
 
 var loadShare = function ($scope) {
 
@@ -22,7 +22,17 @@ var loadShare = function ($scope) {
     // codeEditor.editor().setValue('this is a test')
     return codeEditor
   }
+
+  var sendFile = function ($scope, doc) {
+    return $http ({
+      method: 'POST',
+      url: '/api/documents',
+      data: {doc: doc}
+    });
+
+  }
   return {
-    loadShare: loadShare
+    loadShare: loadShare,
+    sendFile: sendFile
   }
 })
