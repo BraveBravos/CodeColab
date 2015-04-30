@@ -1,4 +1,5 @@
 .video-chat-area {
+  font-family: Arial, sans-serif;
   background-color: red;
   position: fixed;
   width: 180px;
@@ -8,14 +9,20 @@
 
 #video-container {
   background-color: blue;
+  margin:4px;
 }
 
 #my-video {
-  width: 80%;
+  width: 100%;
+  padding-bottom: 8px;
+  background-color: white;
+  text-align: center;
 }
 
 #their-video {
-  width: 80%;
+  width: 100%;
+  background-color: green;
+  text-align: center;
 }
 
 #step1 {
