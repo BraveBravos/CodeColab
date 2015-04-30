@@ -16,3 +16,24 @@ html, body {
 	display:inline-block
 }
 
+#signin {
+  width: 50%;
+  margin: auto;
+  margin-top: 20%;
+}
+
+.sign-in {
+  text-align: center;
+  font-family: Helvetica, sans-serif;
+  font-weight: bold;
+}
+
+.signinbtn {
+  margin-left: 45%;
+  text-align: center;
+  text-decoration: none;
+  border: 1px solid gray;
+  border-radius: .5;
+  padding: 5px;
+}
+
