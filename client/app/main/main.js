@@ -17,7 +17,7 @@ angular.module('codeColab.main', [])
     Share.sendFile($scope, doc);
   }
 
-  setInterval($scope.saveFile, 10000);
+  setInterval($scope.saveFile, 100000);
 
   console.log('doc',$scope.cm);
 })
