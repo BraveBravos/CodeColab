@@ -11,9 +11,9 @@ angular.module('codeColab', [
 			controller: 'codeCtrl'
 		})
 		.when('/signin', {
-		      templateUrl: 'signin.html',
-		      controller: 'SignInCtrl'
-		    })
+      templateUrl: '/app/clientAuth/signin.html',
+      controller: 'SignInCtrl'
+    })
 		.otherwise({
 			redirectTo: '/main'
 		})
