@@ -51,7 +51,7 @@ passport.use(new GitHubStrategy({
     collection.find({githubId: profile.id}, function(err, found){
       if (found.length > 0){ //if user exists
         console.log('user found: ', found);
-        console.log('profile: ',profile)
+        console.log('profile: ', profile)
         // found[0].githubId
       } else { //if user doesn't exist in db
         console.log('user not found')
