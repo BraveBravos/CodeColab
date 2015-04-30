@@ -1,13 +1,12 @@
 [![Build Status](https://travis-ci.org/BraveBravos/CodeColab.svg?branch=master)](https://travis-ci.org/BraveBravos/CodeColab)
 
 
-http://code-colab.herokuapp.com/
 
 ## Team Members
 
   - __Product Owner__: [phillydorn](https://github.com/phillydorn)
   - __Scrum Master__: [enjareyes](https://github.com/enjareyes)
-  
+
   - [adamlg] (https://github.com/adamlg)  -  [sFoskitt] (https://github.com/SFoskitt)  -  [pat-dalberg] (https://github.com/pat-dalberg)
 
 ## Table of Contents
@@ -22,7 +21,7 @@ http://code-colab.herokuapp.com/
 
 ## Requirements
 
-- Node 
+- Node
 - Express
 - Angular
 - MongoDB

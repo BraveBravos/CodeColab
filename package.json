@@ -14,6 +14,7 @@
     "mongodb": "^2.0.28",
     "monk": "^1.0.1",
     "passport": "^0.2.1",
+    "passport-github": "^0.1.5",
     "path": "^0.11.14"
   },
   "devDependencies": {
