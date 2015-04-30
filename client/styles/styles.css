@@ -1,6 +1,7 @@
 
 html, body {
 	height:100%;
+  background: url('blue.jpg') no-repeat center center fixed;
 }
 
 #files {
@@ -29,11 +30,16 @@ html, body {
 }
 
 .signinbtn {
+  color: white;
   margin-left: 45%;
   text-align: center;
   text-decoration: none;
-  border: 1px solid gray;
-  border-radius: .5;
+  /*border: 1px solid gray;*/
+  /*border-radius: 5px;*/
   padding: 5px;
+}
+
+.signinbtn:hover {
+  text-decoration: underline;
 }
 
