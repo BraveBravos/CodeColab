@@ -1,4 +1,4 @@
-angular.module('SignIn', [])
+angular.module('codeColab.signin', [])
 
 .controller('SignInCtrl', function ($scope, Auth) {
 
