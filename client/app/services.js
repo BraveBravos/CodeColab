@@ -38,24 +38,6 @@ var loadShare = function ($scope) {
 })
 
 
-.factory('Auth', function(){
-  var signin = function (user) {
-    // return $http({
-    //   method: 'POST',
-    //   url: '/api/users/signin',
-    //   data: user
-    // })
-    // .then(function (resp) {
-    //   return resp.data.token;
-    // });
-  console.log('signin!')
-  };
-
-  return {
-    signin: signin
-  }
-
-})
 
 
 
