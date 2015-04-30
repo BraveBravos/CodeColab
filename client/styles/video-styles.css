@@ -1,0 +1,31 @@
+.video-chat-area {
+  background-color: red;
+  position: fixed;
+  width: 180px;
+  bottom:10px;
+  left:10px;
+}
+
+#video-container {
+  background-color: blue;
+}
+
+#my-video {
+  width: 80%;
+}
+
+#their-video {
+  width: 80%;
+}
+
+#step1 {
+
+}
+
+#step2 {
+
+}
+
+#step3 {
+
+}
