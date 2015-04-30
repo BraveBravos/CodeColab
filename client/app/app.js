@@ -1,7 +1,6 @@
 angular.module('codeColab', [
 	'codeColab.main',
 	'codeColab.services',
-	'codeColab.signin',
 	'ngRoute'
 	])
 

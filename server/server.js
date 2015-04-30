@@ -7,7 +7,7 @@ var express = require('express'),
   db = monk('mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810');
 
 var session = require('express-session'),
-    // path = require('path'),
+    path = require('path'),
     passport = require('passport'),
     GitHubStrategy = require('passport-github').Strategy;
 
@@ -32,7 +32,8 @@ app.listen(app.get('port'), function() {
 
 passport.use(new GitHubStrategy({
     // clientID: process.env.GITHUB_CLIENT_ID,
-    // clientSecret: process.env.GITHUB_CLIENT_SECRET,
+    // clientSecret: process.env.GITHUB_CLIENT_SECRET, 
+    //once we save as environment var
     clientID: 'b127ac98c63ddde943a4',
     clientSecret: '3d1734cea8816504187c53db26ef8530bab85c7f',
     callbackURL: "http://127.0.0.1:3000/auth/github/callback"
@@ -43,13 +44,14 @@ passport.use(new GitHubStrategy({
       return done(err, user);
     });
     //create user table
-    //store githubID in DB
+    //store githubID (profile.id) in DB
   }
 ));
 
 
 app.get('/auth/github',
-  passport.authenticate('github'));
+  passport.authenticate('github')
+);
 
 app.get('/auth/github/callback', 
   passport.authenticate('github', { failureRedirect: '/login' }),
@@ -57,7 +59,8 @@ app.get('/auth/github/callback',
     console.log('inside redirect for /auth/github/callback')
     // Successful authentication, redirect home.
     res.redirect('/main');
-  });
+  }
+);
 
 
 
