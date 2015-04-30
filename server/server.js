@@ -1,10 +1,10 @@
 var express = require('express'),
-  bodyParser = require ('body-parser'),
-  app = express(),
-  mongo = require('mongodb'),
-  monk =require ('monk'),
-  docs = require('./documents/documents.js'),
-  db = monk('mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810');
+    bodyParser = require ('body-parser'),
+    app = express(),
+    mongo = require('mongodb'),
+    monk =require ('monk'),
+    docs = require('./documents/documents.js'),
+    db = monk('mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810');
 
 var session = require('express-session'),
     path = require('path'),
