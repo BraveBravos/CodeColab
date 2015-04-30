@@ -5290,7 +5290,7 @@
   });
   option("extraKeys", null);
 
-  option("lineWrapping", false, wrappingChanged, true);
+  option("lineWrapping", true, wrappingChanged, true);
   option("gutters", [], function(cm) {
     setGuttersForLineNumbers(cm.options);
     guttersChanged(cm);
