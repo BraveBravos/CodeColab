@@ -10,7 +10,9 @@ var loadShare = function ($scope) {
       'value':'other',      //this will be the updated value with the users' changes
       'theme':'erlang-dark',
       lineNumbers: true,
-      inputStyle: 'contenteditable' //did this fix it? - no
+      //I think we have to change the blink rate to get the getCursor stuff to work -
+      //when its display is temporarily none, I think getCursor cannot find it.
+      cursorBlinkRate: 200 
       // readOnly: 'nocursor',
       // showCursorWhenSelecting: false
     })
@@ -57,10 +59,40 @@ var loadShare = function ($scope) {
     var cursorPosition;
 
     //before change is made, store cursor info
-    codeEditor.editor().on('beforeChange', function(){
-      cursorPosition = codeEditor.editor().getCursor()
-      console.log('before: ',cursorPosition)
+    codeEditor.editor().on('beforeChange', function(cm,change){
+      if(!codeEditor.editor().getCursor().hasOwnProperty('bad')) {
+        cursorPosition=codeEditor.editor().getCursor()
+        console.log('before change','pos: ',cursorPosition)
+      } else {
+        //might have to do some pseudo-error handling here
+        console.log('bad: ',codeEditor.editor().getCursor())
+      }
+      // cursorPosition = codeEditor.editor().getCursor()
+      // console.log('before: ',cursorPosition)
+      if(change.origin==='setValue'){
+        change.cancel()
+        // console.log('canceled')
+        codeEditor.editor().replaceRange(change.text,change.from,change.to)
+        // console.log('replaced')
+        // var newLine=cursorPosition.line+(change.text.length-1)
+        // var newCh=cursorPosition.ch + some other stuff, maybe
+        // codeEditor.editor().setCursor()
+        // update()
+      }
+      console.log(change)
     })
+    codeEditor.editor().on('update', function(){
+    // function update() {
+      console.log('cursorPosition in update: ',cursorPosition)
+      codeEditor.editor().setCursor({line:cursorPosition.line,ch:cursorPosition.ch})
+      console.log('new cursor: ',codeEditor.editor().getCursor())
+    })
+    // codeEditor.editor().on('cursorActivity', function(cm,pos){
+    //   if(!codeEditor.editor().getCursor().hasOwnProperty('bad')) {
+    //     cursorPosition=codeEditor.editor().getCursor()
+    //     console.log('pos: ',cursorPosition)
+    //   } else {console.log('bad: ',codeEditor.editor().getCursor())}
+    // })
     
     //after form is updated, set cursor in correct location
     TogetherJS.hub.on('togetherjs.form-update', function(change) {
@@ -72,24 +104,31 @@ var loadShare = function ($scope) {
       //   codeEditor.editor().setCursor(cursorPosition.line,cursorPosition.ch)
       // }
       // console.log('editor value: ',codeEditor.editor().getValue())
-      console.log('new cursor: ',codeEditor.editor().getCursor())
+      // console.log('new cursor: ',codeEditor.editor().getCursor())
     })
 
     //when a user makes a change, send it (one-way) to everyone else
     codeEditor.editor().on('change', function(cm,change){
-      //if the change is not due to a setValue thing, the way togetherJS does it, we send a message containing the changes 
+
+      //if the change is not due to a setValue thing, the way togetherJS does updates, we send a message containing the changes 
       //made. otherwise, there is a 'rebound' because when one person makes a change, they also receive messages when 
       //every other collaborator's editor is updated.
-      if(change.origin!=='setValue') {
+      if(change.origin!=='setValue' && change.origin!==undefined) {
         TogetherJS.send({
           type: 'colabUpdate',
           change: change
-        })        
-      } else {
-        codeEditor.editor().setCursor(1,1)
+        })
+        console.log(change)
+        cursorPosition=CodeMirror.changeEnd(change)        
+        console.log('on change','changed area end: ',CodeMirror.changeEnd(change))
       }
-      console.log('just changed')
     })
+    // codeEditor.editor().on('update', function(cm,change){
+    //   console.log(change)
+    //   // if(change.origin==='setValue'){
+    //   //   codeEditor.editor().setCursor(1,1)
+    //   // }
+    // })
       // console.log('other msg', codeEditor.editor().getCursor())
       // console.log(change)
 
