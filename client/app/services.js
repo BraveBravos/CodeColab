@@ -10,9 +10,10 @@ var loadShare = function ($scope) {
       'value':'other',      //this will be the updated value with the users' changes
       'theme':'erlang-dark',
       lineNumbers: true,
+      autofocus: true,
       //I think we have to change the blink rate to get the getCursor stuff to work -
       //when its display is temporarily none, I think getCursor cannot find it.
-      cursorBlinkRate: 200 
+      cursorBlinkRate: 200
     })
 
     //used to send custom events - only works if TogetherJS is running already
@@ -47,11 +48,14 @@ var loadShare = function ($scope) {
       var changedText = added ? msg.change.text : msg.change.removed
 
       // we don't care about changes occurring further down the page
+      // this section changes the cursor's line
       if(cursorPosition.line >= origLine) {
         // cursorPosition.line+=(changedText.length-1)*(added || -1)
         cursorPosition.line+=(msg.change.text.length - msg.change.removed.length)
         console.log('new line ',cursorPosition.line)
       }
+      // this section changes the cursor's ch
+      // right now, if two cursors overlap, one user can "drag" the other cursor with it and changes its position with adds/deletes.  need to fix that.
       // if(cursorPosition.line===msg.change.to.line){
       if((cursorPosition.line <= origLine + Math.abs(msg.change.text.length-msg.change.removed.length)) && (origCh<=cursorPosition.ch || msg.change.to.line>cursorPosition.line)) {
         // cursorPosition.ch+=(changedText[changedText.length-1].length)*(added || -1)
