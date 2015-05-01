@@ -137,11 +137,27 @@ var loadShare = function ($scope) {
         console.log('on change','changed area end: ',CodeMirror.changeEnd(change))
       }
     })
-
-    codeEditor.editor().on('cursorActivity', function(){
+    function newCursor() {
       cursorPosition=codeEditor.editor().getCursor()
-      console.log('cursor activity: ',cursorPosition)        
+      console.log('newCursor: ',cursorPosition)
+    }
+
+    codeEditor.editor().on('mousedown', function() {
+      console.log('mousedown')
+      codeEditor.editor().on('cursorActivity', newCursor())
+      codeEditor.editor().off('cursorActivity')
     })
+
+    codeEditor.editor().on('keydown', function() {
+      console.log('keydown')
+      codeEditor.editor().on('cursorActivity', newCursor())
+      codeEditor.editor().off('cursorActivity')
+    })
+    
+    // codeEditor.editor().on('cursorActivity', function(){
+    //   cursorPosition=codeEditor.editor().getCursor()
+    //   console.log('cursor activity: ',cursorPosition)        
+    // })
     
     // might need to just track cursor position on every keyup event,
     // then use prior position and changes to determine new cursor position
