@@ -137,6 +137,11 @@ var loadShare = function ($scope) {
         console.log('on change','changed area end: ',CodeMirror.changeEnd(change))
       }
     })
+
+    codeEditor.editor().on('cursorActivity', function(){
+      cursorPosition=codeEditor.editor().getCursor()
+      console.log('cursor activity: ',cursorPosition)        
+    })
     
     // might need to just track cursor position on every keyup event,
     // then use prior position and changes to determine new cursor position
