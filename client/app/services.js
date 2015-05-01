@@ -13,29 +13,11 @@ var loadShare = function ($scope) {
       //I think we have to change the blink rate to get the getCursor stuff to work -
       //when its display is temporarily none, I think getCursor cannot find it.
       cursorBlinkRate: 200 
-      // readOnly: 'nocursor',
-      // showCursorWhenSelecting: false
     })
-
-    // there might be some togetherJS event listener we can use - not sure
-    // TogetherJS.on("togetherjs.form-update", function (msg) {
-    //   console.log('changed')
-    //   // var elementFinder = TogetherJS.require("elementFinder");
-    //   // // If the element can't be found this will throw an exception:
-    //   // var element = elementFinder.findElement(msg.element);
-    //   // MyApp.changeVisibility(element, msg.isVisible);
-    // });
-
-    // TogetherJS.on("update", function (msg) {
-    //   console.log('changed')
-    // })
-    // TogetherJS.on("change", function (msg) {
-    //   console.log('changed')
-    // })
 
     //used to send custom events - only works if TogetherJS is running already
     TogetherJS.on('ready', function() {    
-      var session = TogetherJS.require("session");
+      // var session = TogetherJS.require("session");
       // session.send = function (msg) {
       //   if (DEBUG && IGNORE_MESSAGES.indexOf(msg.type) == -1) {
       //     console.info("Send:", msg);
@@ -46,27 +28,35 @@ var loadShare = function ($scope) {
       // };
       // console.log(session.send)
     })
-    //used to list for custom events
-    
-    var cursorPosition={line:0,ch:0};
 
     //THIS ONE SUPER WORKS
     //these happen in the order listed
+
+    var cursorPosition={line:0,ch:0};
 
     //when update is received, do something
     TogetherJS.hub.on('colabUpdate',function(msg){
       console.log('received ',msg.change)
       var origLine = msg.change.from.line
       var origCh = msg.change.from.ch
-      // var added = !msg.change.origin==='+delete'
+      // if msg.change.text has length, characters must have been inserted.  if not, it is possible that multiple lines were inserted
+      // and that there are characters on other lines, so we check the length of that array as well.
       var added = (msg.change.text[0].length>0 || msg.change.text.length>1)
+
+      // if something was added, the changed text is msg.change.text.  Otherwise, it's msg.change.removed.
       var changedText = added ? msg.change.text : msg.change.removed
-      if(cursorPosition.line>=origLine) {
-        cursorPosition.line+=(changedText.length-1)*(added || -1)
+
+      // we don't care about changes occurring further down the page
+      if(cursorPosition.line >= origLine) {
+        // cursorPosition.line+=(changedText.length-1)*(added || -1)
+        cursorPosition.line+=(msg.change.text.length - msg.change.removed.length)
         console.log('new line ',cursorPosition.line)
       }
-      if(cursorPosition.line===msg.change.to.line){
-        cursorPosition.ch+=(changedText[changedText.length-1].length)*(added || -1)
+      // if(cursorPosition.line===msg.change.to.line){
+      if((cursorPosition.line <= origLine + Math.abs(msg.change.text.length-msg.change.removed.length)) && (origCh<=cursorPosition.ch || msg.change.to.line>cursorPosition.line)) {
+        // cursorPosition.ch+=(changedText[changedText.length-1].length)*(added || -1)
+        //we do (from.ch-to.ch) because for inserts/additions, the from and to coordinates are the same. In that case, we skip that check.
+        cursorPosition.ch+=((origCh-msg.change.to.ch) || ((changedText[cursorPosition.line-origLine].length)*(added || -1)) || (-origCh))//+(origLine<cursorPosition)*origCh
         console.log('new ch ',cursorPosition.ch)
       }
     })
@@ -138,19 +128,7 @@ var loadShare = function ($scope) {
         console.log('on change','changed area end: ',CodeMirror.changeEnd(change))
       }
     })
-    // codeEditor.editor().on('update', function(cm,change){
-    //   console.log(change)
-    //   // if(change.origin==='setValue'){
-    //   //   codeEditor.editor().setCursor(1,1)
-    //   // }
-    // })
-      // console.log('other msg', codeEditor.editor().getCursor())
-      // console.log(change)
-
-    // TogetherJS._onmessage({type:'form-update'}, function() {
-    //   console.log('test')
-    //   console.log('this window',codeEditor.editor().getCursor())
-    // })
+    
     // might need to just track cursor position on every keyup event,
     // then use prior position and changes to determine new cursor position
     // codeEditor.editor().on('change', function(cm, change){
@@ -165,16 +143,8 @@ var loadShare = function ($scope) {
       // codeEditor.editor().setCursor({change.to.line,change.to.ch})
     // })
 
-
-
-
-
     //need to finish importing all of the sublime shortcuts and whatnot: http://codemirror.net/doc/manual.html#addons
 
-    // this is the syntax needed for .getValue and .setValue.  rightOriginal, leftOriginal, and editor are all
-    // of the possible CodeMirror instances; we only use editor and rightOriginal in our version right now.
-    // console.log('editor: ',codeEditor.editor().getValue(),"\n",'original: ',codeEditor.rightOriginal().getValue())
-    // codeEditor.editor().setValue('this is a test')
     return codeEditor
   }
 
