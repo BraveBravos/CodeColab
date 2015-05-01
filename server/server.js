@@ -50,7 +50,7 @@ app.listen(app.get('port'), function() {
 passport.use(new GitHubStrategy({
     //once we save as environment var:
     clientID: keys.clientID || process.env.CLIENT_ID,
-    clientSecret: keys.clientSecret || proccess.env.CLIENT_SECRET,
+    clientSecret: keys.clientSecret || process.env.CLIENT_SECRET,
     // callbackURL: "http://127.0.0.1:3000/auth/github/callback"
     callbackURL: "https://code-colab.herokuapp.com/auth/github/callback"
   },
