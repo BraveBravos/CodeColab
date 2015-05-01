@@ -24,7 +24,7 @@ html, body {
 	height: 100%; 
 	display:inline-block;
 	vertical-align:top;
-	border: 2px solid black;
+	/*border: 2px solid black;*/
 }
 
 #area {
@@ -63,6 +63,9 @@ html, body {
   text-decoration: underline;
 }
 
+/*.video-chat-area {
+  background-color: none;
+}*/
 
 
 
