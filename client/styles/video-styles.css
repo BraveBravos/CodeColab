@@ -1,14 +1,39 @@
 .video-chat-area {
   font-family: Arial, sans-serif;
-  background-color: red;
+  background-color: gray;
   position: fixed;
   width: 180px;
   bottom:10px;
   left:10px;
 }
 
+.shown {
+  display: visible;
+}
+
+.hidden {
+  display: none;
+}
+
+.video-id-banner {
+  text-align: center;
+  background-color: white;
+}
+
+#video-chat-title {
+  text-align: center;
+}
+
+#video-call-status {
+  text-align: center;
+}
+
+#video-call-controls {
+  background-color: gray;
+}
+
 #video-container {
-  background-color: blue;
+  background-color: gray;
   margin:4px;
 }
 
@@ -21,18 +46,6 @@
 
 #their-video {
   width: 100%;
-  background-color: green;
+  background-color: gray;
   text-align: center;
-}
-
-#step1 {
-
-}
-
-#step2 {
-
-}
-
-#step3 {
-
 }

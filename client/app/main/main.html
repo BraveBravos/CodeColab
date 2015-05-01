@@ -9,6 +9,8 @@
     // Compatibility shim
     navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
+    //var onCall = false;
+
     // PeerJS object
     var peer = new Peer({ 
       key: 'npzhit884gupiudi', 
@@ -19,7 +21,7 @@
     });
 
     peer.on('open', function(){
-      document.getElementById('#my-id').text(peer.id);
+      document.getElementById('my-id').innerHTML = peer.id;
       console.log('PeerJS peer.on open');
     });
 
@@ -35,40 +37,16 @@
     peer.on('call', function(call){
       // Answer the call automatically (instead of prompting user) for demo purposes
       call.answer(window.localStream);
-      step3(call);
+      //step3(call);
     });
+
     peer.on('error', function(err){
       alert(err.message);
-      // Return to step 2 if error occurs
-      step2();
+      console.log('error : ',err.message);
     });
 
-    // Click handlers setup
-    // $(function(){
-    //   $('#make-call').click(function(){
-    //     // Initiate a call!
-    //     var call = peer.call($('#callto-id').val(), window.localStream);
 
-    //     step3(call);
-    //   });
-
-    //   $('#end-call').click(function(){
-    //     window.existingCall.close();
-    //     step2();
-    //   });
-
-    //   // Retry if getUserMedia fails
-    //   $('#step1-retry').click(function(){
-    //     $('#step1-error').hide();
-    //     step1();
-    //   });
-
-    //   // Get things started
-    //   step1();
-    // });
-    
-
-    function step1 () {
+    function init() {
       // Get audio/video stream
       console.log('PeerJS : step1');
       navigator.getUserMedia({audio: true, video: true}, function(stream){
@@ -80,83 +58,96 @@
       }, function(){ console.log('PeerJS : step1 error') });
     }
 
-    function step2 () {
-      // $('#step1, #step3').hide();
-      // $('#step2').show();
-    }
-
-    function step3 (call) {
+    function callPeer(call) {
       // Hang up on an existing call if present
       if (window.existingCall) {
         window.existingCall.close();
       }
-
+      var call = peer.call(document.getElementById('video-callto-id').val(), window.localStream);
       // Wait for stream on the call, then set peer video display
       call.on('stream', function(stream){
-        document.getElementById('#their-video').prop('src', URL.createObjectURL(stream));
+        document.getElementById('their-video').setAttribute('src', URL.createObjectURL(stream));
       });
+
+      function endCall(){
+        window.existingCall.close();
+      };
 
       // UI stuff
       window.existingCall = call;
-      document.getElementById('#their-id').text(call.peer);
+      document.getElementById('their-id').innerHTML = call.peer;
       call.on('close', step2);
-      document.getElementById('#step1, #step2').hide();
-      document.getElementById('#step3').show();
     }
 
-    step1();
+    function setCallStatus(strStatus){
+      document.getElementById('video-call-status').innerHTML = strStatus;
+    }
+
+    document.getElementById('btn-answer').onclick = function(){
+      var btnStatus = this.innerHTML;
+      if (btnStatus === 'Answer'){
+        // TODO add answer logic here
+        this.innerHTML = 'End Call';
+      }else{
+        endCall();
+        this.innerHTML = 'Answer';
+      }
+      
+    }
+
+    document.getElementById('cbx-autoanswer').onchange = function(){
+      if(this.checked){
+        //alert('AUTO ANSWER ON');
+      }else{
+        //alert('AUTO ANSWER OFF');
+      }
+    }
+
+    document.getElementById('btn-call').onclick = function(){
+      var callId = document.getElementById('video-call-id').value;
+      alert('Initiate video call to ' + callId);
+    }
+
+    init();
   </script>
 
   <div>
 
       <!-- Video area -->
       
-
-      <!-- Steps -->
       <div>
-        <div>CodeColab Video Chat</div>
+        <div id='video-chat-title'>CodeColab Video Chat</div>
 
-        <!-- Get local audio/video stream -->
-       
-        <div id="step1">
-          <p>Please click `allow` on the top of the screen so we can access your webcam and microphone for calls.</p>
-          <div id="step1-error">
-            <p>Failed to access the webcam and microphone.</p>
-            <a href="#">Try again</a>
-          </div>
+      <div id='video-call-controls'>
+        <div>
+          <button type='button' id='btn-answer'>Answer</button>
+          <input type='checkbox' id='cbx-autoanswer'>Auto-answer</input>
         </div>
         
-
-        <!-- Make calls to others -->
-        <!--
-        <div id="step2">
-          <p>Your id: <span id="my-id">...</span></p>
-          <p>Share this id with others so they can call you.</p>
-          <h3>Make a call</h3>
-          <div class="pure-form">
-            <input type="text" placeholder="Call user id..." id="callto-id">
-            <a href="#" class="pure-button pure-button-success" id="make-call">Call</a>
-          </div>
+        <div>
+          <button type='button' id='btn-call'>Call</button>
+          <input type='text' id='video-callto-id' name='video-callto-id' placeholder='ID to call'/>
         </div>
-        -->
 
-        <!-- Call in progress -->
-        <!--
-        <div id="step3">
-          <p>Currently in call with <span id="their-id">...</span></p>
-          <p><a href="#" class="pure-button pure-button-error" id="end-call">End call</a></p>
-        </div>
       </div>
-      -->
-      <div id='my-id'></div>
+
       <div id="video-container">
-        <video id="their-video" autoplay></video>
-        <video id="my-video" muted="true" autoplay></video>
+        
+        <div>
+          <video id="their-video" autoplay></video>
+          <div id='their-id' class='video-id-banner'></div>
+        </div>
+
+        <div>
+          <video id="my-video" muted="true" autoplay></video>
+          <div id='my-id' class='video-id-banner'></div>
+        </div>
+
+        <div id='video-call-status'>CALL STATUS</div>
+        
       </div>
 
   </div>
-
-
 <!-- end of video chat -->
 </div>
 <button onclick="TogetherJS(this); return false;">Start TogetherJS</button>
