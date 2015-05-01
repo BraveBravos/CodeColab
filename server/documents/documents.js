@@ -5,7 +5,7 @@ module.exports = {
         doc = data.body.doc,
         githubId = data.githubId;
 
-    console.log('data', doc)
+    console.log('data', data)
 
     var collection = db.get('documents')
     collection.find({githubId: githubId}, function (err, found){

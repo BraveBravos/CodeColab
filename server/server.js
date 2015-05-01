@@ -53,13 +53,13 @@ passport.use(new GitHubStrategy({
     clientID: 'b127ac98c63ddde943a4',
     clientSecret: '3d1734cea8816504187c53db26ef8530bab85c7f',
     // callbackURL: "http://127.0.0.1:3000/auth/github/callback"
-    callbackURL: "https://code-colab.herokuapp.com/#/auth/github/callback"
+    callbackURL: "https://code-colab.herokuapp.com/auth/github/callback"
   },
   function(accessToken, refreshToken, profile, done) {
     var collection = db.get('Users');
     collection.find({githubId: profile.id}, function(err, found){
       if (found.length > 0){
-        var user = found[0]
+          var user = found[0]
         sess.githubId = user.githubId;
         sess.username = user.username;
       } else {
