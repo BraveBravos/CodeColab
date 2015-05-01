@@ -40,6 +40,11 @@ var loadShare = function ($scope) {
       console.log('received ',msg.change)
       var origLine = msg.change.from.line
       var origCh = msg.change.from.ch
+
+      if(cursorPosition.ch===origCh && cursorPosition.line===origLine) {
+        return
+      }
+
       // if msg.change.text has length, characters must have been inserted.  if not, it is possible that multiple lines were inserted
       // and that there are characters on other lines, so we check the length of that array as well.
       var added = (msg.change.text[0].length>0 || msg.change.text.length>1)
