@@ -58,20 +58,29 @@ passport.use(new GitHubStrategy({
     callbackURL: "https://code-colab.herokuapp.com/auth/github/callback"
   },
   function(accessToken, refreshToken, profile, done) {
+    console.log('inside gitHubStrategy')
+
+    // User.findOrCreate({ githubId: profile.id }, function (err, user) {
+    //   //store githubID (profile.id) in DB 
+    //   return done(err, user);
+    // });
+
+    //store accessToken with user
+
     var collection = db.get('Users');
     collection.find({githubId: profile.id}, function(err, found){
-      if (found.length > 0){
-          var user = found[0]
-        sess.githubId = user.githubId;
-        sess.username = user.username;
-      } else {
+      if (found.length > 0){ //if user exists
+        console.log('user found: ', found);
+        console.log('profile: ', profile)
+        console.log('accessToken: ', accessToken)
+        var user = found[0]
+        return done(err, user)
+      } else { //if user doesn't exist in db
         console.log('user not found')
         collection.insert({
-          githubId: profile.id,
-          username: profile.username
+          githubId: profile.id, accessToken: accessToken
         })
-        sess.githubId  = profile.id;
-        sess.username = profile.username;
+        .success(function(user){ done(err,user) }) //store their gitID
       }
       console.log('session', sess)
       console.log('done',done)
@@ -88,10 +97,27 @@ passport.use(new GitHubStrategy({
 
 
 app.get('/auth/github',
-  passport.authenticate('github', {scope: 'repo'})
+  passport.authenticate('github', {scope: []}) //insert scopes
 );
 
-app.get('/auth/github/callback', passport.authenticate('github', { successRedirect: '/#/main', failureRedirect: '/#/signin' }));
+app.get('/auth/github/callback', 
+  passport.authenticate('github', { failureRedirect: '/signin' }),
+  function(req, res) {
+    console.log('inside redirect for /auth/github/callback')
+    // Successful authentication, redirect home.
+    // console.log(req.user)
+    res.redirect('/main');
+  }
+);
+
+// app.post('some endpoint',    //clone repo
+//   function(req, res){
+//     req.user
+// })
+
+
+
+
 
 
 
