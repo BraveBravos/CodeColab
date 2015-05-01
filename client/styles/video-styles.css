@@ -1,0 +1,51 @@
+.video-chat-area {
+  font-family: Arial, sans-serif;
+  background-color: gray;
+  position: fixed;
+  width: 180px;
+  bottom:10px;
+  left:10px;
+}
+
+.shown {
+  display: visible;
+}
+
+.hidden {
+  display: none;
+}
+
+.video-id-banner {
+  text-align: center;
+  background-color: white;
+}
+
+#video-chat-title {
+  text-align: center;
+}
+
+#video-call-status {
+  text-align: center;
+}
+
+#video-call-controls {
+  background-color: gray;
+}
+
+#video-container {
+  background-color: gray;
+  margin:4px;
+}
+
+#my-video {
+  width: 100%;
+  padding-bottom: 8px;
+  background-color: white;
+  text-align: center;
+}
+
+#their-video {
+  width: 100%;
+  background-color: gray;
+  text-align: center;
+}
