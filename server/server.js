@@ -66,7 +66,7 @@ passport.use(new GitHubStrategy({
     var collection = db.get('Users');
     collection.find({githubId: profile.id}, function(err, found){
       if (found.length > 0){
-          var user = found[0]
+        var user = found[0]
         sess.githubId = user.githubId;
         sess.username = user.username;
       } else {
