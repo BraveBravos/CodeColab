@@ -6,8 +6,8 @@ angular.module('codeColab.services', [])
 var loadShare = function ($scope) {
 
     var codeEditor = CodeMirror.MergeView(document.getElementById('area'), {
-      // 'origRight':'testing\n\nmore stuff', //this contains the original code
-      // 'value':'other',      //this will be the updated value with the users' changes
+      'origRight':$scope.doc.right, //this contains the original code
+      'value':$scope.doc.left,      //this will be the updated value with the users' changes
       'theme':'erlang-dark',
       lineNumbers: true,
       // readOnly: 'nocursor',
