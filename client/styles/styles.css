@@ -1,7 +1,22 @@
 
 html, body {
 	height:100%;
-  background: url('blue.jpg') no-repeat center center fixed;
+  background: linear-gradient(314deg, #227d66, #144496) no-repeat center center fixed;
+  background-size: 100% 100% 
+
+  -webkit-animation: AnimationName 37s ease infinite;
+  animation: AnimationName 37s ease infinite;
+
+  @-webkit-keyframes AnimationName {
+      0%{background-position:0% 50%}
+      50%{background-position:100% 50%}
+      100%{background-position:0% 50%}
+  }
+  @keyframes AnimationName { 
+      0%{background-position:0% 50%}
+      50%{background-position:100% 50%}
+      100%{background-position:0% 50%}
+  }
 }
 
 #files {
@@ -21,25 +36,35 @@ html, body {
   width: 50%;
   margin: auto;
   margin-top: 20%;
+  /*font-family: Helvetica, sans-serif;*/
+  font-family: 'Open Sans',Arial,Helvetica Neue,sans-serif;
+  color: #D6D6D6;
 }
 
 .sign-in {
   text-align: center;
-  font-family: Helvetica, sans-serif;
   font-weight: bold;
+  font-size: 25px;
+  font-weight: 300;
+  letter-spacing: 2px;
 }
 
 .signinbtn {
-  color: white;
   margin-left: 45%;
   text-align: center;
   text-decoration: none;
-  /*border: 1px solid gray;*/
-  /*border-radius: 5px;*/
-  padding: 5px;
+  color: #D6D6D6;
+  font-size: 16px;
+  font-weight: 300;
 }
 
 .signinbtn:hover {
+  color: #329999;
   text-decoration: underline;
 }
+
+
+
+
+
 
