@@ -3,6 +3,8 @@ angular.module('codeColab.main', [])
 
 
 .controller('codeCtrl', function ($scope, Share) {
+$scope.doc = {};
+
   $scope.loadShare = function () {
     $scope.cm = Share.loadShare($scope);
   };
