@@ -47,6 +47,8 @@ var loadShare = function ($scope) {
       // console.log(session.send)
     })
     //used to list for custom events
+    
+    var cursorPosition={line:0,ch:0};
 
     //THIS ONE SUPER WORKS
     //these happen in the order listed
@@ -54,14 +56,25 @@ var loadShare = function ($scope) {
     //when update is received, do something
     TogetherJS.hub.on('colabUpdate',function(msg){
       console.log('received ',msg.change)
+      var origLine = msg.change.from.line
+      var origCh = msg.change.from.ch
+      // var added = !msg.change.origin==='+delete'
+      var added = (msg.change.text[0].length>0 || msg.change.text.length>1)
+      var changedText = added ? msg.change.text : msg.change.removed
+      if(cursorPosition.line>=origLine) {
+        cursorPosition.line+=(changedText.length-1)*(added || -1)
+        console.log('new line ',cursorPosition.line)
+      }
+      if(cursorPosition.line===msg.change.to.line){
+        cursorPosition.ch+=(changedText[changedText.length-1].length)*(added || -1)
+        console.log('new ch ',cursorPosition.ch)
+      }
     })
     
-    var cursorPosition;
-
     //before change is made, store cursor info
     codeEditor.editor().on('beforeChange', function(cm,change){
       if(!codeEditor.editor().getCursor().hasOwnProperty('bad')) {
-        cursorPosition=codeEditor.editor().getCursor()
+        // cursorPosition=codeEditor.editor().getCursor()
         console.log('before change','pos: ',cursorPosition)
       } else {
         //might have to do some pseudo-error handling here
@@ -73,6 +86,7 @@ var loadShare = function ($scope) {
         change.cancel()
         // console.log('canceled')
         codeEditor.editor().replaceRange(change.text,change.from,change.to)
+        // console.log('test change: ',change)
         // console.log('replaced')
         // var newLine=cursorPosition.line+(change.text.length-1)
         // var newCh=cursorPosition.ch + some other stuff, maybe
@@ -85,6 +99,7 @@ var loadShare = function ($scope) {
     // function update() {
       console.log('cursorPosition in update: ',cursorPosition)
       codeEditor.editor().setCursor({line:cursorPosition.line,ch:cursorPosition.ch})
+      cursorPosition=codeEditor.editor().getCursor()
       console.log('new cursor: ',codeEditor.editor().getCursor())
     })
     // codeEditor.editor().on('cursorActivity', function(cm,pos){
