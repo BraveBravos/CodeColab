@@ -1,7 +1,6 @@
 angular.module('codeColab', [
 	'codeColab.main',
 	'codeColab.services',
-	'codeColab.videochat',
 	'ngRoute'
 	])
 
@@ -15,6 +14,7 @@ angular.module('codeColab', [
       templateUrl: '/app/clientAuth/signin.html'
     })
 		.otherwise({
-			redirectTo: '/signin'
+			//redirectTo: '/signin'
+			redirectTo: '/main'
 		})
 })
