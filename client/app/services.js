@@ -38,6 +38,7 @@ var loadShare = function ($scope) {
     //when update is received, do something
     TogetherJS.hub.on('colabUpdate',function(msg){
       console.log('received ',msg.change)
+      // codeEditor.editor().replaceRange(msg.change.text,msg.change.from,msg.change.to)
       var origLine = msg.change.from.line
       var origCh = msg.change.from.ch
 
@@ -55,8 +56,8 @@ var loadShare = function ($scope) {
       // we don't care about changes occurring further down the page
       // this section changes the cursor's line
       if(cursorPosition.line >= origLine) {
-        // cursorPosition.line+=(changedText.length-1)*(added || -1)
-        cursorPosition.line+=(msg.change.text.length - msg.change.removed.length)
+        // the max covers when the cursor is in the middle of an area that gets deleted
+        cursorPosition.line = Math.max(origLine,cursorPosition.line+(msg.change.text.length - msg.change.removed.length))
         console.log('new line ',cursorPosition.line)
       }
       // this section changes the cursor's ch
@@ -83,10 +84,10 @@ var loadShare = function ($scope) {
       // console.log('before: ',cursorPosition)
       if(change.origin==='setValue'){
         change.cancel()
-        // console.log('canceled')
+        console.log('canceled')
         codeEditor.editor().replaceRange(change.text,change.from,change.to)
         // console.log('test change: ',change)
-        // console.log('replaced')
+        console.log('replaced')
         // var newLine=cursorPosition.line+(change.text.length-1)
         // var newCh=cursorPosition.ch + some other stuff, maybe
         // codeEditor.editor().setCursor()
@@ -96,10 +97,13 @@ var loadShare = function ($scope) {
     })
     codeEditor.editor().on('update', function(){
     // function update() {
+      // console.trace()
       console.log('cursorPosition in update: ',cursorPosition)
       codeEditor.editor().setCursor({line:cursorPosition.line,ch:cursorPosition.ch})
-      cursorPosition=codeEditor.editor().getCursor()
+      console.log('cursorPosition coordinates: ',cursorPosition.line,cursorPosition.ch)
+      // cursorPosition=codeEditor.editor().getCursor()
       console.log('new cursor: ',codeEditor.editor().getCursor())
+      console.log('new cursorPosition: ',cursorPosition)
     })
     // codeEditor.editor().on('cursorActivity', function(cm,pos){
     //   if(!codeEditor.editor().getCursor().hasOwnProperty('bad')) {
@@ -132,24 +136,27 @@ var loadShare = function ($scope) {
           type: 'colabUpdate',
           change: change
         })
-        console.log(change)
+        // console.log(change)
+        // should be covered by the mousedown and keydown events, but for some reason it isn't
         cursorPosition=CodeMirror.changeEnd(change)        
-        console.log('on change','changed area end: ',CodeMirror.changeEnd(change))
+        // console.log('on change','changed area end: ',CodeMirror.changeEnd(change))
       }
     })
     function newCursor() {
-      cursorPosition=codeEditor.editor().getCursor()
-      console.log('newCursor: ',cursorPosition)
+      setTimeout(function() {
+        cursorPosition=codeEditor.editor().getCursor()
+        console.log('newCursor: ',cursorPosition)
+      },1)
     }
 
-    codeEditor.editor().on('mousedown', function() {
-      console.log('mousedown')
+    codeEditor.editor().on('mousedown', function(cm,change) {
+      console.log('mousedown',change)
       codeEditor.editor().on('cursorActivity', newCursor())
       codeEditor.editor().off('cursorActivity')
     })
 
-    codeEditor.editor().on('keydown', function() {
-      console.log('keydown')
+    codeEditor.editor().on('keydown', function(cm,change) {
+      console.log('keydown',change)
       codeEditor.editor().on('cursorActivity', newCursor())
       codeEditor.editor().off('cursorActivity')
     })
