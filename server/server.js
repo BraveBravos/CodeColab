@@ -13,6 +13,9 @@ var session = require('express-session'),
 
 
 app.set('port', (process.env.PORT || 3000));
+app.use(session({secret: 'oursecret'}));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static('./client'));
@@ -22,7 +25,6 @@ app.use(function (req, res, next) {
   next();
 })
 
-app.use(session({secret: 'oursecret'}));
 var sess;
 
 app.get('/auth/github/callback', function (req, res, next) {
@@ -36,6 +38,7 @@ app.get('/auth/github/callback', function (req, res, next) {
 })
 
 app.post('/api/documents', function (req, res){
+    req.githubId = sess.githubId;
     docs.sendDoc(req);
 })
 
@@ -49,39 +52,35 @@ passport.use(new GitHubStrategy({
     // clientSecret: process.env.GITHUB_CLIENT_SECRET,
     clientID: 'b127ac98c63ddde943a4',
     clientSecret: '3d1734cea8816504187c53db26ef8530bab85c7f',
-    callbackURL: "http://127.0.0.1:3000/auth/github/callback"
-    // callbackURL: "https://code-colab.herokuapp.com/#/auth/github/callback"
+    // callbackURL: "http://127.0.0.1:3000/auth/github/callback"
+    callbackURL: "https://code-colab.herokuapp.com/#/auth/github/callback"
   },
   function(accessToken, refreshToken, profile, done) {
-    console.log('access', accessToken, 'refresh', refreshToken, 'profile', profile)
-    // User.findOrCreate({ githubId: profile.id }, function (err, user) {
-    //   //store githubID (profile.id) in DB
-    //   return done(err, user);
-    // });
-    sess.token = accessToken;
-    console.log('sess', sess.token)
     var collection = db.get('Users');
     collection.find({githubId: profile.id}, function(err, found){
       if (found.length > 0){
-        console.log('user found: ', found);
-        // console.log('profile: ', profile)
         var user = found[0]
-        sess.userID = user.githubID;
-        // return done(err, user)
-      } else { //if user doesn't exist in db
+        sess.githubId = user.githubId;
+        sess.username = user.username;
+      } else {
         console.log('user not found')
         collection.insert({
-          githubId: profile.id
-        } ) //store their gitID
+          githubId: profile.id,
+          username: profile.username
+        })
+        sess.githubId  = profile.id;
+        sess.username = profile.username;
       }
+      console.log('session', sess)
+      console.log('done',done)
+      passport.serializeUser(function(user, done) {
+        done(null, user);
+      });
+      passport.deserializeUser(function(user, done) {
+        done(null, user);
+      });
+      return done(err, user)
     })
-
-    //db.close()   // ?
-
-    //send back to client ?
-    // app.get('/signin', function(req, res) {
-    //   res.send(profile.id);
-    // });
   }
 ));
 
@@ -90,15 +89,7 @@ app.get('/auth/github',
   passport.authenticate('github', {scope: 'repo'})
 );
 
-app.get('/auth/github/callback',function (req, res) {
-  passport.authenticate('github', {  failureRedirect: '/signin' }),
-  console.log('REQUEST', req.session)
-  sess = req.session;
-  sess.userID =
-  // console.log('response', res)
-  // Successful authentication, redirect home.
-  res.redirect('/');
-});
+app.get('/auth/github/callback', passport.authenticate('github', { successRedirect: '/#/main', failureRedirect: '/signin' }));
 
 
 
