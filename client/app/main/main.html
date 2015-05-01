@@ -37,7 +37,9 @@
     peer.on('call', function(call){
       // Answer the call automatically (instead of prompting user) for demo purposes
       call.answer(window.localStream);
-      //step3(call);
+      call.on('stream', function(stream){
+        document.getElementById('their-video').setAttribute('src', URL.createObjectURL(stream));
+      });
     });
 
     peer.on('error', function(err){
