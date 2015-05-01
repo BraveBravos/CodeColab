@@ -63,7 +63,7 @@
       if (window.existingCall) {
         window.existingCall.close();
       }
-      var call = peer.call(document.getElementById('video-callto-id').val(), window.localStream);
+      var call = peer.call(document.getElementById('video-callto-id').value, window.localStream);
       // Wait for stream on the call, then set peer video display
       call.on('stream', function(stream){
         document.getElementById('their-video').setAttribute('src', URL.createObjectURL(stream));
