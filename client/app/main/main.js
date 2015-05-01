@@ -10,14 +10,13 @@ angular.module('codeColab.main', [])
   $scope.saveFile = function() {
     var doc = {
       left:$scope.cm.editor().getValue(),
-      right: $scope.cm.rightOriginal().getValue(),
-      session: 3
+      right: $scope.cm.rightOriginal().getValue()
     }
     console.log('angular', doc)
     Share.sendFile($scope, doc);
   }
 
-  setInterval($scope.saveFile, 100000);
+  setInterval($scope.saveFile, 15000);
 
   console.log('doc',$scope.cm);
 })

@@ -2,18 +2,19 @@ module.exports = {
 
   sendDoc : function(data) {
     var db = data.db,
-        doc = data.body.doc;
+        doc = data.body.doc,
+        githubId = data.githubId;
 
-    console.log('data', doc)
+    console.log('data', data.githubId)
 
     var collection = db.get('documents')
-    collection.find({session: 3}, function (err, found){
+    collection.find({githubId: githubId}, function (err, found){
       if (found.length!==0) {
 
         console.log('not err', found);
         console.log('update', doc)
 
-        collection.update({session: 3},
+        collection.update({githubId: githubId},
           {$set:
             { left: doc.left,
               right: doc.right }
@@ -27,10 +28,10 @@ module.exports = {
         collection.insert({
           left: doc.left,
           right: doc.right,
-          session: doc.session
+          githubId: githubId
         })
       }
     })
   }
-  
+
 }

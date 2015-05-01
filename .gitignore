@@ -6,6 +6,7 @@ azure.err
 iisnode.yml
 bower_components/
 node_modules/
+keys.js
 
 # Icon must ends with two \r.
 Icon
