@@ -12,7 +12,7 @@ var session = require('express-session'),
     GitHubStrategy = require('passport-github').Strategy;
 
 if (!process.env.CLIENT_ID) {
-  var keys = require('./keys.js');
+  var keys = require('../keys.js');
 }
 
 
@@ -34,7 +34,6 @@ var sess;
 app.get('/auth/github/callback', function (req, res, next) {
   if (req.session) {
     sess = req.session;
-    console.log('//', sess)
   } else {
     console.log('no session')
   }
@@ -42,8 +41,16 @@ app.get('/auth/github/callback', function (req, res, next) {
 })
 
 app.post('/api/documents', function (req, res){
-    req.githubId = sess.githubId;
-    docs.sendDoc(req);
+  req.githubId = sess.githubId;
+  docs.sendDoc(req);
+})
+
+app.get('/api/documents', function (req, res) {
+  req.githubId = sess.githubId;
+  docs.getDoc(req, function (results) {
+    console.log('response', results)
+    res.status(200).send(results);
+  });
 })
 
 app.listen(app.get('port'), function() {
@@ -51,11 +58,9 @@ app.listen(app.get('port'), function() {
 });
 
 passport.use(new GitHubStrategy({
-    //once we save as environment var:
     clientID: process.env.CLIENT_ID || keys.clientID,
     clientSecret: process.env.CLIENT_SECRET || keys.clientSecret,
-    // callbackURL: "http://127.0.0.1:3000/auth/github/callback"
-    callbackURL: "https://code-colab.herokuapp.com/auth/github/callback"
+    callbackURL: process.env.CALLBACK_URL || keys.callbackURL
   },
   function(accessToken, refreshToken, profile, done) {
     var collection = db.get('Users');
@@ -73,8 +78,6 @@ passport.use(new GitHubStrategy({
         sess.githubId  = profile.id;
         sess.username = profile.username;
       }
-      console.log('session', sess)
-      console.log('done',done)
       passport.serializeUser(function(user, done) {
         done(null, user);
       });

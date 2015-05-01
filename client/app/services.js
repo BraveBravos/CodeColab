@@ -6,8 +6,8 @@ angular.module('codeColab.services', [])
 var loadShare = function ($scope) {
 
     var codeEditor = CodeMirror.MergeView(document.getElementById('area'), {
-      'origRight':'testing\n\nmore stuff', //this contains the original code
-      'value':'other',      //this will be the updated value with the users' changes
+      // 'origRight':'testing\n\nmore stuff', //this contains the original code
+      // 'value':'other',      //this will be the updated value with the users' changes
       'theme':'erlang-dark',
       lineNumbers: true,
       // readOnly: 'nocursor',
@@ -18,7 +18,7 @@ var loadShare = function ($scope) {
 
     // this is the syntax needed for .getValue and .setValue.  rightOriginal, leftOriginal, and editor are all
     // of the possible CodeMirror instances; we only use editor and rightOriginal in our version right now.
-    console.log('editor: ',codeEditor.editor().getValue(),"\n",'original: ',codeEditor.rightOriginal().getValue())
+    // console.log('editor: ',codeEditor.editor().getValue(),"\n",'original: ',codeEditor.rightOriginal().getValue())
     // codeEditor.editor().setValue('this is a test')
     return codeEditor
   }
@@ -29,21 +29,29 @@ var loadShare = function ($scope) {
       url: '/api/documents',
       data: {doc: doc}
     });
-
   }
+
+  var loadFile = function($scope) {
+    return $http ({
+      method: 'GET',
+      url: '/api/documents',
+    })
+    .then (function (doc) {
+      console.log('left',doc.data.left)
+      console.log('right',doc.data.right)
+      $scope.doc = doc.data;
+      $scope.cm.editor().setValue($scope.doc.left);
+      $scope.cm.rightOriginal().setValue($scope.doc.right);
+
+    });
+  }
+
   return {
     loadShare: loadShare,
-    sendFile: sendFile
+    sendFile: sendFile,
+    loadFile: loadFile
   }
 })
-
-
-
-
-
-
-
-
 
 
 

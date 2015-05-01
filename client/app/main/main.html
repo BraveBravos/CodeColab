@@ -1,4 +1,3 @@
-
 <div id="files"></div>
 <div id="area">
 
@@ -13,11 +12,11 @@
     //var onCall = false;
 
     // PeerJS object
-    var peer = new Peer({ 
-      key: 'npzhit884gupiudi', 
+    var peer = new Peer({
+      key: 'npzhit884gupiudi',
       debug: true,
       config: { 'iceServers': [
-            { 'url': 'stun:stun.l.google.com:19302' }  
+            { 'url': 'stun:stun.l.google.com:19302' }
       ] }
     });
 
@@ -95,7 +94,7 @@
         endCall();
         this.innerHTML = 'Answer';
       }
-      
+
     }
 
     document.getElementById('cbx-autoanswer').onchange = function(){
@@ -118,7 +117,7 @@
   <div>
 
       <!-- Video area -->
-      
+
       <div>
         <div id='video-chat-title'>CodeColab Video Chat</div>
 
@@ -127,7 +126,7 @@
           <button type='button' id='btn-answer'>Answer</button>
           <input type='checkbox' id='cbx-autoanswer'>Auto-answer</input>
         </div>
-        
+
         <div>
           <button type='button' id='btn-call'>Call</button>
           <input type='text' id='video-callto-id' name='video-callto-id' placeholder='ID to call'/>
@@ -136,7 +135,7 @@
       </div>
 
       <div id="video-container">
-        
+
         <div>
           <video id="their-video" autoplay></video>
           <div id='their-id' class='video-id-banner'></div>
@@ -148,7 +147,7 @@
         </div>
 
         <div id='video-call-status'>CALL STATUS</div>
-        
+
       </div>
 
   </div>

@@ -7,7 +7,7 @@ module.exports = {
 
     console.log('data', data.githubId)
 
-    var collection = db.get('documents')
+    var collection = db.get('documents');
     collection.find({githubId: githubId}, function (err, found){
       if (found.length!==0) {
 
@@ -29,6 +29,23 @@ module.exports = {
           left: doc.left,
           right: doc.right,
           githubId: githubId
+        })
+      }
+    })
+  },
+
+  getDoc : function (req, cb) {
+    var db = req.db,
+    githubId = req.githubId;
+    var collection = db.get('documents');
+    collection.find({githubId: githubId}, function (err, found) {
+      if (found.length!==0) {
+        // console.log('heres a document', found)
+        cb(found[0]);
+      } else {
+        console.log('doesnt esixst')
+        collection.find({githubId: 'default'}, function (err, found) {
+          cb (found[0]);
         })
       }
     })
