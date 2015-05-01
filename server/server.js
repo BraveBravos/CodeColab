@@ -65,8 +65,6 @@ passport.use(new GitHubStrategy({
     //   return done(err, user);
     // });
 
-    //store accessToken with user
-
     var collection = db.get('Users');
     collection.find({githubId: profile.id}, function(err, found){
       if (found.length > 0){ //if user exists
@@ -76,7 +74,7 @@ passport.use(new GitHubStrategy({
         var user = found[0]
         return done(err, user)
       } else { //if user doesn't exist in db
-        console.log('user not found')
+        console.log('user not found') //storing user and access token
         collection.insert({
           githubId: profile.id, accessToken: accessToken
         })
@@ -97,15 +95,17 @@ passport.use(new GitHubStrategy({
 
 
 app.get('/auth/github',
-  passport.authenticate('github', {scope: []}) //insert scopes
+  passport.authenticate('github', 
+    {scope: ["repo", "user", "user:email"]}
+  ) //scopes requesting access to more info from github
 );
 
 app.get('/auth/github/callback', 
   passport.authenticate('github', { failureRedirect: '/signin' }),
   function(req, res) {
     console.log('inside redirect for /auth/github/callback')
+    console.log(req.user)
     // Successful authentication, redirect home.
-    // console.log(req.user)
     res.redirect('/main');
   }
 );

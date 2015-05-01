@@ -42,7 +42,7 @@
 /*  border-left: 1px solid #ddd;
   border-right: 1px solid #ddd;*/
   position: relative;
-  background: #f8f8f8;
+  /*background: #f8f8f8;*/
 }
 
 .CodeMirror-merge-scrolllock-wrap {
@@ -123,4 +123,11 @@
   border-radius: 4px;
 }
 .CodeMirror-merge-collapsed-line .CodeMirror-gutter-elt { display: none; }
+
+
+
+
+
+
+
 
