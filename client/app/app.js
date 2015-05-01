@@ -14,6 +14,6 @@ angular.module('codeColab', [
       templateUrl: '/app/clientAuth/signin.html'
     })
 		.otherwise({
-			redirectTo: '/main'
+			redirectTo: '/signin'
 		})
 })
