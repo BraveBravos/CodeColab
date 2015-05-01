@@ -3,9 +3,15 @@ angular.module('codeColab.main', [])
 
 
 .controller('codeCtrl', function ($scope, Share) {
+$scope.doc = {};
+
   $scope.loadShare = function () {
     $scope.cm = Share.loadShare($scope);
-  }();
+  };
+
+  $scope.loadFile = function() {
+    Share.loadFile($scope)
+  };
 
   $scope.saveFile = function() {
     var doc = {
@@ -16,7 +22,11 @@ angular.module('codeColab.main', [])
     Share.sendFile($scope, doc);
   }
 
-  setInterval($scope.saveFile, 15000);
+  $scope.init = function () {
+    $scope.loadShare();
+    $scope.loadFile();
+    setInterval($scope.saveFile, 15000);
+  }
 
-  console.log('doc',$scope.cm);
+  $scope.init();
 })
