@@ -89,7 +89,7 @@ app.get('/auth/github',
   passport.authenticate('github', {scope: 'repo'})
 );
 
-app.get('/auth/github/callback', passport.authenticate('github', { successRedirect: '/#/main', failureRedirect: '/signin' }));
+app.get('/auth/github/callback', passport.authenticate('github', { successRedirect: '/#/main', failureRedirect: '/#/signin' }));
 
 
 
