@@ -12,7 +12,6 @@ angular.module('codeColab', [
 		})
 		.when('/signin', {
       templateUrl: '/app/clientAuth/signin.html'
-      // controller: 'SignInCtrl'
     })
 		.otherwise({
 			redirectTo: '/main'
