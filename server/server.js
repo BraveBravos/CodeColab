@@ -31,20 +31,43 @@ app.listen(app.get('port'), function() {
 });
 
 passport.use(new GitHubStrategy({
+    //once we save as environment var:  
     // clientID: process.env.GITHUB_CLIENT_ID,
     // clientSecret: process.env.GITHUB_CLIENT_SECRET, 
-    //once we save as environment var
     clientID: 'b127ac98c63ddde943a4',
     clientSecret: '3d1734cea8816504187c53db26ef8530bab85c7f',
-    callbackURL: "http://127.0.0.1:3000/auth/github/callback"
+    // callbackURL: "http://127.0.0.1:3000/auth/github/callback"
+    callbackURL: "https://code-colab.herokuapp.com/#/auth/github/callback"
   },
   function(accessToken, refreshToken, profile, done) {
     console.log('inside gitHubStrategy')
-    User.findOrCreate({ githubId: profile.id }, function (err, user) {
-      return done(err, user);
-    });
-    //create user table
-    //store githubID (profile.id) in DB
+
+    // User.findOrCreate({ githubId: profile.id }, function (err, user) {
+    //   //store githubID (profile.id) in DB 
+    //   return done(err, user);
+    // });
+
+    var collection = db.get('Users');
+    collection.find({githubId: profile.id}, function(err, found){
+      if (found.length > 0){ //if user exists
+        console.log('user found: ', found);
+        console.log('profile: ', profile)
+        var user = found[0]
+        return done(err, user)
+      } else { //if user doesn't exist in db
+        console.log('user not found')
+        collection.insert({
+          githubId: profile.id
+        }) //store their gitID
+      }
+    })
+
+    //db.close()   // ?
+
+    //send back to client ?
+    // app.get('/signin', function(req, res) {
+    //   res.send(profile.id);
+    // });
   }
 ));
 
@@ -54,7 +77,7 @@ app.get('/auth/github',
 );
 
 app.get('/auth/github/callback', 
-  passport.authenticate('github', { failureRedirect: '/login' }),
+  passport.authenticate('github', { failureRedirect: '/signin' }),
   function(req, res) {
     console.log('inside redirect for /auth/github/callback')
     // Successful authentication, redirect home.
