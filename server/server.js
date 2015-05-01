@@ -47,33 +47,30 @@ passport.use(new GitHubStrategy({
     //   return done(err, user);
     // });
 
+    //store accessToken with user
+
     var collection = db.get('Users');
     collection.find({githubId: profile.id}, function(err, found){
       if (found.length > 0){ //if user exists
         console.log('user found: ', found);
         console.log('profile: ', profile)
+        console.log('accessToken: ', accessToken)
         var user = found[0]
         return done(err, user)
       } else { //if user doesn't exist in db
         console.log('user not found')
         collection.insert({
-          githubId: profile.id
-        }) //store their gitID
+          githubId: profile.id, accessToken: accessToken
+        })
+        .success(function(user){ done(err,user) }) //store their gitID
       }
     })
-
-    //db.close()   // ?
-
-    //send back to client ?
-    // app.get('/signin', function(req, res) {
-    //   res.send(profile.id);
-    // });
   }
 ));
 
 
 app.get('/auth/github',
-  passport.authenticate('github')
+  passport.authenticate('github', {scope: []}) //insert scopes
 );
 
 app.get('/auth/github/callback', 
@@ -81,9 +78,19 @@ app.get('/auth/github/callback',
   function(req, res) {
     console.log('inside redirect for /auth/github/callback')
     // Successful authentication, redirect home.
+    // console.log(req.user)
     res.redirect('/main');
   }
 );
+
+// app.post('some endpoint',    //clone repo
+//   function(req, res){
+//     req.user
+// })
+
+
+
+
 
 
 
