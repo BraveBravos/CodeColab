@@ -1,6 +1,156 @@
 <div id="files"></div>
 <div id="area">
 
+<div class='video-chat-area'>
+<!-- video chat -->
+ 
+<script type="text/javascript">
+
+    // Compatibility shim
+    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+
+    //var onCall = false;
+
+    // PeerJS object
+    var peer = new Peer({ 
+      key: 'npzhit884gupiudi', 
+      debug: true,
+      config: { 'iceServers': [
+            { 'url': 'stun:stun.l.google.com:19302' }  
+      ] }
+    });
+
+    peer.on('open', function(){
+      document.getElementById('my-id').innerHTML = peer.id;
+      console.log('PeerJS peer.on open');
+    });
+
+    peer.on('connection',function(dataConnection){
+      console.log('PeerJS peer.on connection');
+    });
+
+    peer.on('disconnected',function(){
+      console.log('PeerJS peer.on disconnected');
+    });
+
+    // Receiving a call
+    peer.on('call', function(call){
+      // Answer the call automatically (instead of prompting user) for demo purposes
+      call.answer(window.localStream);
+      //step3(call);
+    });
+
+    peer.on('error', function(err){
+      alert(err.message);
+      console.log('error : ',err.message);
+    });
+
+
+    function init() {
+      // Get audio/video stream
+      console.log('PeerJS : step1');
+      navigator.getUserMedia({audio: true, video: true}, function(stream){
+        // Set your video displays
+        document.getElementById('my-video').setAttribute('src', URL.createObjectURL(stream));
+
+        window.localStream = stream;
+        //step2();
+      }, function(){ console.log('PeerJS : step1 error') });
+    }
+
+    function callPeer(call) {
+      // Hang up on an existing call if present
+      if (window.existingCall) {
+        window.existingCall.close();
+      }
+      var call = peer.call(document.getElementById('video-callto-id').value, window.localStream);
+      // Wait for stream on the call, then set peer video display
+      call.on('stream', function(stream){
+        document.getElementById('their-video').setAttribute('src', URL.createObjectURL(stream));
+      });
+
+      function endCall(){
+        window.existingCall.close();
+      };
+
+      // UI stuff
+      window.existingCall = call;
+      document.getElementById('their-id').innerHTML = call.peer;
+      call.on('close', step2);
+    }
+
+    function setCallStatus(strStatus){
+      document.getElementById('video-call-status').innerHTML = strStatus;
+    }
+
+    document.getElementById('btn-answer').onclick = function(){
+      var btnStatus = this.innerHTML;
+      if (btnStatus === 'Answer'){
+        // TODO add answer logic here
+        this.innerHTML = 'End Call';
+      }else{
+        endCall();
+        this.innerHTML = 'Answer';
+      }
+      
+    }
+
+    document.getElementById('cbx-autoanswer').onchange = function(){
+      if(this.checked){
+        //alert('AUTO ANSWER ON');
+      }else{
+        //alert('AUTO ANSWER OFF');
+      }
+    }
+
+    document.getElementById('btn-call').onclick = function(){
+      var callId = document.getElementById('video-callto-id').value;
+      //alert('Initiate video call to ' + callId);
+      callPeer(window.existingCall);
+    }
+
+    init();
+  </script>
+
+  <div>
+
+      <!-- Video area -->
+      
+      <div>
+        <div id='video-chat-title'>CodeColab Video Chat</div>
+
+      <div id='video-call-controls'>
+        <div>
+          <button type='button' id='btn-answer'>Answer</button>
+          <input type='checkbox' id='cbx-autoanswer'>Auto-answer</input>
+        </div>
+        
+        <div>
+          <button type='button' id='btn-call'>Call</button>
+          <input type='text' id='video-callto-id' name='video-callto-id' placeholder='ID to call'/>
+        </div>
+
+      </div>
+
+      <div id="video-container">
+        
+        <div>
+          <video id="their-video" autoplay></video>
+          <div id='their-id' class='video-id-banner'></div>
+        </div>
+
+        <div>
+          <video id="my-video" muted="true" autoplay></video>
+          <div id='my-id' class='video-id-banner'></div>
+        </div>
+
+        <div id='video-call-status'>CALL STATUS</div>
+        
+      </div>
+
+  </div>
+<!-- end of video chat -->
+</div>
 <button onclick="TogetherJS(this); return false;">Start TogetherJS</button>
 
 </div>
