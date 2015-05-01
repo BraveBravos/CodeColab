@@ -36,8 +36,8 @@ passport.use(new GitHubStrategy({
     // clientSecret: process.env.GITHUB_CLIENT_SECRET, 
     clientID: 'b127ac98c63ddde943a4',
     clientSecret: '3d1734cea8816504187c53db26ef8530bab85c7f',
-    callbackURL: "http://127.0.0.1:3000/auth/github/callback"
-    // callbackURL: "https://code-colab.herokuapp.com/#/auth/github/callback"
+    // callbackURL: "http://127.0.0.1:3000/auth/github/callback"
+    callbackURL: "https://code-colab.herokuapp.com/#/auth/github/callback"
   },
   function(accessToken, refreshToken, profile, done) {
     console.log('inside gitHubStrategy')
