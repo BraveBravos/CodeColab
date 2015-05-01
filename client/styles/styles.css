@@ -38,7 +38,7 @@ html, body {
   margin-top: 20%;
   /*font-family: Helvetica, sans-serif;*/
   font-family: 'Open Sans',Arial,Helvetica Neue,sans-serif;
-  color: white;
+  color: #D6D6D6;
 }
 
 .sign-in {
@@ -53,14 +53,14 @@ html, body {
   margin-left: 45%;
   text-align: center;
   text-decoration: none;
-  color: white;
-  font-size: 20px;
+  color: #D6D6D6;
+  font-size: 16px;
   font-weight: 300;
-  padding: 5px;
 }
 
 .signinbtn:hover {
   color: #329999;
+  text-decoration: underline;
 }
 
 
