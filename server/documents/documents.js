@@ -5,7 +5,7 @@ module.exports = {
         doc = data.body.doc,
         githubId = data.githubId;
 
-    console.log('data', data)
+    console.log('data', data.githubId)
 
     var collection = db.get('documents')
     collection.find({githubId: githubId}, function (err, found){
@@ -14,7 +14,7 @@ module.exports = {
         console.log('not err', found);
         console.log('update', doc)
 
-        collection.update({githubId: gitHubId},
+        collection.update({githubId: githubId},
           {$set:
             { left: doc.left,
               right: doc.right }
