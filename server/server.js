@@ -9,8 +9,11 @@ var express = require('express'),
 var session = require('express-session'),
     path = require('path'),
     passport = require('passport'),
-    GitHubStrategy = require('passport-github').Strategy,
-    keys = require('./keys.js');
+    GitHubStrategy = require('passport-github').Strategy;
+
+if (!process.env.CLIENT_ID) {
+  var keys = require('./keys.js');
+}
 
 
 app.set('port', (process.env.PORT || 3000));
@@ -49,8 +52,8 @@ app.listen(app.get('port'), function() {
 
 passport.use(new GitHubStrategy({
     //once we save as environment var:
-    clientID: keys.clientID || process.env.CLIENT_ID,
-    clientSecret: keys.clientSecret || proccess.env.CLIENT_SECRET,
+    clientID: process.env.CLIENT_ID || keys.clientID,
+    clientSecret: proccess.env.CLIENT_SECRET || keys.clientSecret,
     // callbackURL: "http://127.0.0.1:3000/auth/github/callback"
     callbackURL: "https://code-colab.herokuapp.com/auth/github/callback"
   },
