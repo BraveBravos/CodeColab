@@ -3,7 +3,7 @@ angular.module('codeColab.main', [])
 
 
 .controller('codeCtrl', function ($scope, Share) {
-
+  $scope.doc = {};
   $scope.videochat = {url : "app/videochat/videochat.html"};
 
   $scope.loadShare = function () {
