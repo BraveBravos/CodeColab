@@ -38,7 +38,8 @@ if (!process.env.CLIENT_ID) {
 
 
 
-app.set('port', (process.env.PORT || 3000));
+// app.set('port', (process.env.PORT || 3000));
+var port = process.env.PORT || 3000;
 app.use(session({secret: 'oursecret'}));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -80,9 +81,16 @@ app.get('/api/documents', function (req, res) {
   });
 })
 
-app.listen(app.get('port'), function() {
-  console.log('Node app running on port', app.get('port'));
-});
+// app.listen(app.get('port'), function() {
+//   console.log('Node app running on port', app.get('port'));
+// });
+
+// app.listen(3000, function() {
+//   console.log('Node app running on port', 3000);
+// });
+
+server.listen(port)
+console.log('Node app running on port',port)
 
 passport.use(new GitHubStrategy({
     clientID: process.env.CLIENT_ID || keys.clientID,
