@@ -12,6 +12,10 @@ angular.module('codeColab', [
 		})
 		.when('/signin', {
       templateUrl: '/app/clientAuth/signin.html'
+    })	
+    .when('/logout', {
+      templateUrl: '/app/clientAuth/signin.html',
+    	controller: 'codeCtrl'
     })
 		.otherwise({
 			redirectTo: '/signin'

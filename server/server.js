@@ -54,7 +54,7 @@ app.get('/api/documents', function (req, res) {
 })
 
 app.listen(app.get('port'), function() {
-  console.log('Node app is running on port', app.get('port'));
+  console.log('Node app running on port', app.get('port'));
 });
 
 passport.use(new GitHubStrategy({
@@ -66,7 +66,7 @@ passport.use(new GitHubStrategy({
     var collection = db.get('Users');
     collection.find({githubId: profile.id}, function(err, found){
       if (found.length > 0){
-        var user = found[0]
+        var user = found[0];
         sess.githubId = user.githubId;
         sess.username = user.username;
       } else {
@@ -94,10 +94,15 @@ app.get('/auth/github',
   passport.authenticate('github', {scope: 'repo'})
 );
 
-app.get('/auth/github/callback', passport.authenticate('github', { successRedirect: '/#/main', failureRedirect: '/#/signin' }));
+app.get('/auth/github/callback', passport.authenticate(
+  'github', { successRedirect: '/#/main', 
+    failureRedirect: '/#/signin' }
+));
 
 
-
+app.get('/logout', function(){
+  //
+})
 
 
 
