@@ -99,9 +99,8 @@ app.get('/auth/github/callback', passport.authenticate(
     failureRedirect: '/#/signin' }
 ));
 
-
-app.get('/logout', function(){
-  //
+app.get('/api/auth', function(req, res){
+  res.status(200).json(req.isAuthenticated());
 })
 
 
