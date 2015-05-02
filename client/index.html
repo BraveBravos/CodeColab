@@ -11,6 +11,7 @@
 
 <link rel="stylesheet" href="codemirror.css" type="text/css" media="screen" title="no title" charset="utf-8">
 <link rel="stylesheet" href="js/merge.css" type="text/css" media="screen" title="no title" charset="utf-8">
+<link rel="stylesheet" href="js/erlang-dark.css" type="text/css" media="screen" title="no title" charset="utf-8">
 
 <div id='pad'></div>
 
@@ -26,7 +27,8 @@ var cm = CodeMirror.MergeView( document.getElementById('pad'),{
   // origLeft:'left',
   origRight:'right',
   lineNumbers:true,
-  mode:'javascript'
+  mode:'javascript',
+  theme:'erlang-dark'
 } )
 // cm.setOption('mode', 'javascript')
 // cm.setOption('value','testing')
