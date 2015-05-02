@@ -24,14 +24,14 @@ angular.module('codeColab.main', [])
   }
 
   $scope.logout = function() {
-    $http.get('/logout')
+    Share.logout()
     .success(function(data) {
       $location.path('/signin');
     })
   }
 
   // $scope.clone = function(){
-    
+
   // }
 
   $scope.init = function () {

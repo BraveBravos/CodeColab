@@ -46,11 +46,18 @@ var loadShare = function ($scope) {
     });
   }
 
+  var logout = function () {
+    return $http({
+      method: 'GET',
+      url: '/logout'
+    })
+  }
 
   return {
     loadShare: loadShare,
     sendFile: sendFile,
-    loadFile: loadFile
+    loadFile: loadFile,
+    logout:logout
   }
 })
 .factory('FileStruct', function(){
