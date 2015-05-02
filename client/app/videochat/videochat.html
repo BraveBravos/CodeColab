@@ -1,14 +1,10 @@
 <div class='video-chat-area'>
-<!-- video chat -->
- 
 <script type="text/javascript">
 
-    // Compatibility shim
     navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
-    //var onCall = false;
+    var isAutoAnswer = false;
 
-    // PeerJS object
     var peer = new Peer({ 
       key: 'npzhit884gupiudi', 
       debug: true,
@@ -28,15 +24,28 @@
 
     peer.on('disconnected',function(){
       console.log('PeerJS peer.on disconnected');
+      setCallStatus('DISCONNECTED');
     });
 
-    // Receiving a call
     peer.on('call', function(call){
-      // Answer the call automatically (instead of prompting user) for demo purposes
-      call.answer(window.localStream);
-      call.on('stream', function(stream){
-        document.getElementById('their-video').setAttribute('src', URL.createObjectURL(stream));
-      });
+      if(isAutoAnswer){
+        call.answer(window.localStream);
+        call.on('stream', function(stream){
+          document.getElementById('their-video').setAttribute('src', URL.createObjectURL(stream));
+        });
+      }else{
+        setCallStatus('INCOMING CALL');
+        document.getElementById('btn-answer').onclick = function(){
+          var btnStatus = this.innerHTML;
+          if (btnStatus === 'Answer'){
+            call.answer(window.localStream);
+            call.on('stream', function(stream){
+              document.getElementById('their-video').setAttribute('src', URL.createObjectURL(stream));
+            });
+            this.innerHTML = 'End Call';
+          }
+        }
+      }
     });
 
     peer.on('error', function(err){
@@ -55,32 +64,38 @@
         window.localStream = stream;
         //step2();
       }, function(){ console.log('PeerJS : step1 error') });
-    }
+    };
 
     function callPeer(call) {
-      // Hang up on an existing call if present
       if (window.existingCall) {
         window.existingCall.close();
       }
       var call = peer.call(document.getElementById('video-callto-id').value, window.localStream);
-      // Wait for stream on the call, then set peer video display
+      window.existingCall = call;
+      call.on('stream', function(stream){
+        document.getElementById('their-video').setAttribute('src', URL.createObjectURL(stream));
+      });      
+      document.getElementById('their-id').innerHTML = call.peer;
+      call.on('close', function(){
+        setCallStatus('CALL ENDED');
+      });
+    };
+
+    function answerCall(){
+      var call = peer.call(navigator.getUserMedia.peer.id, window.localStream);
+      call.answer(window.localStream);
       call.on('stream', function(stream){
         document.getElementById('their-video').setAttribute('src', URL.createObjectURL(stream));
       });
+    };
 
-      function endCall(){
+    function endCall(){
         window.existingCall.close();
-      };
-
-      // UI stuff
-      window.existingCall = call;
-      document.getElementById('their-id').innerHTML = call.peer;
-      call.on('close', step2);
-    }
+    };
 
     function setCallStatus(strStatus){
       document.getElementById('video-call-status').innerHTML = strStatus;
-    }
+    };
 
     document.getElementById('btn-answer').onclick = function(){
       var btnStatus = this.innerHTML;
@@ -91,22 +106,20 @@
         endCall();
         this.innerHTML = 'Answer';
       }
-      
-    }
+    };
 
     document.getElementById('cbx-autoanswer').onchange = function(){
       if(this.checked){
-        //alert('AUTO ANSWER ON');
+        isAutoAnswer = true;
       }else{
-        //alert('AUTO ANSWER OFF');
+        isAutoAnswer = false;
       }
-    }
+    };
 
     document.getElementById('btn-call').onclick = function(){
       var callId = document.getElementById('video-callto-id').value;
-      //alert('Initiate video call to ' + callId);
       callPeer(window.existingCall);
-    }
+    };
 
     init();
   </script>
