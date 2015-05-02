@@ -53,6 +53,15 @@ var loadShare = function ($scope) {
     loadFile: loadFile
   }
 })
+.factory('FileStruct', function(){
+
+  var fileStruct = function ($scope){
+
+  };
+  return {
+    fileStruct: fileStruct
+  }
+})
 
 
 
