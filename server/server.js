@@ -20,7 +20,8 @@ var session = require('express-session'),
     liveDBMongoClient = require('livedb-mongo'),
     dbClient =liveDBMongoClient('mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810',
       {safe: true}),
-    backend = livedb.client(dbClient),
+    // backend = livedb.client(dbClient),
+    backend = livedb.client( livedb.memory() ),
     share = sharejs.server.createClient({
       backend: backend
     }),
