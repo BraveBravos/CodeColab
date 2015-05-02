@@ -145,7 +145,7 @@ app.get('/logout', function (req, res){
   res.sendStatus(200);
 })
 
-app.use(browserChannel({webserver: webserver}, function(client) {
+app.use(browserChannel( function(client) {
   var stream = new Duplex({objectMode: true});
 
   stream._read = function() {};
