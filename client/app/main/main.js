@@ -30,6 +30,10 @@ angular.module('codeColab.main', [])
     })
   }
 
+  // $scope.clone = function(){
+    
+  // }
+
   $scope.init = function () {
     $scope.loadShare();
     $scope.loadFile();
@@ -38,5 +42,12 @@ angular.module('codeColab.main', [])
 
   $scope.init();
 })
+
+
+
+
+
+
+
 
 
