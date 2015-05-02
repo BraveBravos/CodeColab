@@ -10,11 +10,17 @@ var express = require('express'),
 var session = require('express-session'),
     path = require('path'),
     passport = require('passport'),
-    GitHubStrategy = require('passport-github').Strategy;
+    GitHubStrategy = require('passport-github').Strategy,
+    livedb = require( 'livedb' ),
+    sharejs = require( 'share' ),
+    shareCodeMirror = require( 'share-codemirror' ),
+
 
 if (!process.env.CLIENT_ID) {
   var keys = require('../keys.js');
 }
+
+
 
 
 app.set('port', (process.env.PORT || 3000));
