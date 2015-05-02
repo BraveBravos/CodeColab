@@ -4,6 +4,7 @@ var express = require('express'),
     mongo = require('mongodb'),
     monk =require ('monk'),
     docs = require('./documents/documents.js'),
+    fileStruct = require('./fileStruct/fileStruct.js'),
     db = monk('mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810');
 
 var session = require('express-session'),
@@ -43,6 +44,10 @@ app.get('/auth/github/callback', function (req, res, next) {
 app.post('/api/documents', function (req, res){
   req.githubId = sess.githubId;
   docs.sendDoc(req);
+})
+
+app.post('/api/fileStruct', function (req, res){
+  // add all the things
 })
 
 app.get('/api/documents', function (req, res) {
