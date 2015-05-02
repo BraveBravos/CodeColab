@@ -37,7 +37,7 @@ angular.module('codeColab.main', [])
   $scope.init = function () {
     $scope.loadShare();
     $scope.loadFile();
-    setInterval($scope.saveFile, 15000);
+    // setInterval($scope.saveFile, 15000);
   }
 
   $scope.init();
