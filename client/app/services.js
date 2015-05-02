@@ -9,9 +9,23 @@ var loadShare = function ($scope) {
       'origRight':'', //this contains the original code
       'value':'',      //this will be the updated value with the users' changes
       'theme':'erlang-dark',
-      lineNumbers: true,
-      // readOnly: 'nocursor',
-      // showCursorWhenSelecting: false
+      lineNumbers: true
+    })
+
+    var ws = new WebSocket('wss://' + window.location.host)
+
+    var sjs = new window.sharejs.Connection(ws)
+
+    // not sure how this should work with mongo
+    var doc = sjs.get('users','test')
+
+    doc.whenReady(function() {
+      // if doc doesn't exist, create it as text
+      if (!doc.type) doc.create('text')
+      // this check is probably not necessary
+      if (doc.type && doc.type.name === 'text')
+      // this updates the CodeMirror editor window
+      doc.attachCodeMirror(codeEditor.editor())
     })
 
     //need to finish importing all of the sublime shortcuts and whatnot: http://codemirror.net/doc/manual.html#addons
