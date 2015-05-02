@@ -58,14 +58,31 @@ html, body {
   font-weight: 300;
 }
 
-.signinbtn:hover {
+.signinbtn:hover, .logout:hover {
   color: #329999;
   text-decoration: underline;
 }
 
-/*.video-chat-area {
-  background-color: none;
-}*/
+.logout {
+  margin-left: 45%;
+  text-align: center;
+  text-decoration: none;
+  color: #D6D6D6;
+  font-size: 16px;
+  font-weight: 300;
+  float: right;
+  font-family: 'Open Sans',Arial,Helvetica Neue,sans-serif;
+}
+
+
+
+
+
+
+
+
+
+
 
 
 

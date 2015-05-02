@@ -2,7 +2,7 @@
 angular.module('codeColab.main', [])
 
 
-.controller('codeCtrl', function ($scope, Share) {
+.controller('codeCtrl', function ($scope, $http, Share) {
   $scope.doc = {};
   $scope.videochat = {url : "app/videochat/videochat.html"};
 
@@ -21,6 +21,14 @@ angular.module('codeColab.main', [])
     }
     console.log('angular', doc)
     Share.sendFile($scope, doc);
+  }  
+
+  $scope.logout = function() {
+    //send http get request to server /logout
+    $http.get('/logout')
+    .success(function(data, status, headers, config) {
+      console.log('inside $scope.logout')
+    })
   }
 
   $scope.init = function () {
@@ -31,3 +39,5 @@ angular.module('codeColab.main', [])
 
   $scope.init();
 })
+
+
