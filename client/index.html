@@ -10,18 +10,34 @@
 </style>
 
 <link rel="stylesheet" href="codemirror.css" type="text/css" media="screen" title="no title" charset="utf-8">
+<link rel="stylesheet" href="js/merge.css" type="text/css" media="screen" title="no title" charset="utf-8">
 
-<textarea id='pad' autofocus>Connecting...</textarea>
+<div id='pad'></div>
 
 <script src="share.uncompressed.js"></script>
 <script src="js/codemirror/codemirror.js"></script>
+<script src="js/merge.js"></script>
 <script src="share-codemirror.js"></script>
 <script src="js/codemirror/modes/javascript/javascript.js" type="text/javascript" charset="utf-8"></script>
 
 <script>
-var cm = CodeMirror.fromTextArea( document.getElementById('pad') )
-cm.setOption('mode', 'javascript')
+var cm = CodeMirror.MergeView( document.getElementById('pad'),{
+  value:'testing',
+  // origLeft:'left',
+  origRight:'right',
+  lineNumbers:true,
+  mode:'javascript'
+} )
+// cm.setOption('mode', 'javascript')
+// cm.setOption('value','testing')
+// cm.setValue('testing2')
+cm.editor().on('change', function(cm,change){
+  console.log(change)
+})
 //cm.setMode('javascript')
+cm.editor().on('cursorActivity', function(){
+  console.log('cursor location: ',cm.editor().getCursor())
+})
 
 var elem = document.getElementById('pad');
 // 
@@ -36,7 +52,43 @@ doc.subscribe();
 doc.whenReady(function () {
   if (!doc.type) doc.create('text');
   if (doc.type && doc.type.name === 'text')
-  doc.attachCodeMirror(cm);
+    //problem is possibly in share-codemirror.js, line 9 - 
+  doc.attachCodeMirror(cm.editor());
+  // cm.editor().setValue('testing')
 });
 
+// var cm = CodeMirror( document.getElementById('pad'),{
+//   value:'testing',
+//   origLeft:'left',
+//   origRight:'right',
+//   lineNumbers:true
+// } )
+// cm.setOption('mode', 'javascript')
+// // cm.setOption('value','testing')
+// // cm.setValue('testing2')
+// cm.on('change', function(cm,change){
+//   console.log(change)
+// })
+// //cm.setMode('javascript')
+// cm.on('cursorActivity', function(){
+//   console.log('cursor location: ',cm.getCursor())
+// })
+
+// var elem = document.getElementById('pad');
+// // 
+// var ws = new WebSocket('ws://' + window.location.host );
+// // 
+// var sjs = new window.sharejs.Connection( ws );
+// // 
+// var doc = sjs.get( 'users', 'seph' );
+// // console.log(doc);
+// doc.subscribe();
+
+// doc.whenReady(function () {
+//   if (!doc.type) doc.create('text');
+//   if (doc.type && doc.type.name === 'text')
+//   doc.attachCodeMirror(cm);
+// });
+
 </script>
+
