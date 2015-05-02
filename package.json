@@ -10,7 +10,7 @@
     "body-parser": "^1.12.3",
     "bower": "^1.4.1",
     "codemirror": "~4.6.0",
-    "connect": "~3.2.0",
+    "connect": "^3.2.0",
     "express": "~4.9.x",
     "express-session": "^1.11.1",
     "livedb": "~0.4.8",
@@ -21,6 +21,7 @@
     "passport": "^0.2.1",
     "passport-github": "^0.1.5",
     "path": "^0.11.14",
+    "serve-static": "^1.9.2",
     "share": "~0.7.3",
     "share-codemirror": "~0.0.5",
     "ws": "~0.4.32"

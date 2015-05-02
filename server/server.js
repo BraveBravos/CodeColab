@@ -1,6 +1,8 @@
 var express = require('express'),
+    connect = require('connect'),
+    serveStatic = require('serve-static'),
     bodyParser = require ('body-parser'),
-    app = express(),
+    app = connect(),
     mongo = require('mongodb'),
     monk =require ('monk'),
     docs = require('./documents/documents.js'),
@@ -41,9 +43,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(express.static('./client'));
-app.use(express.static(sharejs.scriptsDir));
-app.use(express.static(shareCodeMirror.scriptsDir));
+app.use(serveStatic('./client'));
+app.use(serveStatic(sharejs.scriptsDir));
+app.use(serveStatic(shareCodeMirror.scriptsDir));
 
 app.use(function (req, res, next) {
   req.db = db;
