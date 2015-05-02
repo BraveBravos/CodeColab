@@ -2,7 +2,7 @@ var express = require('express'),
     connect = require('connect'),
     serveStatic = require('serve-static'),
     bodyParser = require ('body-parser'),
-    appC = connect(),
+    // app = connect(),
     app = express(),
     mongo = require('mongodb'),
     monk =require ('monk'),
@@ -16,6 +16,7 @@ var session = require('express-session'),
     GitHubStrategy = require('passport-github').Strategy,
     livedb = require( 'livedb' ),
     Duplex = require( 'stream' ).Duplex,
+    browserChannel = require('browserchannel').server,
     sharejs = require( 'share' ),
     shareCodeMirror = require( 'share-codemirror' ),
     http    = require( 'http' ),
@@ -47,9 +48,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(serveStatic('./client'));
-app.use(serveStatic(sharejs.scriptsDir));
-app.use(serveStatic(shareCodeMirror.scriptsDir));
+app.use(express.static('./client'));
+app.use(express.static(sharejs.scriptsDir));
+app.use(express.static(shareCodeMirror.scriptsDir));
 
 app.use(function (req, res, next) {
   req.db = db;
@@ -82,15 +83,15 @@ app.get('/api/documents', function (req, res) {
   });
 })
 
-// app.listen(app.get('port'), function() {
-//   console.log('Node app running on port', app.get('port'));
-// });
+app.listen(app.get('port'), function() {
+  console.log('Node app running on port', app.get('port'));
+});
 
 // app.listen(3000, function() {
 //   console.log('Node app running on port', 3000);
 // });
 
-server.listen(port)
+// server.listen(port)
 console.log('Node app running on port',port)
 
 passport.use(new GitHubStrategy({
@@ -144,42 +145,30 @@ app.get('/logout', function (req, res){
   res.sendStatus(200);
 })
 
+app.use(browserChannel({webserver: webserver}, function(client) {
+  var stream = new Duplex({objectMode: true});
 
-wss.on('connection', function(client) {
-  console.log('connected', client)
-  var stream = new Duplex({ objectMode: true })
-
+  stream._read = function() {};
   stream._write = function(chunk, encoding, callback) {
-    console.log( 's->c ', chunk )
-    client.send( JSON.stringify(chunk) )
-    return callback()
-  }
+    if (client.state !== 'closed') {
+      client.send(chunk);
+    }
+    callback();
+  };
 
-  stream._read = function() {}
+  client.on('message', function(data) {
+    stream.push(data);
+  });
 
-  stream.headers = client.upgradeReq.headers
+  client.on('close', function(reason) {
+    stream.push(null);
+    stream.emit('close');
+  });
 
-  stream.remoteAddress = client.upgradeReq.connection.remoteAddress
+  stream.on('end', function() {
+    client.close();
+  });
 
-  client.on( 'message', function( data ) {
-    console.log( 'c->s ', data );
-    return stream.push( JSON.parse(data) )
-  })
-
-  stream.on( 'error', function(msg) {
-    return client.close( msg )
-  })
-
-  client.on( 'close', function(reason) {
-    stream.push( null )
-    stream.emit( 'close' )
-    console.log( 'client went away' )
-    return client.close( reason )
-  })
-
-  stream.on( 'end', function() {
-    return client.close()
-  })
-
-  return share.listen( stream )
-})
+  // Give the stream to sharejs
+  return share.listen(stream);
+}));
