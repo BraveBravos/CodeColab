@@ -36,7 +36,9 @@ if (!process.env.CLIENT_ID) {
   var keys = require('../keys.js');
 }
 
-
+wss.on('open', function() {
+  console.log('open')
+})
 
 
 // app.set('port', (process.env.PORT || 3000));
