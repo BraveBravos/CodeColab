@@ -1,6 +1,6 @@
 module.exports = {
 
-	getTree : function(data){
+	getFileStruct : function(data){
 		//load the file struct info from GitHub
 		//and convert Base64 to plain text
 		//and load it all into JSON 
