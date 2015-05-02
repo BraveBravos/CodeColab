@@ -29,10 +29,10 @@ var session = require('express-session'),
     share = sharejs.server.createClient({
       backend: backend
     }),
-    WebSocketServer = require( 'ws' ).Server,
-    wss = new WebSocketServer({
-      server: server
-    }),
+    // WebSocketServer = require( 'ws' ).Server,
+    // wss = new WebSocketServer({
+    //   server: server
+    // }),
     sess;
 
 
