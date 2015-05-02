@@ -16,9 +16,7 @@
     "passport": "^0.2.1",
     "passport-github": "^0.1.5",
     "path": "^0.11.14",
-    //from here on, copied from example
     "connect": "~3.2.0",
-    // "serve-static": "~1.6.3",
     "share": "~0.7.3",
     "share-codemirror": "~0.0.5",
     "ws": "~0.4.32",
