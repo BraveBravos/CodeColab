@@ -12,10 +12,10 @@ var loadShare = function ($scope) {
       lineNumbers: true
     })
 
-    var ws = new WebSocket('wss://' + window.location.host)
+    var socket = new BCSocket(null, {reconnect: true});
+    var share = new sharejs.Connection(socket);
 
-    var sjs = new window.sharejs.Connection(ws)
-
+    console.log('sjs', sjs)
     // not sure how this should work with mongo
     var doc = sjs.get('users','test')
 
