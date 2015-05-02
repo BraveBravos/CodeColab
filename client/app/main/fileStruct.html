@@ -1,0 +1,26 @@
+<!-- fileStruct template partial containing the file structure -->
+<script type="text/ng-template"  id="fileStruct.html">
+    {{data.name}}
+    <button ng-click="add(data)">Add node</button>
+    <button ng-click="delete(data)" ng-show="data.nodes.length > 0">Delete nodes</button>
+    <ul>
+        <li ng-repeat="data in data.nodes" ng-include="'fileStruct.html'"></li>
+    </ul>
+</script>
+
+<ul ng-app="codeColab" ng-controller="fileStructCtrl">
+    <li ng-repeat="data in fileStruct" ng-include="'fileStruct.html'"></li>
+</ul>
+
+
+<script type="text/ng-template"  id="fileStruct.html">
+    <button ng-click="add(data)">Add node</button>
+    <button ng-click="delete(data)" ng-show="data.nodes.length > 0">Delete nodes</button>
+    <ul>
+        <li ng-repeat="data in data.nodes" ng-include="'fileStruct.html'"></li>
+    </ul>
+</script>
+
+<ul ng-app="codeColab" ng-controller="fileStructCtrl">
+    <li ng-repeat="data in fileStruct" ng-include="'fileStruct.html'"></li>
+</ul>
