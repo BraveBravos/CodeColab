@@ -139,7 +139,7 @@ app.get('/logout', function (req, res){
 
 
 wss.on('connection', function(client) {
-  console.log('connected', client)
+  // console.log('connected', client)
   var stream = new Duplex({ objectMode: true })
 
   stream._write = function(chunk, encoding, callback) {
