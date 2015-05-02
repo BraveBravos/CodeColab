@@ -95,7 +95,7 @@ app.get('/auth/github',
 );
 
 app.get('/auth/github/callback', passport.authenticate(
-  'github', { successRedirect: '/#/main', 
+  'github', { successRedirect: '/#/main',
     failureRedirect: '/#/signin' }
 ));
 
@@ -103,6 +103,10 @@ app.get('/api/auth', function(req, res){
   res.status(200).json(req.isAuthenticated());
 })
 
+app.get('/logout', function (req, res){
+  req.session.destroy();
+  res.sendStatus(200);
+})
 
 
 

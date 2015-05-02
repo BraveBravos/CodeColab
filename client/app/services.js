@@ -46,6 +46,7 @@ var loadShare = function ($scope) {
     });
   }
 
+
   return {
     loadShare: loadShare,
     sendFile: sendFile,

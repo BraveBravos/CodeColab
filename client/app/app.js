@@ -12,16 +12,8 @@ angular.module('codeColab', [
 			authenticate: true
 		})
 		.when('/signin', {
-<<<<<<< HEAD
-      templateUrl: '/app/clientAuth/signin.html'
-    })	
-    .when('/logout', {
-      templateUrl: '/app/clientAuth/signin.html',
-    	controller: 'codeCtrl'
-=======
       templateUrl: '/app/clientAuth/signin.html',
       authenticate: false
->>>>>>> redirects to signin page if not signed in
     })
 		.otherwise({
 			redirectTo: '/signin'

@@ -21,10 +21,12 @@ angular.module('codeColab.main', [])
     }
     console.log('angular', doc)
     Share.sendFile($scope, doc);
-  }  
+  }
 
   $scope.logout = function() {
-    $location.path('/signin');
+    $http.get('/logout')
+    .success(function(data) {
+      $location.path('/signin');
     })
   }
 
