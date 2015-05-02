@@ -31,7 +31,7 @@ angular.module('codeColab.main', [])
   }
 
   // $scope.clone = function(){
-
+    
   // }
 
   $scope.init = function () {
