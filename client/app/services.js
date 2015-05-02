@@ -4,7 +4,7 @@ angular.module('codeColab.services', [])
 .factory('Share', function ($http) {
 
 var loadShare = function ($scope) {
-
+  var BCSocket = require ('browserchannel').BCSocket;
     var codeEditor = CodeMirror.MergeView(document.getElementById('area'), {
       'origRight':'', //this contains the original code
       'value':'',      //this will be the updated value with the users' changes
