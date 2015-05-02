@@ -13,9 +13,6 @@ var loadShare = function ($scope) {
     })
 
     var ws = new WebSocket('wss://' + window.location.host)
-    ws.onopen(function() {
-      console.log('open')
-    })
 
     var sjs = new window.sharejs.Connection(ws)
 
