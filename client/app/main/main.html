@@ -1,10 +1,19 @@
 <div id="files"></div>
 <div id="area">
 <ng-include src="videochat.url"></ng-include>
-<a href='/#/logout' ng-click='logout()' class='logout'>
-  <i class="fa fa-sign-out"></i>
-  Logout</a>
-<br>
+
+<div class = 'navbar'>
+  <a href='/#/logout' ng-click='logout()' class='logout'>
+    <i class="fa fa-sign-out"></i>
+    Logout
+  </a>
+
+  <a class=clone>  <!-- add link functionality --> 
+    <i class="fa fa-files-o"></i>
+    Clone 
+  </a>
+
+</div>
 
 </div>
   <button onclick="TogetherJS(this); return false;">
