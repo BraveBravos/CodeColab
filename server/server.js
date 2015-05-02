@@ -4,16 +4,21 @@ var express = require('express'),
     mongo = require('mongodb'),
     monk =require ('monk'),
     docs = require('./documents/documents.js'),
-    db = monk('mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810');
-
-var session = require('express-session'),
+    db = monk('mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810'),
+    session = require('express-session'),
     path = require('path'),
     passport = require('passport'),
-    GitHubStrategy = require('passport-github').Strategy;
+    GitHubStrategy = require('passport-github').Strategy,
+    livedb = require( 'livedb' ),
+    sharejs = require( 'share' ),
+    shareCodeMirror = require( 'share-codemirror' ),
+
 
 if (!process.env.CLIENT_ID) {
   var keys = require('../keys.js');
 }
+
+
 
 
 app.set('port', (process.env.PORT || 3000));
