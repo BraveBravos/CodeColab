@@ -6,7 +6,7 @@ var connect = require( 'connect' ),
     Duplex = require( 'stream' ).Duplex,
     livedb = require( 'livedb' ),
     sharejs = require( 'share' ),
-    port    = argv.p || 8007,
+    port    = process.env.PORT
     app     = connect(),
     server  = http.createServer( app ),
     // store sharejs documents in memory
