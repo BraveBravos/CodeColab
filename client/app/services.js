@@ -13,8 +13,10 @@ var loadShare = function ($scope) {
     })
 
     var ws = new WebSocket('wss://' + window.location.host)
+    console.log('ws',ws)
 
     var sjs = new window.sharejs.Connection(ws)
+    console.log('sjs',sjs)
 
     // not sure how this should work with mongo
     var doc = sjs.get('users','test')
