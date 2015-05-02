@@ -12,8 +12,23 @@ var session = require('express-session'),
     passport = require('passport'),
     GitHubStrategy = require('passport-github').Strategy,
     livedb = require( 'livedb' ),
+    Duplex = require( 'stream' ).Duplex,
     sharejs = require( 'share' ),
-    shareCodeMirror = require( 'share-codemirror' );
+    shareCodeMirror = require( 'share-codemirror' ),
+    http    = require( 'http' ),
+    server  = http.createServer( app ),
+    liveDBMongoClient = require('livedb-mongo'),
+    dbClient =liveDBMongoClient('mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810',
+      {safe: true}),
+    backend = livedb.client(dbClient),
+    share = sharejs.server.createClient({
+      backend: backend
+    }),
+    WebSocketServer = require( 'ws' ).Server,
+    wss = new WebSocketServer({
+      server: server
+    }),
+    sess;
 
 
 if (!process.env.CLIENT_ID) {
@@ -30,13 +45,14 @@ app.use(passport.session());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static('./client'));
+app.use(express.static(sharejs.scriptsDir));
+app.use(express.static(shareCodeMirror.scriptsDir));
 
 app.use(function (req, res, next) {
   req.db = db;
   next();
 })
 
-var sess;
 
 app.get('/auth/github/callback', function (req, res, next) {
   if (req.session) {
@@ -120,4 +136,40 @@ app.get('/logout', function (req, res){
 })
 
 
+wss.on('connection', function(client) {
+  var stream = new Duplex({ objectMode: true })
 
+  stream._write = function(chunk, encoding, callback) {
+    console.log( 's->c ', chunk )
+    client.send( JSON.stringify(chunk) )
+    return callback()
+  }
+
+  stream._read = function() {}
+
+  stream.headers = client.upgradeReq.headers
+
+  stream.remoteAddress = client.upgradeReq.connection.remoteAddress
+
+  client.on( 'message', function( data ) {
+    console.log( 'c->s ', data );
+    return stream.push( JSON.parse(data) )
+  })
+
+  stream.on( 'error', function(msg) {
+    return client.close( msg )
+  })
+
+  client.on( 'close', function(reason) {
+    stream.push( null )
+    stream.emit( 'close' )
+    console.log( 'client went away' )
+    return client.close( reason )
+  })
+
+  stream.on( 'end', function() {
+    return client.close()
+  })
+
+  return share.listen( stream )
+})
