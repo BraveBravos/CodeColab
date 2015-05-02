@@ -13,7 +13,7 @@ var session = require('express-session'),
     GitHubStrategy = require('passport-github').Strategy,
     livedb = require( 'livedb' ),
     sharejs = require( 'share' ),
-    shareCodeMirror = require( 'share-codemirror' ),
+    shareCodeMirror = require( 'share-codemirror' );
 
 
 if (!process.env.CLIENT_ID) {
