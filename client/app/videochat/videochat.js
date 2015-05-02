@@ -1,4 +1,3 @@
-  angular.module('codeColab.videochat', [])
 
   navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
