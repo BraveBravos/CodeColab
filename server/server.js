@@ -33,10 +33,6 @@ if (!process.env.CLIENT_ID) {
   var keys = require('../keys.js');
 }
 
-wss.on('open', function() {
-  console.log('open')
-})
-
 
 // app.set('port', (process.env.PORT || 3000));
 var port = process.env.PORT || 3000;
@@ -141,6 +137,7 @@ app.get('/logout', function (req, res){
 
 
 wss.on('connection', function(client) {
+  console.log('connected', client)
   var stream = new Duplex({ objectMode: true })
 
   stream._write = function(chunk, encoding, callback) {
