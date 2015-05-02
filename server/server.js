@@ -44,9 +44,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
-appC.use(serveStatic('./client'));
-appC.use(serveStatic(sharejs.scriptsDir));
-appC.use(serveStatic(shareCodeMirror.scriptsDir));
+app.use(serveStatic('./client'));
+app.use(serveStatic(sharejs.scriptsDir));
+app.use(serveStatic(shareCodeMirror.scriptsDir));
 
 app.use(function (req, res, next) {
   req.db = db;
