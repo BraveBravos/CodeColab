@@ -6,10 +6,8 @@
   <ng-include src="fileStruct.html"></ng-include>
   </div>
 
-  <a href='#' class=clone>  <!-- add ng-click='clone()' -->
-    <span class="fa fa-files-o"></span>
-    Clone
-  </a>
+  <div id="area">
+  <ng-include src="videochat.url"></ng-include>
 
   <div class = 'navbar'>
     <a href='/#/logout' ng-click='logout()' class='logout'>
@@ -17,5 +15,13 @@
       Logout
     </a>
 
-</div>
+    <a href='#' class=clone>  <!-- add ng-click='clone()' -->
+      <span class="fa fa-files-o"></span>
+      Clone
+    </a>
+
+  </div>
+
+  </div>
+  </div>
 </div>
