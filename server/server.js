@@ -151,22 +151,26 @@ app.use(browserChannel( function(client) {
   stream._read = function() {};
   stream._write = function(chunk, encoding, callback) {
     if (client.state !== 'closed') {
+      console.log('client state')
       client.send(chunk);
     }
     callback();
   };
 
   client.on('message', function(data) {
+    console.log('client message')
     stream.push(data);
   });
 
   client.on('close', function(reason) {
+    console.log('client close')
     stream.push(null);
     stream.emit('close');
   });
 
   stream.on('end', function() {
-    setTimeout(client.close, 10000);
+    console.log('client end')
+    client.close();
   });
 
   // Give the stream to sharejs
