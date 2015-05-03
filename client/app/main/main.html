@@ -1,25 +1,30 @@
-<div id="files">
-<ng-include src="fileStruct.html"></ng-include>
-</div>
+<div class = 'mainpage'>
+  <div id="files">
 
-<div id="area">
-<ng-include src="videochat.url"></ng-include>
+  <link rel="stylesheet" href="../../styles/styles.css">
 
-<div class = 'navbar'>
-  <a href='/#/logout' ng-click='logout()' class='logout'>
-    <span class="fa fa-sign-out"></span>
-    Logout
-  </a>
+  <ng-include src="fileStruct.html"></ng-include>
+  </div>
 
-  <a href='#' class=clone>  <!-- add ng-click='clone()' --> 
-    <span class="fa fa-files-o"></span>
-    Clone 
-  </a>
+  <div id="area">
+  <ng-include src="videochat.url"></ng-include>
 
-</div>
+  <div class = 'navbar'>
+    <a href='/#/logout' ng-click='logout()' class='logout'>
+      <span class="fa fa-sign-out"></span>
+      Logout
+    </a>
 
-</div>
-  <button onclick="TogetherJS(this); return false;">
-    Start TogetherJS
-  </button>
+    <a href='#' class=clone>  <!-- add ng-click='clone()' --> 
+      <span class="fa fa-files-o"></span>
+      Clone 
+    </a>
+
+  </div>
+
+  </div>
+    <button onclick="TogetherJS(this); return false;">
+      Start TogetherJS
+    </button>
+  </div>
 </div>
