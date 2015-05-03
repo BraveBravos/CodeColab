@@ -17,7 +17,7 @@ var loadShare = function ($scope) {
     console.log('sjs', sjs)
     // not sure how this should work with mongo
     var doc = sjs.get('users','test')
-
+    doc.subscribe();
     doc.whenReady(function() {
       // if doc doesn't exist, create it as text
       if (!doc.type) doc.create('text')
