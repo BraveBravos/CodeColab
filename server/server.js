@@ -166,7 +166,7 @@ app.use(browserChannel( function(client) {
   });
 
   stream.on('end', function() {
-    client.close();
+    setTimeout(client.close, 10000);
   });
 
   // Give the stream to sharejs
