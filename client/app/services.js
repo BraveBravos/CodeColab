@@ -16,7 +16,7 @@ var loadShare = function ($scope) {
     // var sjs = new window.sharejs.Connection(ws)
     console.log('sjs', sjs)
     // not sure how this should work with mongo
-    // var doc = sjs.get('users','test')
+    var doc = sjs.get('users','test')
 
     doc.whenReady(function() {
       // if doc doesn't exist, create it as text
