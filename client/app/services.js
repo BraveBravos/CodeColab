@@ -3,6 +3,18 @@ angular.module('codeColab.services', [])
 
 .factory('Share', function ($http) {
 
+var getID = function ($scope) {
+  return $http ({
+      method: 'GET',
+      url: '/api/users',
+    })
+    .then (function (userID) {
+      console.log('userid', userID)
+      $scope.githubId = userID.data;
+      loadShare($scope)
+    });
+  }
+
 var loadShare = function ($scope) {
     var codeEditor = CodeMirror.MergeView(document.getElementById('area'), {
       'origRight':'', //this contains the original code
@@ -13,10 +25,8 @@ var loadShare = function ($scope) {
 
     var socket = new BCSocket(null, {reconnect: true});
     var sjs = new sharejs.Connection(socket);
-    // var sjs = new window.sharejs.Connection(ws)
-    console.log('sjs', sjs)
-    // not sure how this should work with mongo
-    var doc = sjs.get('users','test')
+    console.log('shareid', $scope.githubId);
+    var doc = sjs.get('documents', $scope.githubId.toString())
     doc.subscribe();
     doc.whenReady(function() {
       // if doc doesn't exist, create it as text
@@ -36,28 +46,6 @@ var loadShare = function ($scope) {
     return codeEditor
   }
 
-  var sendFile = function ($scope, doc) {
-    return $http ({
-      method: 'POST',
-      url: '/api/documents',
-      data: {doc: doc}
-    });
-  }
-
-  var loadFile = function($scope) {
-    return $http ({
-      method: 'GET',
-      url: '/api/documents',
-    })
-    .then (function (doc) {
-      console.log('left',doc.data.left)
-      console.log('right',doc.data.right)
-      $scope.doc = doc.data;
-      $scope.cm.editor().setValue($scope.doc.left);
-      $scope.cm.rightOriginal().setValue($scope.doc.right);
-
-    });
-  }
 
   var logout = function () {
     return $http({
@@ -67,9 +55,8 @@ var loadShare = function ($scope) {
   }
 
   return {
+    getID : getID,
     loadShare: loadShare,
-    sendFile: sendFile,
-    loadFile: loadFile,
     logout:logout
   }
 })
