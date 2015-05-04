@@ -3,24 +3,10 @@ angular.module('codeColab.main', [])
 
 
 .controller('codeCtrl', function ($scope, $location, Share) {
-  $scope.doc = {};
   $scope.videochat = {url : "app/videochat/videochat.html"};
 
-  $scope.loadShare = function () {
-    $scope.cm = Share.loadShare($scope);
-  };
-
-  $scope.loadFile = function() {
-    Share.loadFile($scope)
-  };
-
-  $scope.saveFile = function() {
-    var doc = {
-      left:$scope.cm.editor().getValue(),
-      right: $scope.cm.rightOriginal().getValue()
-    }
-    console.log('angular', doc)
-    Share.sendFile($scope, doc);
+  $scope.init = function () {
+    Share.getID($scope);
   }
 
   $scope.logout = function() {
@@ -34,14 +20,9 @@ angular.module('codeColab.main', [])
 
   // }
 
-  $scope.init = function () {
-    $scope.loadShare();
-    $scope.loadFile();
-    // setInterval($scope.saveFile, 15000);
-  }
-
   $scope.init();
 })
+
 .controller('fileStructCtrl', function($scope, FileStruct){
       $scope.delete = function(data) {
           data.nodes = [];

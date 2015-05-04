@@ -1,8 +1,6 @@
 var express = require('express'),
     connect = require('connect'),
-    serveStatic = require('serve-static'),
     bodyParser = require ('body-parser'),
-    // app = connect(),
     app = express(),
     mongo = require('mongodb'),
     monk =require ('monk'),
@@ -24,15 +22,10 @@ var session = require('express-session'),
     liveDBMongoClient = require('livedb-mongo'),
     dbClient =liveDBMongoClient('mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810',
       {safe: true}),
-    // backend = livedb.client(dbClient),
-    backend = livedb.client( livedb.memory() ),
+    backend = livedb.client(dbClient),
     share = sharejs.server.createClient({
       backend: backend
     }),
-    // WebSocketServer = require( 'ws' ).Server,
-    // wss = new WebSocketServer({
-    //   server: server
-    // }),
     sess;
 
 
@@ -42,7 +35,6 @@ if (!process.env.CLIENT_ID) {
 
 
 app.set('port', (process.env.PORT || 3000));
-// var port = process.env.PORT || 3000;
 app.use(session({secret: 'oursecret'}));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -66,21 +58,13 @@ app.get('/auth/github/callback', function (req, res, next) {
   next();
 })
 
-app.post('/api/documents', function (req, res){
-  req.githubId = sess.githubId;
-  docs.sendDoc(req);
-})
 
 app.post('/api/fileStruct', function (req, res){
   // add all the things
 })
 
-app.get('/api/documents', function (req, res) {
-  req.githubId = sess.githubId;
-  docs.getDoc(req, function (results) {
-    console.log('response', results)
-    res.status(200).send(results);
-  });
+app.get('/api/users', function (req, res) {
+  res.status(200).json(sess.githubId);
 })
 
 app.listen(app.get('port'), function() {
@@ -151,28 +135,23 @@ app.use(browserChannel( function(client) {
   stream._read = function() {};
   stream._write = function(chunk, encoding, callback) {
     if (client.state !== 'closed') {
-      console.log('client state')
       client.send(chunk);
     }
     callback();
   };
 
   client.on('message', function(data) {
-    console.log('client message')
     stream.push(data);
   });
 
   client.on('close', function(reason) {
-    console.log('client close')
     stream.push(null);
     stream.emit('close');
   });
 
   stream.on('end', function() {
-    console.log('client end')
     client.close();
   });
 
-  // Give the stream to sharejs
   return share.listen(stream);
 }));
