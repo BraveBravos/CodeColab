@@ -41,6 +41,10 @@
             document.getElementById('their-video').setAttribute('src', URL.createObjectURL(stream));
           });
           this.innerHTML = 'End Call';
+          setCallStatus('IN CALL');
+        }else if(btnStatus === 'End Call'){
+          endCall();
+          
         }
       }
     }
@@ -53,14 +57,10 @@
 
 
   function init() {
-    // Get audio/video stream
     console.log('PeerJS : step1');
     navigator.getUserMedia({audio: true, video: true}, function(stream){
-      // Set your video displays
       document.getElementById('my-video').setAttribute('src', URL.createObjectURL(stream));
-
       window.localStream = stream;
-      //step2();
     }, function(){ console.log('PeerJS : step1 error') });
   };
 
@@ -88,7 +88,8 @@
   };
 
   function endCall(){
-      window.existingCall.close();
+    console.log('endCall')
+    peer.call.close();
   };
 
   function setCallStatus(strStatus){
