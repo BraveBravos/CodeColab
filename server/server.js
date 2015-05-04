@@ -59,8 +59,8 @@ app.get('/auth/github/callback', function (req, res, next) {
 })
 
 
-app.post('/api/fileStruct', function (req, res){
-  // add all the things
+app.get('/api/fileStruct', function (req, res){
+  // req.
 })
 
 app.get('/api/users', function (req, res) {
