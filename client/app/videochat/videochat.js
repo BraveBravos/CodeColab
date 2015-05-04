@@ -5,7 +5,7 @@
 
   var peer = new Peer({ 
     key: 'npzhit884gupiudi', 
-    debug: true,
+    debug: 3,
     config: { 'iceServers': [
           { 'url': 'stun:stun.l.google.com:19302' }  
     ] }
@@ -18,6 +18,7 @@
 
   peer.on('connection',function(dataConnection){
     console.log('PeerJS peer.on connection');
+    document.getElementById('peers-list').innerHTML += peer.id;
   });
 
   peer.on('disconnected',function(){
