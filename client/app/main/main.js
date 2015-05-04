@@ -3,7 +3,6 @@ angular.module('codeColab.main', [])
 
 
 .controller('codeCtrl', function ($scope, $location, Share) {
-  $scope.doc = {};
   $scope.fileStruct = {url: "app/main/fileStruct.html"}
   $scope.videochat = {url : "app/videochat/videochat.html"};
 
