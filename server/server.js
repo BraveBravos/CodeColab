@@ -129,6 +129,12 @@ app.get('/auth/github/callback', passport.authenticate(
 app.get('/api/auth', function(req, res){
   res.status(200).json(req.isAuthenticated());
 })
+app.get('/test', function(req, res){
+  res.status(200).json({
+    isAuth: req.isAuthenticated(),
+    user: req.user || 'none'
+  });
+})
 
 app.get('/logout', function (req, res){
   //req.session.destroy()
