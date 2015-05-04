@@ -35,14 +35,20 @@ if (!process.env.CLIENT_ID) {
 
 
 app.set('port', (process.env.PORT || 3000));
-app.use(session({secret: 'oursecret'}));
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static('./client'));
 app.use(express.static(sharejs.scriptsDir));
 app.use(express.static(shareCodeMirror.scriptsDir));
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(session({
+  secret: 'oursecret',
+  saveUninitialized: true,
+  resave: true,
+  store: 'mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810'
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(function (req, res, next) {
   req.db = db;
