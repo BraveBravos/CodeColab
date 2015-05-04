@@ -1,7 +1,6 @@
 var express = require('express'),
     connect = require('connect'),
     bodyParser = require ('body-parser'),
-    cookieParser = require('cookie-parser'),
     app = express(),
     mongo = require('mongodb'),
     monk =require ('monk'),
@@ -120,7 +119,7 @@ passport.use(new GitHubStrategy({
 
 
 app.get('/auth/github',
-  passport.authenticate('github', {scope: ['repo', 'user']})
+  passport.authenticate('github', {scope: ['repo', 'user', 'admin:public_key']})
 );
 
 app.get('/auth/github/callback', passport.authenticate(
