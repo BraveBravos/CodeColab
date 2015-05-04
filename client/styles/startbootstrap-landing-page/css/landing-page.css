@@ -109,7 +109,7 @@ h6 {
 }
 
 .banner {
-    padding: 100px 0;
+    padding: 50px 0;
     color: #f8f8f8;
     background: url(../img/banner-bg.jpg) no-repeat center center;
     background-size: cover;
@@ -165,11 +165,15 @@ p.copyright {
 }
 
 .teampic {
+    width: 125px;
+    height: 125px;
+    margin-left: 8%;
 }
 
-
-
-
+.teampic > p {
+    text-align: center;
+    display: inline;
+}
 
 
 
