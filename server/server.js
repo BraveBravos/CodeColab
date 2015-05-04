@@ -1,5 +1,8 @@
 var express = require('express'),
+    connect = require('connect'),
+    serveStatic = require('serve-static'),
     bodyParser = require ('body-parser'),
+    // app = connect(),
     app = express(),
     mongo = require('mongodb'),
     monk =require ('monk'),
@@ -10,7 +13,28 @@ var express = require('express'),
 var session = require('express-session'),
     path = require('path'),
     passport = require('passport'),
-    GitHubStrategy = require('passport-github').Strategy;
+    GitHubStrategy = require('passport-github').Strategy,
+    livedb = require( 'livedb' ),
+    Duplex = require( 'stream' ).Duplex,
+    browserChannel = require('browserchannel').server,
+    sharejs = require( 'share' ),
+    shareCodeMirror = require( 'share-codemirror' ),
+    http    = require( 'http' ),
+    server  = http.createServer( app ),
+    liveDBMongoClient = require('livedb-mongo'),
+    dbClient =liveDBMongoClient('mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810',
+      {safe: true}),
+    // backend = livedb.client(dbClient),
+    backend = livedb.client( livedb.memory() ),
+    share = sharejs.server.createClient({
+      backend: backend
+    }),
+    // WebSocketServer = require( 'ws' ).Server,
+    // wss = new WebSocketServer({
+    //   server: server
+    // }),
+    sess;
+
 
 if (!process.env.CLIENT_ID) {
   var keys = require('../keys.js');
@@ -18,19 +42,20 @@ if (!process.env.CLIENT_ID) {
 
 
 app.set('port', (process.env.PORT || 3000));
+// var port = process.env.PORT || 3000;
 app.use(session({secret: 'oursecret'}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static('./client'));
+app.use(express.static(sharejs.scriptsDir));
+app.use(express.static(shareCodeMirror.scriptsDir));
 
 app.use(function (req, res, next) {
   req.db = db;
   next();
 })
-
-var sess;
 
 app.get('/auth/github/callback', function (req, res, next) {
   if (req.session) {
@@ -61,6 +86,13 @@ app.get('/api/documents', function (req, res) {
 app.listen(app.get('port'), function() {
   console.log('Node app running on port', app.get('port'));
 });
+
+// app.listen(3000, function() {
+//   console.log('Node app running on port', 3000);
+// });
+
+// server.listen(port)
+// console.log('Node app running on port',port)
 
 passport.use(new GitHubStrategy({
     clientID: process.env.CLIENT_ID || keys.clientID,
@@ -113,5 +145,34 @@ app.get('/logout', function (req, res){
   res.sendStatus(200);
 })
 
+app.use(browserChannel( function(client) {
+  var stream = new Duplex({objectMode: true});
 
+  stream._read = function() {};
+  stream._write = function(chunk, encoding, callback) {
+    if (client.state !== 'closed') {
+      console.log('client state')
+      client.send(chunk);
+    }
+    callback();
+  };
 
+  client.on('message', function(data) {
+    console.log('client message')
+    stream.push(data);
+  });
+
+  client.on('close', function(reason) {
+    console.log('client close')
+    stream.push(null);
+    stream.emit('close');
+  });
+
+  stream.on('end', function() {
+    console.log('client end')
+    client.close();
+  });
+
+  // Give the stream to sharejs
+  return share.listen(stream);
+}));

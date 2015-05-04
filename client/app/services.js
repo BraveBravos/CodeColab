@@ -4,14 +4,27 @@ angular.module('codeColab.services', [])
 .factory('Share', function ($http) {
 
 var loadShare = function ($scope) {
-
     var codeEditor = CodeMirror.MergeView(document.getElementById('area'), {
       'origRight':'', //this contains the original code
       'value':'',      //this will be the updated value with the users' changes
       'theme':'erlang-dark',
-      lineNumbers: true,
-      // readOnly: 'nocursor',
-      // showCursorWhenSelecting: false
+      lineNumbers: true
+    })
+
+    var socket = new BCSocket(null, {reconnect: true});
+    var sjs = new sharejs.Connection(socket);
+    // var sjs = new window.sharejs.Connection(ws)
+    console.log('sjs', sjs)
+    // not sure how this should work with mongo
+    var doc = sjs.get('users','test')
+    doc.subscribe();
+    doc.whenReady(function() {
+      // if doc doesn't exist, create it as text
+      if (!doc.type) doc.create('text')
+      // this check is probably not necessary
+      if (doc.type && doc.type.name === 'text')
+      // this updates the CodeMirror editor window
+      doc.attachCodeMirror(codeEditor.editor())
     })
 
     //need to finish importing all of the sublime shortcuts and whatnot: http://codemirror.net/doc/manual.html#addons
