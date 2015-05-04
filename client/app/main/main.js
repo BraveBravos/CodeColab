@@ -3,6 +3,7 @@ angular.module('codeColab.main', [])
 
 
 .controller('codeCtrl', function ($scope, $location, Share) {
+  $scope.fileStruct = {url: "app/main/fileStruct.html"}
   $scope.videochat = {url : "app/videochat/videochat.html"};
 
   $scope.init = function () {
@@ -22,18 +23,17 @@ angular.module('codeColab.main', [])
 
   $scope.init();
 })
-
-.controller('fileStructCtrl', function($scope, FileStruct){
-      $scope.delete = function(data) {
-          data.nodes = [];
-      };
-      $scope.add = function(data) {
-          var post = data.nodes.length + 1;
-          var newName = data.name + '-' + post;
-          data.nodes.push({name: newName,nodes: []});
-      };
-      $scope.fileStruct = [{name: "Node", nodes: []}];
-  });
+// .controller('fileStructCtrl', function($scope, FileStruct){
+//       $scope.delete = function(data) {
+//           data.nodes = [];
+//       };
+//       $scope.add = function(data) {
+//           var post = data.nodes.length + 1;
+//           var newName = data.name + '-' + post;
+//           data.nodes.push({name: newName,nodes: []});
+//       };
+//       $scope.fileStruct = [{name: "Node", nodes: []}];
+//   });
 
 
 
