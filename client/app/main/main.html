@@ -3,23 +3,19 @@
   <div id="files" >
   <ng-include src="fileStruct.url"></ng-include>
   </div>
-
   <div id="area">
-  <ng-include src="videochat.url"></ng-include>
-
-  <div class = 'navbar'>
-    <a href='/#/logout' ng-click='logout()' class='logout'>
-      <span class="fa fa-sign-out"></span>
-      Logout
-    </a>
-
-    <a href='#' class=clone>  <!-- add ng-click='clone()' -->
-      <span class="fa fa-files-o"></span>
-      Clone
-    </a>
-
+    <ng-include src="videochat.url"></ng-include>
+    <div class = 'navbar'>
+      <a href='/#/logout' ng-click='logout()' class='logout'>
+        <span class="fa fa-sign-out"></span>
+        Logout
+      </a>
+      <a href='#' class=clone>  <!-- add ng-click='clone()' -->
+        <span class="fa fa-files-o"></span>
+        Clone
+      </a>
+    </div>
   </div>
-
-  </div>
+  <div class = "repo-modal">
   </div>
 </div>
