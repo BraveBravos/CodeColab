@@ -1,25 +1,27 @@
-  <link rel="stylesheet" href="../../styles/styles.css">
+<link rel="stylesheet" href="../../styles/styles.css">
 <div class = 'mainpage'>
   <div id="files" >
-  <ng-include src="fileStruct.url"></ng-include>
+    <ng-include src="fileStruct.url"></ng-include>
   </div>
-
   <div id="area">
-  <ng-include src="videochat.url"></ng-include>
-
-  <div class = 'navbar'>
-    <a href='/#/logout' ng-click='logout()' class='logout'>
-      <span class="fa fa-sign-out"></span>
-      Logout
-    </a>
-
-    <a href='#' class=clone>  <!-- add ng-click='clone()' -->
-      <span class="fa fa-files-o"></span>
-      Clone
-    </a>
-
+    <ng-include src="videochat.url"></ng-include>
+    <div class = 'navbar'>
+      <a href='/#/logout' ng-click='logout()' class='logout'>
+        <span class="fa fa-sign-out"></span>
+        Logout
+      </a>
+      <a href='#' class=clone>  <!-- add ng-click='clone()' -->
+        <span class="fa fa-files-o"></span>
+        Clone
+      </a>
+    </div>
   </div>
-
-  </div>
-  </div>
+  <repo-modal show='modalShown' width="300" height="150">
+    <div class = "repo-list">
+      <h3>Please select a repo</h3>
+      <select ng-options = "repo.name for repo in repos track by repo.id" ng-model = "selectRepo">
+      </select>
+      <button ng-click = "hideModal()">Submit</button>
+    </div>
+  </repo-modal>
 </div>

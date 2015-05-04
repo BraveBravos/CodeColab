@@ -3,14 +3,14 @@ angular.module('codeColab.services', [])
 
 .factory('Share', function ($http) {
 
-var getID = function ($scope) {
+var getRepos = function ($scope) {
   return $http ({
       method: 'GET',
-      url: '/api/users',
+      url: '/api/repos',
     })
-    .then (function (userID) {
+    .then (function (repos) {
       console.log('userid', userID)
-      $scope.githubId = userID.data;
+      $scope.repos = repos.data;
       loadShare($scope)
     });
   }
@@ -26,7 +26,7 @@ var loadShare = function ($scope) {
     var socket = new BCSocket(null, {reconnect: true});
     var sjs = new sharejs.Connection(socket);
     console.log('shareid', $scope.githubId);
-    var doc = sjs.get('documents', $scope.githubId.toString())
+    var doc = sjs.get('documents','test')
     doc.subscribe();
     doc.whenReady(function() {
       // if doc doesn't exist, create it as text
@@ -55,7 +55,7 @@ var loadShare = function ($scope) {
   }
 
   return {
-    getID : getID,
+    getRepos : getRepos,
     loadShare: loadShare,
     logout:logout
   }
