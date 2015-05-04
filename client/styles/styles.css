@@ -29,7 +29,10 @@ html, body {
 
 #area {
 	width: 80%;
-	display:inline-block
+  font-family: 'Open Sans',Arial,Helvetica Neue,sans-serif;
+  display:inline-block;
+  font-size: 16px;
+  font-weight: 300;
 }
 
 #signin {
