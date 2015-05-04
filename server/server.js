@@ -58,6 +58,7 @@ app.use(function (req, res, next) {
 })
 
 app.get('/auth/github/callback', function (req, res, next) {
+  // console.log('callback: ',req.session)
   if (req.session) {
     sess = req.session;
   } else {
@@ -72,7 +73,10 @@ app.get('/api/fileStruct', function (req, res){
 })
 
 app.get('/api/users', function (req, res) {
-  res.status(200).json(sess.githubId);
+  //when do we get users?
+  //return githubID
+  console.log('users: ',req.session.passport.user.username)
+  res.status(200).json(req.session.githubId);
 })
 
 app.listen(app.get('port'), function() {
@@ -114,9 +118,43 @@ passport.use(new GitHubStrategy({
   },
   function(req, accessToken, refreshToken, profile, done) {
     return done(null, profile)
+  function(accessToken, refreshToken, profile, done) {
+    var collection = db.get('Users');
+
+    // console.log('accessToken', accessToken)
+    // console.log('profile', profile)
+
+    collection.find({githubId: profile.id}, function(err, found){
+      if (found.length > 0){
+        var user = found[0];
+        // sess.githubId = user.githubId;
+        // sess.username = user.username;
+      } else {
+        console.log('user not found')
+        collection.insert({
+          githubId: profile.id,
+          username: profile.username,
+          accessToken: accessToken
+        })
+        // sess.githubId  = profile.id;
+        // sess.username = profile.username;
+      }
+      passport.serializeUser(function(user, done) {
+        done(null, user);
+      });
+      passport.deserializeUser(function(user, done) {
+        done(null, user);
+      });
+      return done(err, user)
+    })
   }
 ));
-
+app.post('/getuserrepos', function(req, res) {
+  http.get('https://api.github.com/users/'+username+'/repos', function(req, res){
+    //res is an array of repo objects
+    return res
+  })
+})
 
 app.get('/auth/github',
   passport.authenticate('github', {scope: ['repo', 'user', 'admin:public_key']})

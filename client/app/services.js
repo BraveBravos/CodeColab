@@ -12,7 +12,18 @@ var getRepos = function ($scope) {
       console.log('userid', userID)
       $scope.repos = repos.data;
       loadShare($scope)
-    });
+      return userID
+    })
+    .then (function (userID) {
+      return $http({
+        method: 'GET',
+        url: 'https://api.github.com/users/'+userID+'/repos'
+      })
+      .then (function(repos) {
+        console.log('repos: ',repos)
+        return {userID:userID,repos:repos}
+      })
+    })
   }
 
 
