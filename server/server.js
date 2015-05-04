@@ -5,7 +5,7 @@ var express = require('express'),
     mongo = require('mongodb'),
     monk =require ('monk'),
     docs = require('./documents/documents.js'),
-    fileStruct = require('./fileStruct/fileStruct.js'),
+    fileStruct = require('./fileStruct.js'),
     db = monk('mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810');
 
 var session = require('express-session'),
