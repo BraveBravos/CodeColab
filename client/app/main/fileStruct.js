@@ -22,70 +22,110 @@ angular.module('codeColab.fileStruct', [])
   var repo = '/CodeColab'
   var more = '/git/trees/'
   var sha = '0c7c0ec2bba26acc8e8b69a1ca242931610abf79'
-  var last = '?recursive=1'
+  var last = '?recursive=1&access_token=9893007403fdea813ce0479274aed5a892dccdf5' //<<< HEY HEY REMOVE MY KEY LATER - TODO
   var concat = base + owner + repo + more + sha + last
   var tree = [];
-  // console.log("concat url ", concat) 
 
   $http.get(concat)
   // $http.get('/api/fileStruct')  <-- this should be the better way to do it but doesn't work this way on localhost
     .success(function(data) {
-      tree = data.tree;
-      $scope.tree = tree;
-      console.log("this is the tree ", tree)
 
-    /*      
-      {top level folder, 
-        [children folders],
-        other top level folder, 
-          [children folders
-            [children of first child folder], 
-            [second child of children folders]
-          ]
-      }
-    */
-    var bigTree = [];
-    var recurse = function(){
-    for (var i = 0; i < tree.length; i++){
-
-      var file = {
-        "fileName":'',
-        "ghID": '',
-        "url": ''
-        }
-
-      var folder = {
-        "folderName": '',
-        "ghID": '',
-        "url": '',
-        "chilren": []
-      }
+      bigTree = data.tree;
+      console.log("the bigTree is ", bigTree)
       
-      var tmp = tree[i].path;
-      var tmp2 = tmp.split('/');
-      var tmp3 = tmp2.length-1;
+      var tree = [];
 
-      if (tree[i].type === 'tree'){
-        folder.folderName = tmp2[tmp3];
-        folder.ghID = tree[i].sha;
-        folder.url = tree[i].url;
-        bigTree.push(folder);
+      bigTree.forEach(function(item) {
+
+         if (item.type === 'tree') {
+          tree[item.path] = {top:true, name:item.path, ID:item.sha, url:item.url, children:[]}
+         }
+         var divider = item.type === 'blob' ? null : item.path.lastIndexOf('/');
+         // var divider = item.path.lastIndexOf('/')
+         if(divider<0) {
+          var tmp = item.path.substring(item.path.lastIndexOf('/'));
+          tree.push({top:false, name:tmp, ID:item.sha, url:item.url, children:[]});
+        }
+         var path = item.path.slice(0,divider)
+         var fileName = item.path.slice(divider+1)
+         if (item.type === 'tree') {
+             tree[path].children.push(tree[item.path])
+             tree[item.path].top=false
+         } else {
+            console.log("path", path, "item.path", item.path)
+            if (typeof(tree[path]) === 'undefined'){
+              tree.push(item.path)
+           } else {
+              tree[path].children.push(item.path)
+           }
+         }
+      })
+
+      for (var q in tree) {
+         if (!tree[q].top) {
+             delete tree[q]
+         }
       }
 
-      if (tree[i].type === 'blob'){
-        file.fileName = tmp2[tmp3];
-        file.ghID = tree[i].sha;
-        file.url = tree[i].url;
-        bigTree.push(file)
-      }
+      console.log('final tree',tree)
+      
+      $scope.tree = tree;
 
-      console.log("bigTree is ", bigTree)
-    }
-  }  /*<--- ends func(recurse)*/
+/*      
+      $scope.roleList1 = [
+          { "roleName" : "User", "roleId" : "role1", "children" : [
+            { "roleName" : "subUser1", "roleId" : "role11", "children" : [] },
+            { "roleName" : "subUser2", "roleId" : "role12", "children" : [
+              { "roleName" : "subUser2-1", "roleId" : "role121", "children" : [
+                { "roleName" : "subUser2-1-1", "roleId" : "role1211", "children" : [] },
+                { "roleName" : "subUser2-1-2", "roleId" : "role1212", "children" : [] }
+              ]}
+            ]}
+          ]},
 
+          { "roleName" : "Admin", "roleId" : "role2", "children" : [] },
 
+          { "roleName" : "Guest", "roleId" : "role3", "children" : [] }
+        ];
+*/
 
+    // var bigTree = [];
 
+    // for (var i = 0; i < tree.length; i++){
+
+    //   var file = {
+    //     "fileName":'',
+    //     "ghID": '',
+    //     "url": ''
+    //     }
+
+    //   var folder = {
+    //     "folderName": '',
+    //     "ghID": '',
+    //     "url": '',
+    //     "chilren": []
+    //   }
+      
+    //   var tmp = tree[i].path;
+    //   var tmp2 = tmp.split('/');
+    //   var tmp3 = tmp2.length-1;
+
+    //   if (tree[i].type === 'tree'){
+    //     folder.folderName = tmp2[tmp3];
+    //     folder.ghID = tree[i].sha;
+    //     folder.url = tree[i].url;
+    //     bigTree.push(folder);
+    //   }
+
+    //   if (tree[i].type === 'blob'){
+    //     file.fileName = tmp2[tmp3];
+    //     file.ghID = tree[i].sha;
+    //     file.url = tree[i].url;
+    //     bigTree.push(file)
+    //   }
+
+    //   console.log("bigTree is ", bigTree)
+    // }
 
 
 
