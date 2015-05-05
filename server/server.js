@@ -1,7 +1,6 @@
 var express = require('express'),
     connect = require('connect'),
     bodyParser = require ('body-parser'),
-    cookieParser = require('cookie-parser'),
     app = express(),
     mongo = require('mongodb'),
     monk =require ('monk'),
@@ -28,6 +27,7 @@ var express = require('express'),
     share = sharejs.server.createClient({
       backend: backend
     }),
+    request = require('request'),
     sess;
 
 
@@ -59,6 +59,7 @@ app.use(function (req, res, next) {
 })
 
 app.get('/auth/github/callback', function (req, res, next) {
+  // console.log('callback: ',req.session)
   if (req.session) {
     sess = req.session;
   } else {
@@ -72,20 +73,10 @@ app.get('/api/fileStruct', function (req, res){
   // req.
 })
 
-app.get('/api/users', function (req, res) {
-  res.status(200).json(sess.githubId);
-})
 
 app.listen(app.get('port'), function() {
   console.log('Node app running on port', app.get('port'));
 });
-
-// app.listen(3000, function() {
-//   console.log('Node app running on port', 3000);
-// });
-
-// server.listen(port)
-// console.log('Node app running on port',port)
 
 passport.serializeUser(function(user, done) {
   db.get('Users').find({githubId: user.id}, function (err, result) {
@@ -114,13 +105,58 @@ passport.use(new GitHubStrategy({
     passReqToCallback: true
   },
   function(req, accessToken, refreshToken, profile, done) {
+    req.session.token = accessToken;
+    req.session.userID = profile.id
+    req.session.username = profile.username;
     return done(null, profile)
-  }
+      }
 ));
 
 
+app.get('/api/repos', function (req, res) {
+  request({
+    url: 'https://api.github.com/user/repos?access_token='+ req.session.token+ '&type=all',
+    headers: {'User-Agent': req.session.passport.user[0].username}
+  },
+  function(err,resp,body) {
+    var data = JSON.parse(body).map(function (repo) {
+      return {name: repo.full_name, id: repo.id};
+    })
+      res.status(200).json(data)
+  });
+});
+
+app.get('/api/orgs', function (req, res) {
+  request({
+    url: 'https://api.github.com/user/orgs?access_token='+ req.session.token+ '&type=all',
+    headers: {'User-Agent': req.session.passport.user[0].username}
+  },
+  function (err, resp, body) {
+    var orgList = JSON.parse(body).map(function (org) {
+      return org.login;
+    })
+    res.status(200).json(orgList);
+  });
+
+});
+
+app.post ('/api/orgs/repos', function (req, res) {
+  var org = req.body.org;
+  console.log('org', org)
+  request({
+    url: 'https://api.github.com/orgs/'+ org+ '/repos?access_token='+ req.session.token,
+    headers: {'User-Agent': req.session.passport.user[0].username}
+  },
+    function (err, resp, body) {
+      var data = JSON.parse(body).map(function (repo) {
+        return {name: repo.full_name, id: repo.id};
+      });
+      res.status(200).json(data)
+    });
+});
+
 app.get('/auth/github',
-  passport.authenticate('github', {scope: ['repo', 'user']})
+  passport.authenticate('github', {scope: ['repo', 'user', 'admin:public_key']})
 );
 
 app.get('/auth/github/callback', passport.authenticate(
@@ -130,6 +166,12 @@ app.get('/auth/github/callback', passport.authenticate(
 app.get('/api/auth', function(req, res){
   res.status(200).json(req.isAuthenticated());
 })
+// app.get('/test', function(req, res){
+//   res.status(200).json({
+//     isAuth: req.isAuthenticated(),
+//     user: req.user || 'none'
+//   });
+// })
 
 app.get('/logout', function (req, res){
   //req.session.destroy()
