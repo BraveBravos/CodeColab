@@ -6,7 +6,7 @@ angular.module('codeColab.main', [])
   $scope.fileStruct = {url: "app/main/fileStruct.html"}
   $scope.videochat = {url : "app/videochat/videochat.html"};
   $scope.modalShown = true;
-  $scope.repos = [{name: 'repo1', id: 1}, {name: 'repo2', id: 2}];
+  $scope.repos = [];
   $scope.selectRepo = "";
 
   $scope.init = function () {
