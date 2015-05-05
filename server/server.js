@@ -78,19 +78,13 @@ app.listen(app.get('port'), function() {
   console.log('Node app running on port', app.get('port'));
 });
 
-// app.listen(3000, function() {
-//   console.log('Node app running on port', 3000);
-// });
-
-// server.listen(port)
-// console.log('Node app running on port',port)
-
 passport.serializeUser(function(user, done) {
+  console.log('user', user)
   db.get('Users').find({githubId: user.id}, function (err, result) {
     if(result.length === 0){
       //User isn't in the database yet (FIRST TIMER!)
       //Insert data is the first thing stored for users
-      var insertData = [{githubId: user.id, username: user.username, accessToken: accessToken}]
+      var insertData = [{githubId: user.id, username: user.username}]
       db.get('Users').insert(insertData);
     } else {
       //User is already in the database, just return their data
@@ -140,7 +134,6 @@ app.get('/api/repos', function (req, res) {
   //   })
   // })
   // console.log(q)
-
   var q;
   request({
     url: 'https://api.github.com/users/'+req.session.passport.user.username+'/repos',
@@ -148,9 +141,9 @@ app.get('/api/repos', function (req, res) {
     token: '0c46f2a25b54716fcc4bd1993d40085da7c5114c'
   },
   function(err,resp,body) {
-    // console.log('returned',body)
+    console.log('returned',body)
     q = body
-    res.json(body)
+    // res.json(body)
     // console.log('resp',q)
   })
   console.log('q',q)
