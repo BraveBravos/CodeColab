@@ -30,6 +30,14 @@ meeting.onuserleft = function(userid) {
 
 document.getElementById('setup-new-meeting').onclick = function() {
     meeting.setup('meeting room name');
+    this.className = 'hidden';
+    document.getElementById('leave-current-meeting').className = 'shown';
+};
+
+document.getElementById('leave-current-meeting').onclick = function(){
+  meeting.leave();
+  this.className = 'hidden';
+  document.getElementById('setup-new-meeting').className = 'shown';
 };
 </script>
   <div class='video-chat-area'>
@@ -39,6 +47,7 @@ document.getElementById('setup-new-meeting').onclick = function() {
       <div id='video-call-controls'>
        
         <div id='setup-new-meeting'>Join Video Chat</div>
+        <div id='leave-current-meeting' class='hidden'>Leave Video Chat</div>
 
       </div>
   </div>
