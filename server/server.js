@@ -90,7 +90,7 @@ passport.serializeUser(function(user, done) {
     if(result.length === 0){
       //User isn't in the database yet (FIRST TIMER!)
       //Insert data is the first thing stored for users
-      var insertData = [{githubId: user.id, username: user.username}]
+      var insertData = [{githubId: user.id, username: user.username, accessToken: accessToken}]
       db.get('Users').insert(insertData);
     } else {
       //User is already in the database, just return their data
@@ -113,36 +113,7 @@ passport.use(new GitHubStrategy({
   },
   function(req, accessToken, refreshToken, profile, done) {
     return done(null, profile)
-  function(accessToken, refreshToken, profile, done) {
-    var collection = db.get('Users');
-
-    // console.log('accessToken', accessToken)
-    // console.log('profile', profile)
-
-    collection.find({githubId: profile.id}, function(err, found){
-      if (found.length > 0){
-        var user = found[0];
-        // sess.githubId = user.githubId;
-        sess.username = user.username;
-      } else {
-        console.log('user not found')
-        collection.insert({
-          githubId: profile.id,
-          username: profile.username,
-          accessToken: accessToken
-        })
-        // sess.githubId  = profile.id;
-        // sess.username = profile.username;
       }
-      passport.serializeUser(function(user, done) {
-        done(null, user);
-      });
-      passport.deserializeUser(function(user, done) {
-        done(null, user);
-      });
-      return done(err, user)
-    })
-  }
 ));
 
 
