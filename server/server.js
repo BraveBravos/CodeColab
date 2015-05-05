@@ -144,7 +144,7 @@ app.post ('/api/orgs/repos', function (req, res) {
   var org = req.body.org;
   console.log('org', org)
   request({
-    url: 'https://api.github.com/orgs/'+ org+ '/repos',
+    url: 'https://api.github.com/orgs/'+ org+ '/repos?access_token='+ req.session.token,
     headers: {'User-Agent': req.session.passport.user[0].username}
   },
     function (err, resp, body) {
