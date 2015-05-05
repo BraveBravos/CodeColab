@@ -123,7 +123,7 @@ passport.use(new GitHubStrategy({
       if (found.length > 0){
         var user = found[0];
         // sess.githubId = user.githubId;
-        // sess.username = user.username;
+        sess.username = user.username;
       } else {
         console.log('user not found')
         collection.insert({
@@ -150,8 +150,8 @@ app.get('/api/repos', function (req, res) {
   //when do we get users?
   //return githubID
   // console.log('test: ',req)
-  console.log('requested',req.session.passport.user.username)
-  
+  console.log('requested',req.session.passport.user)
+
   // var q = http.get({
   //   host: 'api.github.com',
   //   path: '/users/'+req.session.passport.user.username+'/repos',
@@ -172,10 +172,10 @@ app.get('/api/repos', function (req, res) {
 
   var q;
   request({
-    url: 'https://api.github.com/users/'+req.session.passport.user.username+'/repos', 
+    url: 'https://api.github.com/users/'+req.session.passport.user.username+'/repos',
     headers: {'User-Agent': req.session.passport.user.username},
     token: '0c46f2a25b54716fcc4bd1993d40085da7c5114c'
-  }, 
+  },
   function(err,resp,body) {
     // console.log('returned',body)
     q = body
@@ -184,7 +184,7 @@ app.get('/api/repos', function (req, res) {
   })
   console.log('q',q)
   res.json(q)
-  
+
   // http.get('https://api.github.com/users/'+req.session.passport.user.username+'/repos', function(req, res) {
   //   return res
   // })
