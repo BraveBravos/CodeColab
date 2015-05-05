@@ -46,8 +46,7 @@ var loadShare = function ($scope) {
 
     var socket = new BCSocket(null, {reconnect: true});
     var sjs = new sharejs.Connection(socket);
-    console.log('shareid', $scope.githubId);
-    var doc = sjs.get('documents','test')
+    var doc = sjs.get('documents', $scope.selectRepo);
     doc.subscribe();
     doc.whenReady(function() {
       // if doc doesn't exist, create it as text
