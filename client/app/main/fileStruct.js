@@ -32,10 +32,92 @@ angular.module('codeColab.fileStruct', [])
     .success(function(data) {
       tree = data.tree;
       $scope.tree = tree;
-      // console.log("this is the tree ", tree)
+      console.log("this is the tree ", tree)
+
+    /*      
+      {top level folder, 
+        [children folders],
+        other top level folder, 
+          [children folders
+            [children of first child folder], 
+            [second child of children folders]
+          ]
+      }
+    */
+    var bigTree = [];
+    var recurse = function(){
+    for (var i = 0; i < tree.length; i++){
+
+      var file = {
+        "fileName":'',
+        "ghID": '',
+        "url": ''
+        }
+
+      var folder = {
+        "folderName": '',
+        "ghID": '',
+        "url": '',
+        "chilren": []
+      }
+      
+      var tmp = tree[i].path;
+      var tmp2 = tmp.split('/');
+      var tmp3 = tmp2.length-1;
+
+      if (tree[i].type === 'tree'){
+        folder.folderName = tmp2[tmp3];
+        folder.ghID = tree[i].sha;
+        folder.url = tree[i].url;
+        bigTree.push(folder);
+      }
+
+      if (tree[i].type === 'blob'){
+        file.fileName = tmp2[tmp3];
+        file.ghID = tree[i].sha;
+        file.url = tree[i].url;
+        bigTree.push(file)
+      }
+
+      console.log("bigTree is ", bigTree)
+    }
+  }  /*<--- ends func(recurse)*/
+
+
+
+
+
+
+
+      // for (var j = 0; j < tree.length; j++){
+      //   console.log("tree[j]", tree[j])
+      //   var obj = {one: {two: ''}};
+      //   var str = tree[j].path;
+      //   console.log("tree", tree)
+      //   console.log("str", str)
+
+      //   if(tree[j].type === 'tree'){
+
+      //   var arr = str.split('/') //['one','two','three']
+      //   console.log("arr is ", arr)
+      //   var objPath = 'obj'
+        
+      //   for (var i = 0; i < arr.length-1; i++) {
+      //      objPath+='["'+arr[i]+'"]'
+      //     //objPath = 'obj["one"]["two"]'
+      //     console.log("objPath = ", objPath)
+      //   }
+
+      //   objPath+='="'+arr[arr.length-1]+'"'
+      //   //objPath = 'obj["one"]["two"]=three'
+
+      //   eval(objPath) //sets obj.one.two to "three"
+      //   console.log('objPath', objPath)
+      // }
+      // }
     })
     .error(function(err) {
-      console.log("2nd attempt at url concat ", base + tmp)
+      // console.log("2nd attempt at url concat ", base + tmp)
 			console.log("error in fileStructCtrl is ", err)
     });
 
