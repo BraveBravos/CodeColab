@@ -106,28 +106,67 @@ passport.use(new GitHubStrategy({
   },
   function(req, accessToken, refreshToken, profile, done) {
     req.session.token = accessToken;
+    // console.log(accessToken)
     return done(null, profile)
       }
 ));
 
 
 app.get('/api/repos', function (req, res) {
-  console.log('requested',req.session.passport.user)
-  console.log('access', req.session)
-  var q;
-  console.log('name',req.session.passport.user.username)
+  // console.log('requested',req.session.passport.user)
+  // console.log('access', req.session)
+  // var q;
+  // console.log('name',req.session.passport.user.username)
+  // console.log('token',req.session.token)
   request({
     // url: 'https://api.github.com/user/orgs?access_token='+ req.session.token+ '&type=all',
-    url: 'https://api.github.com/users/'+ req.session.passport.user[0].username+ '/repos',
-    headers: {'User-Agent': req.session.passport.user[0].username}
+    url: 'https://api.github.com/user/repos?access_token='+req.session.token+'&type=all',
+    headers: {'User-Agent': req.session.passport.user[0].username},
+    // access_token: req.session.token,
+    // type: 'all'
   },
-  function(err,resp,body) {
-    console.log('body',JSON.parse(body))
-    var data = JSON.parse(body).map(function (repo) {
-      return {name: repo.full_name, id: repo.id};
+  function(err,resp,body1) {
+    var storeArr = JSON.parse(body1)
+    console.log('body1',storeArr)
+    request({
+      url: 'https://api.github.com/user/orgs?access_token='+req.session.token+'&type=all',
+      headers: {'User-Agent': req.session.passport.user[0].username},
+      // access_token: req.session.token,
+      // type: 'all'
+    },
+    function(err,resp2,body2) {
+      var reposArr = JSON.parse(body2)
+      reposArr.forEach(function(repo,index,reposArr) {
+        request({
+          url: 'https://api.github.com/orgs/'+repo.login+'/repos?access_token='+req.session.token,
+          headers: {'User-Agent': req.session.passport.user[0].username},
+          // access_token: req.session.token
+        },
+        function(err,resp3,body3) {
+          storeArr = storeArr.concat(JSON.parse(body3))
+          console.log('body3',JSON.parse(body3))
+          if (index===(reposArr.length-1)) {
+            console.log('done',index)
+            var data = storeArr.map(function (repo) {
+              return {name: repo.full_name, id: repo.id};
+            })
+            console.log('data',data)
+            // console.log(storeArr)
+            res.status(200).json(data)
+          }
+        });
+        // console.log('still going',index,storeArr[storeArr.length-1])
+      })
     })
-    console.log('data',data)
-    res.status(200).json(data)
+
+
+    // console.log('body',storeArr)
+    // var data = JSON.parse(body).map(function (repo) {
+    // var data = storeArr.map(function (repo) {
+    //   return {name: repo.full_name, id: repo.id};
+    // })
+    // // console.log('data',data)
+    // res.status(200).json(data)
   });
 });
 

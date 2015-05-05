@@ -10,18 +10,6 @@ var getRepos = function ($scope) {
     })
     .then(function (repos) {
       $scope.repos = repos.data;
-      return $http({
-        method: 'GET',
-        url: '/api/orgs'
-      })
-      .then(function (orgs) {
-        orgs.forEach(function (org) {
-          return $http({
-            method: 'POST',
-
-          })
-        })
-      })
       loadShare($scope)
       console.log('repos: ',$scope.repos)
     })
