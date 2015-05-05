@@ -35,6 +35,7 @@ var getRepos = function ($scope) {
 
 var loadShare = function ($scope) {
     var repo = $scope.selected;
+    console.log('repp', repo)
     var codeEditor = CodeMirror.MergeView(document.getElementById('area'), {
       'origRight':'', //this contains the original code
       'value':'',      //this will be the updated value with the users' changes
@@ -46,6 +47,7 @@ var loadShare = function ($scope) {
     var sjs = new sharejs.Connection(socket);
     var doc = sjs.get('documents', repo);
     doc.subscribe();
+    console.log('doc',doc)
     doc.whenReady(function() {
       // if doc doesn't exist, create it as text
       if (!doc.type) doc.create('text')
