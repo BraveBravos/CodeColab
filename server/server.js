@@ -132,6 +132,7 @@ app.get('/api/auth', function(req, res){
 })
 
 app.get('/logout', function (req, res){
+  //req.session.destroy()
   req.logout();
   res.redirect('/');
 })
