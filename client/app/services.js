@@ -9,8 +9,19 @@ var getRepos = function ($scope) {
       url: '/api/repos',
     })
     .then(function (repos) {
-      console.log('promise fired')
       $scope.repos = repos.data;
+      return $http({
+        method: 'GET',
+        url: '/api/orgs'
+      })
+      .then(function (orgs) {
+        orgs.forEach(function (org) {
+          return $http({
+            method: 'POST',
+
+          })
+        })
+      })
       loadShare($scope)
       console.log('repos: ',$scope.repos)
     })

@@ -79,7 +79,6 @@ app.listen(app.get('port'), function() {
 });
 
 passport.serializeUser(function(user, done) {
-  console.log('user', user)
   db.get('Users').find({githubId: user.id}, function (err, result) {
     if(result.length === 0){
       //User isn't in the database yet (FIRST TIMER!)
@@ -106,6 +105,7 @@ passport.use(new GitHubStrategy({
     passReqToCallback: true
   },
   function(req, accessToken, refreshToken, profile, done) {
+    req.session.token = accessToken;
     return done(null, profile)
       }
 ));
@@ -113,16 +113,18 @@ passport.use(new GitHubStrategy({
 
 app.get('/api/repos', function (req, res) {
   console.log('requested',req.session.passport.user)
+  console.log('access', req.session)
   var q;
   console.log('name',req.session.passport.user.username)
   request({
-    url: 'https://api.github.com/users/'+req.session.passport.user[0].username+'/repos',
+    // url: 'https://api.github.com/user/orgs?access_token='+ req.session.token+ '&type=all',
+    url: 'https://api.github.com/users/'+ req.session.passport.user[0].username+ '/repos',
     headers: {'User-Agent': req.session.passport.user[0].username}
   },
   function(err,resp,body) {
-
+    console.log('body',JSON.parse(body))
     var data = JSON.parse(body).map(function (repo) {
-      return {name: repo.name, id: repo.id};
+      return {name: repo.full_name, id: repo.id};
     })
     console.log('data',data)
     res.status(200).json(data)
