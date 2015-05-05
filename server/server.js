@@ -106,29 +106,48 @@ passport.use(new GitHubStrategy({
   },
   function(req, accessToken, refreshToken, profile, done) {
     req.session.token = accessToken;
+    req.session.userID = profile.id
+    req.session.username = profile.username;
     return done(null, profile)
       }
 ));
 
+app.get('/api/user', function (req, res){
+  res.status(200).send({token: req.session.token, id: req.session.id, username: req.session.username})
+})
+
 
 app.get('/api/repos', function (req, res) {
-  console.log('requested',req.session.passport.user)
-  console.log('access', req.session)
-  var q;
-  console.log('name',req.session.passport.user.username)
   request({
-    // url: 'https://api.github.com/user/orgs?access_token='+ req.session.token+ '&type=all',
     url: 'https://api.github.com/users/'+ req.session.passport.user[0].username+ '/repos',
     headers: {'User-Agent': req.session.passport.user[0].username}
   },
   function(err,resp,body) {
-    console.log('body',JSON.parse(body))
     var data = JSON.parse(body).map(function (repo) {
       return {name: repo.full_name, id: repo.id};
     })
     console.log('data',data)
     res.status(200).json(data)
   });
+});
+
+app.get('/api/orgs' function (req, res) {
+  request({
+    url: 'https://api.github.com/user/orgs?access_token='+ req.session.token+ '&type=all',
+    headers: {'User-Agent': req.session.passport.user[0].username}
+  },
+  function (err, resp, body) {
+    console.log('body', body)
+    var orgList = body.map(function (org) {
+      return org.login;
+      console.log('orglist', orgList)
+    })
+  });
+
+});
+
+app.get ('/api/orgs/repos', function (req, res) {
+
 });
 
 app.get('/auth/github',
@@ -142,12 +161,12 @@ app.get('/auth/github/callback', passport.authenticate(
 app.get('/api/auth', function(req, res){
   res.status(200).json(req.isAuthenticated());
 })
-app.get('/test', function(req, res){
-  res.status(200).json({
-    isAuth: req.isAuthenticated(),
-    user: req.user || 'none'
-  });
-})
+// app.get('/test', function(req, res){
+//   res.status(200).json({
+//     isAuth: req.isAuthenticated(),
+//     user: req.user || 'none'
+//   });
+// })
 
 app.get('/logout', function (req, res){
   //req.session.destroy()
