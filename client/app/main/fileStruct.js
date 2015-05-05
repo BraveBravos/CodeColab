@@ -14,10 +14,15 @@ angular.module('codeColab.fileStruct', [])
   };
 
 //Stephanie, this is from https://docs.angularjs.org/api/ng/service/$http
-  var tmp = 'SFoskitt/MKS14-toy-problems';
+//https://api.github.com/repos/SFoskitt/VivaciousViscachas
+//https://api.github.com/repos/SFoskitt/Glamorous-Gerbils
+//https://api.github.com/repos/BraveBravos/CodeColab
+  var tmp = 'BraveBravos/CodeColab';
   var base = 'https://api.github.com/repos/';
-  console.log("concat url ", base + tmp) 
-  $http.get(base + tmp)
+  var branches = '/branches'
+  var contents = '/contents'
+  console.log("concat url ", base + tmp + branches) 
+  $http.get(base + tmp + contents)
   // $http.get('/api/fileStruct')
     .success(function(data) {
 			console.log("data in fileStructCtrl is", data)
