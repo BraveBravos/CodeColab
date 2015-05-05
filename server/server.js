@@ -69,9 +69,7 @@ app.get('/auth/github/callback', function (req, res, next) {
 })
 
 
-app.get('/api/fileStruct', function (req, res){
-  // req.
-})
+app.get('/api/fileStruct', fileStruct.getFileStruct);
 
 
 app.listen(app.get('port'), function() {
