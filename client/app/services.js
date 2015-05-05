@@ -23,7 +23,7 @@ var getRepos = function ($scope) {
     })
     .then(function (repos) {
       console.log('promise fired')
-      console.log('userid', userID)
+      // console.log('userid', userID)
       $scope.repos = repos;
       loadShare($scope)
       console.log('repos: ',$scope.repos)
