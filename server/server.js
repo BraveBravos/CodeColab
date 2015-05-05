@@ -112,49 +112,23 @@ passport.use(new GitHubStrategy({
 
 
 app.get('/api/repos', function (req, res) {
-  //when do we get users?
-  //return githubID
-  // console.log('test: ',req)
   console.log('requested',req.session.passport.user)
-
-  // var q = http.get({
-  //   host: 'api.github.com',
-  //   path: '/users/'+req.session.passport.user.username+'/repos',
-  //   headers: {'User-Agent': req.session.passport.user.username}
-  // }, function(resp) {
-  //   console.log('body')
-  //   var body = ''
-  //   resp.on('data', function(d) {
-  //     console.log('data')
-  //     body+=d
-  //   })
-  //   resp.on('end', function() {
-  //     console.log('end')
-  //     // return body
-  //   })
-  // })
-  // console.log(q)
   var q;
+  console.log('name',req.session.passport.user.username)
   request({
-    url: 'https://api.github.com/users/'+req.session.passport.user.username+'/repos',
-    headers: {'User-Agent': req.session.passport.user.username},
-    token: '0c46f2a25b54716fcc4bd1993d40085da7c5114c'
+    url: 'https://api.github.com/users/'+req.session.passport.user[0].username+'/repos',
+    headers: {'User-Agent': req.session.passport.user[0].username}
   },
   function(err,resp,body) {
-    console.log('returned',body)
-    q = body
-    // res.json(body)
-    // console.log('resp',q)
-  })
-  console.log('q',q)
-  res.json(q)
 
-  // http.get('https://api.github.com/users/'+req.session.passport.user.username+'/repos', function(req, res) {
-  //   return res
-  // })
-  // console.log('users: ',req.session.passport.user.username)
-  // res.status(200).json(req.session.githubId);
-})
+    var data = JSON.parse(body).map(function (repo) {
+      return {name: repo.name, id: repo.id};
+    })
+    console.log('data',data)
+    res.status(200).json(data)
+  });
+});
+
 app.get('/auth/github',
   passport.authenticate('github', {scope: ['repo', 'user', 'admin:public_key']})
 );

@@ -4,41 +4,16 @@ angular.module('codeColab.services', [])
 .factory('Share', function ($http) {
 
 var getRepos = function ($scope) {
-  console.log('getRepos')
-  // var q =   $http({
-  //     method: 'GET',
-  //     url: '/api/repos',
-  //   }).success(
-  //   function(repos) {
-  //     console.log('test')
-  //     return repos
-  //   });
-
-  // console.log('q is ',q)
-
-
   return $http({
       method: 'GET',
       url: '/api/repos',
     })
     .then(function (repos) {
       console.log('promise fired')
-      // console.log('userid', userID)
-      $scope.repos = repos;
+      $scope.repos = repos.data;
       loadShare($scope)
       console.log('repos: ',$scope.repos)
-      // return userID
     })
-    // .then (function (userID) {
-    //   return $http({
-    //     method: 'GET',
-    //     url: 'https://api.github.com/users/'+userID+'/repos'
-    //   })
-    //   .then (function(repos) {
-    //     console.log('repos: ',repos)
-    //     return {userID:userID,repos:repos}
-    //   })
-    // })
   }
 
 
