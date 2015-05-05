@@ -102,11 +102,12 @@ passport.use(new GitHubStrategy({
     clientID: process.env.CLIENT_ID || keys.clientID,
     clientSecret: process.env.CLIENT_SECRET || keys.clientSecret,
     callbackURL: process.env.CALLBACK_URL || keys.callbackURL,
-    passReqToCallback: true
+    passReqToCallback: true,
+    scopes: ['user','repo']
   },
   function(req, accessToken, refreshToken, profile, done) {
     req.session.token = accessToken;
-    // console.log(accessToken)
+    console.log(accessToken)
     return done(null, profile)
       }
 ));
@@ -127,15 +128,16 @@ app.get('/api/repos', function (req, res) {
   },
   function(err,resp,body1) {
     var storeArr = JSON.parse(body1)
-    console.log('body1',storeArr)
+    // console.log('body1',storeArr)
     request({
-      url: 'https://api.github.com/user/orgs?access_token='+req.session.token+'&type=all',
+      url: 'https://api.github.com/user/orgs?access_token='+req.session.token+'&type=all&scopes=public_repo',
       headers: {'User-Agent': req.session.passport.user[0].username},
       // access_token: req.session.token,
       // type: 'all'
     },
     function(err,resp2,body2) {
       var reposArr = JSON.parse(body2)
+      console.log(reposArr)
       reposArr.forEach(function(repo,index,reposArr) {
         request({
           url: 'https://api.github.com/orgs/'+repo.login+'/repos?access_token='+req.session.token,
@@ -144,13 +146,13 @@ app.get('/api/repos', function (req, res) {
         },
         function(err,resp3,body3) {
           storeArr = storeArr.concat(JSON.parse(body3))
-          console.log('body3',JSON.parse(body3))
+          // console.log('body3',JSON.parse(body3))
           if (index===(reposArr.length-1)) {
             console.log('done',index)
             var data = storeArr.map(function (repo) {
               return {name: repo.full_name, id: repo.id};
             })
-            console.log('data',data)
+            // console.log('data',data)
             // console.log(storeArr)
             res.status(200).json(data)
           }
