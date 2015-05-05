@@ -39,17 +39,21 @@
   margin:4px;
 }
 
-#my-video {
+.my-video {
   width: 100%;
   padding-bottom: 8px;
   /*background-color: white;*/
   text-align: center;
 }
 
-#their-video {
+.their-video {
   width: 100%;
   /*background-color: gray;*/
   text-align: center;
+}
+
+#leave-current-meeting {
+  
 }
 
 

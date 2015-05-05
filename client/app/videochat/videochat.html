@@ -1,164 +1,53 @@
 <div class='video-chat-area'>
+
+<script type="text/javascript" src="app/videochat/meeting.js"></script>
 <script type="text/javascript">
+var meeting = new Meeting('webrtc-code-colab-id');
 
-    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+var remoteMediaStreams = document.getElementById('remote-media-streams');
+var localMediaStream = document.getElementById('local-media-stream');
 
-    var isAutoAnswer = false;
+// on getting local or remote streams
+meeting.onaddstream = function(e) {
+    // e.type == 'local' ---- it is local media stream
+    // e.type == 'remote' --- it is remote media stream
+    //document.body.appendChild(e.video);
+    if (e.type == 'remote') remoteMediaStreams.insertBefore(e.video, remoteMediaStreams.firstChild);
+    e.video.className = 'their-video';
+};
 
-    var peer = new Peer({ 
-      key: 'npzhit884gupiudi', 
-      debug: true,
-      config: { 'iceServers': [
-            { 'url': 'stun:stun.l.google.com:19302' }  
-      ] }
-    });
+// check pre-created meeting rooms
+// it is useful to auto-join
+// or search pre-created sessions
+meeting.check('meeting room name');
 
-    peer.on('open', function(){
-      document.getElementById('my-id').innerHTML = peer.id;
-      console.log('PeerJS peer.on open');
-    });
+meeting.firebase = 'webrtc-codecolab';
 
-    peer.on('connection',function(dataConnection){
-      console.log('PeerJS peer.on connection');
-    });
+meeting.onuserleft = function(userid) {
+        var video = document.getElementById(userid);
+        if (video) video.parentNode.removeChild(video);
+};
 
-    peer.on('disconnected',function(){
-      console.log('PeerJS peer.on disconnected');
-      setCallStatus('DISCONNECTED');
-    });
+document.getElementById('setup-new-meeting').onclick = function() {
+    meeting.setup('meeting room name');
+    this.className = 'hidden';
+    document.getElementById('leave-current-meeting').className = 'shown';
+};
 
-    peer.on('call', function(call){
-      if(isAutoAnswer){
-        call.answer(window.localStream);
-        call.on('stream', function(stream){
-          document.getElementById('their-video').setAttribute('src', URL.createObjectURL(stream));
-        });
-      }else{
-        setCallStatus('INCOMING CALL');
-        document.getElementById('btn-answer').onclick = function(){
-          var btnStatus = this.innerHTML;
-          if (btnStatus === 'Answer'){
-            call.answer(window.localStream);
-            call.on('stream', function(stream){
-              document.getElementById('their-video').setAttribute('src', URL.createObjectURL(stream));
-            });
-            this.innerHTML = 'End Call';
-          }
-        }
-      }
-    });
-
-    peer.on('error', function(err){
-      alert(err.message);
-      console.log('error : ',err.message);
-    });
-
-
-    function init() {
-      // Get audio/video stream
-      console.log('PeerJS : step1');
-      navigator.getUserMedia({audio: true, video: true}, function(stream){
-        // Set your video displays
-        document.getElementById('my-video').setAttribute('src', URL.createObjectURL(stream));
-
-        window.localStream = stream;
-        //step2();
-      }, function(){ console.log('PeerJS : step1 error') });
-    };
-
-    function callPeer(call) {
-      if (window.existingCall) {
-        window.existingCall.close();
-      }
-      var call = peer.call(document.getElementById('video-callto-id').value, window.localStream);
-      window.existingCall = call;
-      call.on('stream', function(stream){
-        document.getElementById('their-video').setAttribute('src', URL.createObjectURL(stream));
-      });      
-      document.getElementById('their-id').innerHTML = call.peer;
-      call.on('close', function(){
-        setCallStatus('CALL ENDED');
-      });
-    };
-
-    function answerCall(){
-      var call = peer.call(navigator.getUserMedia.peer.id, window.localStream);
-      call.answer(window.localStream);
-      call.on('stream', function(stream){
-        document.getElementById('their-video').setAttribute('src', URL.createObjectURL(stream));
-      });
-    };
-
-    function endCall(){
-        window.existingCall.close();
-    };
-
-    function setCallStatus(strStatus){
-      document.getElementById('video-call-status').innerHTML = strStatus;
-    };
-
-    document.getElementById('btn-answer').onclick = function(){
-      var btnStatus = this.innerHTML;
-      if (btnStatus === 'Answer'){
-        // TODO add answer logic here
-        this.innerHTML = 'End Call';
-      }else{
-        endCall();
-        this.innerHTML = 'Answer';
-      }
-    };
-
-    document.getElementById('cbx-autoanswer').onchange = function(){
-      if(this.checked){
-        isAutoAnswer = true;
-      }else{
-        isAutoAnswer = false;
-      }
-    };
-
-    document.getElementById('btn-call').onclick = function(){
-      var callId = document.getElementById('video-callto-id').value;
-      callPeer(window.existingCall);
-    };
-
-    init();
-  </script>
-
-  <div>
-
-      <!-- Video area -->
-      
-      <div>
+document.getElementById('leave-current-meeting').onclick = function(){
+  meeting.leave();
+  this.className = 'hidden';
+  document.getElementById('setup-new-meeting').className = 'shown';
+};
+</script>
+  <div class='video-chat-area'>
+      <div id='video-chats'>
         <!-- <div id='video-chat-title'>CodeColab Video Chat</div> -->
-
+      <div id='remote-media-streams'></div>
       <div id='video-call-controls'>
-        <div>
-          <button type='button' id='btn-answer'>Answer</button>
-          <input type='checkbox' id='cbx-autoanswer'>Auto-answer</input>
-        </div>
-        
-        <div>
-          <button type='button' id='btn-call'>Call</button>
-          <input type='text' id='video-callto-id' name='video-callto-id' placeholder='ID to call'/>
-        </div>
+       
+        <div id='setup-new-meeting'>Join Video Chat</div>
+        <div id='leave-current-meeting' class='hidden'>Leave Video Chat</div>
 
       </div>
-
-      <div id="video-container">
-        
-        <div>
-          <video id="their-video" autoplay></video>
-          <div id='their-id' class='video-id-banner'></div>
-        </div>
-
-        <div>
-          <video id="my-video" muted="true" autoplay></video>
-          <div id='my-id' class='video-id-banner'></div>
-        </div>
-
-        <div id='video-call-status'>CALL STATUS</div>
-        
-      </div>
-
   </div>
-<!-- end of video chat -->
