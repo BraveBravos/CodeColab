@@ -24,7 +24,7 @@ angular.module('codeColab.fileStruct', [])
   var sha = '0c7c0ec2bba26acc8e8b69a1ca242931610abf79'
   var last = '?recursive=1&access_token=9893007403fdea813ce0479274aed5a892dccdf5' //<<< HEY HEY REMOVE MY KEY LATER - TODO
   var concat = base + owner + repo + more + sha + last
-  var tree = [];
+  var tree = {};
 
   $http.get(concat)
   // $http.get('/api/fileStruct')  <-- this should be the better way to do it but doesn't work this way on localhost
@@ -37,17 +37,17 @@ angular.module('codeColab.fileStruct', [])
 
       bigTree.forEach(function(item) {
 
-         if (item.type === 'tree') {
+         if (item.type === 'tree' || item.path.indexOf('/')) {
           tree[item.path] = {top:true, name:item.path, ID:item.sha, url:item.url, children:[]}
          }
-         var divider = item.type === 'blob' ? null : item.path.lastIndexOf('/');
+         var divider = item.type === 'blob' ? item.path.length : item.path.lastIndexOf('/');
          // var divider = item.path.lastIndexOf('/')
          if(divider<0) {
           var tmp = item.path.substring(item.path.lastIndexOf('/'));
           tree.push({top:false, name:tmp, ID:item.sha, url:item.url, children:[]});
         }
          var path = item.path.slice(0,divider)
-         var fileName = item.path.slice(divider+1)
+         // var fileName = item.path.slice(divider+1)
          if (item.type === 'tree') {
              tree[path].children.push(tree[item.path])
              tree[item.path].top=false
@@ -62,6 +62,7 @@ angular.module('codeColab.fileStruct', [])
       })
 
       for (var q in tree) {
+        //have an else, push to some array(tree)
          if (!tree[q].top) {
              delete tree[q]
          }
