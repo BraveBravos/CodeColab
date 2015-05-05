@@ -23,20 +23,18 @@ var getRepos = function ($scope) {
           })
           .then(function (orgRepos){
             orgRepos.data.forEach(function (orgRepo) {
-              console.log('orgrepo', orgRepo)
               $scope.repos.push(orgRepo);
             })
             $scope.modalShown = true;
           })
         })
       })
-      loadShare($scope)
-      console.log('repos: ',$scope.repos)
     })
   }
 
 
 var loadShare = function ($scope) {
+    var repo = $scope.selected;
     var codeEditor = CodeMirror.MergeView(document.getElementById('area'), {
       'origRight':'', //this contains the original code
       'value':'',      //this will be the updated value with the users' changes
@@ -46,7 +44,7 @@ var loadShare = function ($scope) {
 
     var socket = new BCSocket(null, {reconnect: true});
     var sjs = new sharejs.Connection(socket);
-    var doc = sjs.get('documents', $scope.selectRepo);
+    var doc = sjs.get('documents', repo);
     doc.subscribe();
     doc.whenReady(function() {
       // if doc doesn't exist, create it as text

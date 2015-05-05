@@ -10,12 +10,16 @@ angular.module('codeColab.main', [])
   $scope.selectRepo = "";
 
   $scope.init = function () {
-
     Share.getRepos($scope);
-    Share.loadShare($scope);
   }
 
+  $scope.saveRepo = function(repo) {
+    $scope.selected = repo.name;
+  }
+
+
   $scope.hideModal = function() {
+    Share.loadShare($scope);
     $scope.modalShown = false;
   }
 

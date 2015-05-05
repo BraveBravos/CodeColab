@@ -19,8 +19,9 @@
   <repo-modal show='modalShown' width="300" height="150">
     <div class = "repo-list">
       <h3>Please select a repo</h3>
-      <select ng-options = "repo.name for repo in repos track by repo.id" ng-model = "selectRepo">
+      <select ng-options = "repo.name for repo in repos track by repo.id" ng-model = "selectRepo" ng-change="saveRepo(selectRepo)" >
       </select>
+      <h1>{{selectRepo}}</h1>
       <button ng-click = "hideModal()">Submit</button>
     </div>
   </repo-modal>
