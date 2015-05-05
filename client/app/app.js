@@ -1,3 +1,5 @@
+'use strict';
+
 angular.module('codeColab', [
 	'codeColab.main',
 	'codeColab.services',
@@ -5,21 +7,21 @@ angular.module('codeColab', [
 	'ngRoute'
 	])
 
-.config(function ($routeProvider) {
+.config(['$routeProvider', function ($routeProvider) {
 	$routeProvider
-		.when ('/main', {
-			templateUrl : '/app/main/main.html',
-			controller: 'codeCtrl',
-			authenticate: true
-		})
-		.when('/signin', {
+		.when('/', {
       templateUrl: '/app/clientAuth/signin.html',
       authenticate: false
     })
+    .when ('/main', {
+      templateUrl : '/app/main/main.html',
+      controller: 'codeCtrl',
+      authenticate: true
+    })
 		.otherwise({
-			redirectTo: '/signin'
+			redirectTo: '/'
 		})
-})
+}])
 .run(function($rootScope, $location, globalAuth){
   $rootScope.$on('$routeChangeStart', function(event, next){
     $rootScope.path = $location.path();
@@ -29,7 +31,7 @@ angular.module('codeColab', [
         $location.path('/');
       } else if(loggedIn && $location.path() === '/'){
         //if loggedin
-        $location.path('events');
+        $location.path('main');
       }
     });
   });
