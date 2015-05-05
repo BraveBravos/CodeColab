@@ -1,6 +1,7 @@
 var express = require('express'),
     connect = require('connect'),
     bodyParser = require ('body-parser'),
+    cookieParser = require('cookie-parser'),
     app = express(),
     mongo = require('mongodb'),
     monk =require ('monk'),
@@ -41,7 +42,8 @@ app.use(express.static(sharejs.scriptsDir));
 app.use(express.static(shareCodeMirror.scriptsDir));
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use (cookieParser());
+// app.use(bodyParser.urlencoded({extended: true}));
 app.use(session({
   secret: 'oursecret',
   saveUninitialized: true,
@@ -122,12 +124,10 @@ app.get('/auth/github',
 );
 
 app.get('/auth/github/callback', passport.authenticate(
-  'github', { successRedirect: '/#/main',
-    failureRedirect: '/' }
+  'github', { successRedirect: '/#/main', failureRedirect: '/' }
 ));
 
 app.get('/api/auth', function(req, res){
-  console.log('req',req.isAuthenticated())
   res.status(200).json(req.isAuthenticated());
 })
 

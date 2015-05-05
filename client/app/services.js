@@ -15,6 +15,7 @@ var getRepos = function ($scope) {
     });
   }
 
+
 var loadShare = function ($scope) {
     var codeEditor = CodeMirror.MergeView(document.getElementById('area'), {
       'origRight':'', //this contains the original code
@@ -50,7 +51,7 @@ var loadShare = function ($scope) {
 
   return {
     getRepos : getRepos,
-    loadShare: loadShare
+    loadShare: loadShare,
   }
 })
 .factory('FileStruct', function(){
