@@ -16,6 +16,8 @@ meeting.onaddstream = function(e) {
 // or search pre-created sessions
 meeting.check('meeting room name');
 
+meeting.firebase = 'webrtc-codecolab'
+
 document.getElementById('setup-new-meeting').onclick = function() {
     meeting.setup('meeting room name');
 };
