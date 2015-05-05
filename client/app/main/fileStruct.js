@@ -31,6 +31,7 @@ angular.module('codeColab.fileStruct', [])
   // $http.get('/api/fileStruct')  <-- this should be the better way to do it but doesn't work this way on localhost
     .success(function(data) {
       tree = data.tree;
+      $scope.tree = tree;
       // console.log("this is the tree ", tree)
     })
     .error(function(err) {
@@ -38,7 +39,6 @@ angular.module('codeColab.fileStruct', [])
 			console.log("error in fileStructCtrl is ", err)
     });
 
-  $scope.tree = tree;
  
 
 });

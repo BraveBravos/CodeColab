@@ -4,7 +4,7 @@
 <h1>FUNKY FILES GO HERE</h1>  <!--- PROOF OF CONCEPT WHEN ANGULAR IS WORKING -->
 
 <ul class="tree" ng-app="codeColab" ng-controller="fileStructCtrl">
-    <li ng-repeat="path in tree" ng-include="'fileStruct.html'">{{tree.path}}</li>
+    <li ng-repeat="obj in tree"><span>{{obj.path}}</span></li>
 </ul>
 
 
