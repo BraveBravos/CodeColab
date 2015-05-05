@@ -11,7 +11,7 @@ angular.module('codeColab.main', [])
 
   $scope.init = function () {
 
-    // Share.getRepos($scope);
+    Share.getRepos($scope);
     Share.loadShare($scope);
   }
 

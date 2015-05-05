@@ -27,6 +27,7 @@ var express = require('express'),
     share = sharejs.server.createClient({
       backend: backend
     }),
+    request = require('request'),
     sess;
 
 
@@ -72,12 +73,6 @@ app.get('/api/fileStruct', function (req, res){
   // req.
 })
 
-app.get('/api/users', function (req, res) {
-  //when do we get users?
-  //return githubID
-  console.log('users: ',req.session.passport.user.username)
-  res.status(200).json(req.session.githubId);
-})
 
 app.listen(app.get('port'), function() {
   console.log('Node app running on port', app.get('port'));
@@ -149,13 +144,53 @@ passport.use(new GitHubStrategy({
     })
   }
 ));
-app.post('/getuserrepos', function(req, res) {
-  http.get('https://api.github.com/users/'+username+'/repos', function(req, res){
-    //res is an array of repo objects
-    return res
-  })
-})
 
+
+app.get('/api/repos', function (req, res) {
+  //when do we get users?
+  //return githubID
+  // console.log('test: ',req)
+  console.log('requested',req.session.passport.user.username)
+  
+  // var q = http.get({
+  //   host: 'api.github.com',
+  //   path: '/users/'+req.session.passport.user.username+'/repos',
+  //   headers: {'User-Agent': req.session.passport.user.username}
+  // }, function(resp) {
+  //   console.log('body')
+  //   var body = ''
+  //   resp.on('data', function(d) {
+  //     console.log('data')
+  //     body+=d
+  //   })
+  //   resp.on('end', function() {
+  //     console.log('end')
+  //     // return body
+  //   })
+  // })
+  // console.log(q)
+
+  var q;
+  request({
+    url: 'https://api.github.com/users/'+req.session.passport.user.username+'/repos', 
+    headers: {'User-Agent': req.session.passport.user.username},
+    token: '0c46f2a25b54716fcc4bd1993d40085da7c5114c'
+  }, 
+  function(err,resp,body) {
+    // console.log('returned',body)
+    q = body
+    res.json(body)
+    // console.log('resp',q)
+  })
+  console.log('q',q)
+  res.json(q)
+  
+  // http.get('https://api.github.com/users/'+req.session.passport.user.username+'/repos', function(req, res) {
+  //   return res
+  // })
+  // console.log('users: ',req.session.passport.user.username)
+  // res.status(200).json(req.session.githubId);
+})
 app.get('/auth/github',
   passport.authenticate('github', {scope: ['repo', 'user', 'admin:public_key']})
 );
