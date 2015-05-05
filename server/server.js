@@ -127,12 +127,13 @@ app.get('/auth/github/callback', passport.authenticate(
 ));
 
 app.get('/api/auth', function(req, res){
+  console.log('req',req.isAuthenticated())
   res.status(200).json(req.isAuthenticated());
 })
 
 app.get('/logout', function (req, res){
-  req.session.destroy();
-  res.sendStatus(200);
+  req.logout();
+  res.redirect('/');
 })
 
 app.use(browserChannel( function(client) {

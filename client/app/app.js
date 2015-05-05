@@ -2,19 +2,20 @@ angular.module('codeColab', [
 	'codeColab.main',
 	'codeColab.services',
   'codeColab.fileStruct',
+  'codeColab.signIn',
 	'ngRoute'
 	])
 
 .config(function ($routeProvider) {
 	$routeProvider
-		.when ('/main', {
-			templateUrl : '/app/main/main.html',
-			controller: 'codeCtrl',
-			authenticate: true
-		})
 		.when('/', {
       templateUrl: '/app/clientAuth/signin.html',
       authenticate: false
+    })
+    .when ('/main', {
+      templateUrl : '/app/main/main.html',
+      controller: 'codeCtrl',
+      authenticate: true
     })
 		.otherwise({
 			redirectTo: '/'
@@ -22,6 +23,7 @@ angular.module('codeColab', [
 })
 .run(function($rootScope, $location, globalAuth){
   $rootScope.$on('$routeChangeStart', function(event, next){
+    console.log('checking')
     $rootScope.path = $location.path();
     globalAuth.checkAuth().then(function(loggedIn){
       if(!loggedIn && next.$$route.authenticate){

@@ -47,17 +47,10 @@ var loadShare = function ($scope) {
   }
 
 
-  var logout = function () {
-    return $http({
-      method: 'GET',
-      url: '/logout'
-    })
-  }
 
   return {
     getRepos : getRepos,
-    loadShare: loadShare,
-    logout:logout
+    loadShare: loadShare
   }
 })
 .factory('FileStruct', function(){

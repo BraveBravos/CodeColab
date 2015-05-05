@@ -15,12 +15,6 @@ angular.module('codeColab.main', [])
     Share.loadShare($scope);
   }
 
-  $scope.logout = function() {
-    Share.logout()
-    .success(function(data) {
-      $location.path('/signin');
-    })
-  }
   $scope.hideModal = function() {
     $scope.modalShown = false;
   }
