@@ -5,7 +5,13 @@
 
   var peer = new Peer({ 
     key: 'npzhit884gupiudi', 
-    debug: 3,
+    //port: 9000,
+    //key: 'peerjs',
+    //host: 'cs-code-colab.herokuapp.com',
+    //path: 'peerpath', 
+    //debug: 3,
+    //allow_discovery: true,
+    //secure: true,
     config: { 'iceServers': [
           { 'url': 'stun:stun.l.google.com:19302' }  
     ] }
@@ -18,7 +24,7 @@
 
   peer.on('connection',function(dataConnection){
     console.log('PeerJS peer.on connection');
-    document.getElementById('peers-list').innerHTML += peer.id;
+    //document.getElementById('peers-list').innerHTML += peer.id;
   });
 
   peer.on('disconnected',function(){
@@ -58,11 +64,12 @@
 
 
   function init() {
-    console.log('PeerJS : step1');
+    console.log('PeerJS : init');
+    //console.log(peer.listAllPeers());
     navigator.getUserMedia({audio: true, video: true}, function(stream){
       document.getElementById('my-video').setAttribute('src', URL.createObjectURL(stream));
       window.localStream = stream;
-    }, function(){ console.log('PeerJS : step1 error') });
+    }, function(){ console.log('PeerJS : init error') });
   };
 
   function callPeer(call) {
