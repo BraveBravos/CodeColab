@@ -17,12 +17,17 @@ angular.module('codeColab.fileStruct', [])
 //https://api.github.com/repos/SFoskitt/VivaciousViscachas
 //https://api.github.com/repos/SFoskitt/Glamorous-Gerbils
 //https://api.github.com/repos/BraveBravos/CodeColab
-  var tmp = 'BraveBravos/CodeColab';
-  var base = 'https://api.github.com/repos/';
-  var branches = '/branches'
-  var contents = '/contents'
-  console.log("concat url ", base + tmp + branches) 
-  $http.get(base + tmp + contents)
+//https://api.github.com/repos/BraveBravos/CodeColab/git/trees/0c7c0ec2bba26acc8e8b69a1ca242931610abf79?recursive=1
+var base = 'https://api.github.com/repos'
+var owner = '/BraveBravos'
+var repo = '/CodeColab'
+var more = '/git/trees/'
+var sha = '0c7c0ec2bba26acc8e8b69a1ca242931610abf79'
+var last = '?recursive=1'
+var concat = base + owner + repo + more + sha + last
+
+  console.log("concat url ", concat) 
+  $http.get(concat)
   // $http.get('/api/fileStruct')
     .success(function(data) {
 			console.log("data in fileStructCtrl is", data)
