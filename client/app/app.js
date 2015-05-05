@@ -12,12 +12,12 @@ angular.module('codeColab', [
 			controller: 'codeCtrl',
 			authenticate: true
 		})
-		.when('/signin', {
+		.when('/', {
       templateUrl: '/app/clientAuth/signin.html',
       authenticate: false
     })
 		.otherwise({
-			redirectTo: '/signin'
+			redirectTo: '/'
 		})
 })
 .run(function($rootScope, $location, globalAuth){
@@ -29,7 +29,7 @@ angular.module('codeColab', [
         $location.path('/');
       } else if(loggedIn && $location.path() === '/'){
         //if loggedin
-        $location.path('events');
+        $location.path('main');
       }
     });
   });

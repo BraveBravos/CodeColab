@@ -6,9 +6,10 @@ var express = require('express'),
     monk =require ('monk'),
     docs = require('./documents/documents.js'),
     fileStruct = require('./fileStruct.js'),
-    db = monk('mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810');
-
-var session = require('express-session'),
+    db = monk('mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810'),
+    cookieParser = require('cookie-parser'),
+    session = require('express-session'),
+    MongoStore = require ('connect-mongo')(session),
     path = require('path'),
     passport = require('passport'),
     GitHubStrategy = require('passport-github').Strategy,
@@ -45,7 +46,7 @@ app.use(session({
   secret: 'oursecret',
   saveUninitialized: true,
   resave: true,
-  store: 'mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810'
+  store: new MongoStore({url: 'mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810'})
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -84,35 +85,34 @@ app.listen(app.get('port'), function() {
 // server.listen(port)
 // console.log('Node app running on port',port)
 
+passport.serializeUser(function(user, done) {
+  db.get('Users').find({githubId: user.id}, function (err, result) {
+    if(result.length === 0){
+      //User isn't in the database yet (FIRST TIMER!)
+      //Insert data is the first thing stored for users
+      var insertData = [{githubId: user.id, username: user.username}]
+      db.get('Users').insert(insertData);
+    } else {
+      //User is already in the database, just return their data
+      done(null, result);
+    }
+  });
+});
+
+passport.deserializeUser(function(obj, done) {
+  db.get('Users').find({githubId: obj.id}, function (err, result) {
+    done(null, obj);
+  });
+});
+
 passport.use(new GitHubStrategy({
     clientID: process.env.CLIENT_ID || keys.clientID,
     clientSecret: process.env.CLIENT_SECRET || keys.clientSecret,
-    callbackURL: process.env.CALLBACK_URL || keys.callbackURL
+    callbackURL: process.env.CALLBACK_URL || keys.callbackURL,
+    passReqToCallback: true
   },
-  function(accessToken, refreshToken, profile, done) {
-    var collection = db.get('Users');
-    collection.find({githubId: profile.id}, function(err, found){
-      if (found.length > 0){
-        var user = found[0];
-        sess.githubId = user.githubId;
-        sess.username = user.username;
-      } else {
-        console.log('user not found')
-        collection.insert({
-          githubId: profile.id,
-          username: profile.username
-        })
-        sess.githubId  = profile.id;
-        sess.username = profile.username;
-      }
-      passport.serializeUser(function(user, done) {
-        done(null, user);
-      });
-      passport.deserializeUser(function(user, done) {
-        done(null, user);
-      });
-      return done(err, user)
-    })
+  function(req, accessToken, refreshToken, profile, done) {
+    return done(null, profile)
   }
 ));
 
@@ -123,7 +123,7 @@ app.get('/auth/github',
 
 app.get('/auth/github/callback', passport.authenticate(
   'github', { successRedirect: '/#/main',
-    failureRedirect: '/#/signin' }
+    failureRedirect: '/' }
 ));
 
 app.get('/api/auth', function(req, res){
