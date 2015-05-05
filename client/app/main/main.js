@@ -5,7 +5,7 @@ angular.module('codeColab.main', [])
 .controller('codeCtrl', function ($scope, $location, Share) {
   $scope.fileStruct = {url: "app/main/fileStruct.html"}
   $scope.videochat = {url : "app/videochat/videochat.html"};
-  $scope.modalShown = true;
+  $scope.modalShown = false;
   $scope.repos = [];
   $scope.selectRepo = "";
 

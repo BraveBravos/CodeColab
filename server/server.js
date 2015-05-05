@@ -112,42 +112,47 @@ passport.use(new GitHubStrategy({
       }
 ));
 
-app.get('/api/user', function (req, res){
-  res.status(200).send({token: req.session.token, id: req.session.id, username: req.session.username})
-})
-
 
 app.get('/api/repos', function (req, res) {
   request({
-    url: 'https://api.github.com/users/'+ req.session.passport.user[0].username+ '/repos',
+    url: 'https://api.github.com/user/repos?access_token='+ req.session.token+ '&type=all',
     headers: {'User-Agent': req.session.passport.user[0].username}
   },
   function(err,resp,body) {
     var data = JSON.parse(body).map(function (repo) {
       return {name: repo.full_name, id: repo.id};
     })
-    console.log('data',data)
-    res.status(200).json(data)
+      res.status(200).json(data)
   });
 });
 
-app.get('/api/orgs' function (req, res) {
+app.get('/api/orgs', function (req, res) {
   request({
     url: 'https://api.github.com/user/orgs?access_token='+ req.session.token+ '&type=all',
     headers: {'User-Agent': req.session.passport.user[0].username}
   },
   function (err, resp, body) {
-    console.log('body', body)
-    var orgList = body.map(function (org) {
+    var orgList = JSON.parse(body).map(function (org) {
       return org.login;
-      console.log('orglist', orgList)
     })
+    res.status(200).json(orgList);
   });
 
 });
 
-app.get ('/api/orgs/repos', function (req, res) {
-
+app.post ('/api/orgs/repos', function (req, res) {
+  var org = req.body.org;
+  console.log('org', org)
+  request({
+    url: 'https://api.github.com/orgs/'+ org+ '/repos',
+    headers: {'User-Agent': req.session.passport.user[0].username}
+  },
+    function (err, resp, body) {
+      var data = JSON.parse(body).map(function (repo) {
+        return {name: repo.full_name, id: repo.id};
+      });
+      res.status(200).json(data)
+    });
 });
 
 app.get('/auth/github',

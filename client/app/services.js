@@ -5,70 +5,34 @@ angular.module('codeColab.services', [])
 
 var getRepos = function ($scope) {
   return $http({
-    method: 'GET',
-    url: '/api/user'
-  })
-  .then (function (user) {
-    localStorage.id = user.data.id;
-    localStorage.token = user.data.token;
-    localStorage.username = user.data.username;
-    return $http({
       method: 'GET',
-      url: 'https://api.github.com/users/'+ localStorage.username+ '/repos',
-      headers: {'User-Agent': localStorage.username}
+      url: '/api/repos',
     })
-    .then (function (repos) {
-      repos.data.forEach(function (repo) {
-        $scope.repos.push({name:repo.full_name, id: repo.id})
+    .then(function (repos) {
+      $scope.repos = repos.data;
+      return $http({
+        method: 'GET',
+        url: '/api/orgs'
       })
-    })
-      .then (function() {
-        return $http({
-          method: 'GET',
-          url: 'https://api.github.com/user/orgs?access_token='+ localStorage.token+ '&type=all'
-          // headers: {'User-Agent': localStorage.username}
-        })
-        .then (function (orgs) {
-          var orgList = orgs.data.map(function (org) {
-            return org.login;
-            console.log('orglist', orgList)
+      .then(function (orgs) {
+        orgs.data.forEach(function (org) {
+          return $http({
+            method: 'POST',
+            url: '/api/orgs/repos',
+            data: {org: org}
           })
-          for (var orgName in orgList) {
-            return $http({
-              method: 'GET',
-              url: 'https://api.github.com/orgs/'+ orgName+ '/repos'
-              // headers: {'User-Agent': localStorage.username}
+          .then(function (orgRepos){
+            orgRepos.data.forEach(function (orgRepo) {
+              console.log('orgrepo', orgRepo)
+              $scope.repos.push(orgRepo);
             })
-            .then (function (orgRepos) {
-              console.log('orgrepos', orgRepos.data)
-            })
-          }
+            $scope.modalShown = true;
+          })
         })
       })
-  })
-
-
-  // return $http({
-  //     method: 'GET',
-  //     url: '/api/repos',
-  //   })
-  //   .then(function (repos) {
-  //     $scope.repos = repos.data;
-  //     return $http({
-  //       method: 'GET',
-  //       url: '/api/orgs'
-  //     })
-  //     .then(function (orgs) {
-  //       orgs.forEach(function (org) {
-  //         return $http({
-  //           method: 'POST',
-
-  //         })
-  //       })
-  //     })
-  //     loadShare($scope)
-  //     console.log('repos: ',$scope.repos)
-  //   })
+      loadShare($scope)
+      console.log('repos: ',$scope.repos)
+    })
   }
 
 
