@@ -3,7 +3,7 @@ angular.module('codeColab.main', [])
 
 
 .controller('codeCtrl', function ($scope, $location, Share) {
-  $scope.fileStruct = {url: "app/main/fileStruct.html"}
+  $scope.fileStruct = {url: "app/main/fileStruct.html"};
   $scope.videochat = {url : "app/videochat/videochat.html"};
   $scope.modalShown = false;
   $scope.repos = [];
@@ -20,6 +20,10 @@ angular.module('codeColab.main', [])
 
   $scope.check = function(){
     return !!($scope.selected)
+  }
+
+  $scope.commit = function(message){
+    Share.commit(message) //collect message from textbox
   }
 
   $scope.init();

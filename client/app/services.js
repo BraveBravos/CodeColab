@@ -31,8 +31,25 @@ angular.module('codeColab.services', [])
     })
   }
 
+  var commit = function(message){
+    var message=message
+    var parents;
+    var tree;
 
-var loadShare = function ($scope) {
+    console.log('inside share.commit()')
+    console.log("message",message)
+    return $http({
+      method: 'POST',
+      url: '/api/repos/commit',
+      data: {message: message, parents: parents, tree: tree}
+    })
+    .then(function(){
+      console.log('commiting!')
+    })
+  }
+
+
+  var loadShare = function ($scope) {
     var repo = $scope.selected;
     console.log('repp', repo)
     var codeEditor = CodeMirror.MergeView(document.getElementById('area'), {
@@ -66,21 +83,29 @@ var loadShare = function ($scope) {
   }
 
 
-
   return {
     getRepos : getRepos,
     loadShare: loadShare,
+    commit: commit
   }
 })
+
 .factory('FileStruct', function(){
 
   var fileStruct = function ($scope){
-
+  
   };
+
   return {
     fileStruct: fileStruct
   }
 })
+
+
+
+
+
+
 
 
 
