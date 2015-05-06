@@ -38,7 +38,7 @@ angular.module('codeColab.fileStruct', [])
             bigTree.forEach(function(item) {
 
                if (item.type === 'tree' || item.path.lastIndexOf('/')===-1) {
-                tree[item.path] = {top:true, name:item.path, ID:item.sha, url:item.url, children:[]}
+                tree[item.path] = {top:true, name:item.path, ID:item.sha, url:item.url, collapsed:true, children:[]}
                }
                var divider = item.path.lastIndexOf('/');
                // var divider = item.path.lastIndexOf('/')
