@@ -186,11 +186,13 @@ app.use(browserChannel( function(client) {
   stream._write = function(chunk, encoding, callback) {
     if (client.state !== 'closed') {
       client.send(chunk);
+      console.log('received',chunk)
     }
     callback();
   };
 
   client.on('message', function(data) {
+    console.log('message',data)
     stream.push(data);
   });
 

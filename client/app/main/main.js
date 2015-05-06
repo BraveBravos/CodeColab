@@ -8,8 +8,7 @@ angular.module('codeColab.main', [])
   $scope.modalShown = false;
   $scope.repos = [];
   $scope.selectRepo = "";
-  $scope.selected;
-  $scope.doc;
+  $scope.editor;
 
   $scope.init = function () {
     Share.getRepos($scope);
@@ -17,9 +16,15 @@ angular.module('codeColab.main', [])
 
   $scope.saveRepo = function(repo) {
     $scope.selected = repo.name;
-    if($scope.doc) {console.log('unsubscribe');$scope.doc.unsubscribe()};
-    $scope.doc = Share.loadShare($scope);
-    $scope.doc.subscribe()
+    if($scope.editor) {
+      $scope.editor.socket.close();
+      console.log('unsubscribe');
+      $scope.editor.doc.unsubscribe()
+      // $scope.editor.codeEditor.editor().setValue('')
+    };
+    $scope.editor = Share.loadShare($scope);
+    $scope.editor.codeEditor.editor().setValue($scope.editor.doc.snapshot || 'Start editing.')
+    $scope.editor.doc.subscribe()
   }
 
   $scope.init();
