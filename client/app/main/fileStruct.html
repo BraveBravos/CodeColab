@@ -1,19 +1,16 @@
 <!-- fileStruct template partial containing the file structure -->
-<link rel="stylesheet" type="text/css" href="styles/css/angular.treeview.css">
+
 <ng-app="codeColab" ng-controller = "fileStructCtrl">
 
-<h1>FUNKY FILES GO HERE</h1>  <!--- PROOF OF CONCEPT WHEN ANGULAR IS WORKING -->
-
-<!-- <ul class="tree" ng-app="codeColab" ng-controller="fileStructCtrl">
-    <li ng-repeat="obj in tree"><span>{{obj.path}}</span></li>
-</ul> -->
+<h2 class='fa-inverse'>Add GitHub repo name here</h2> 
 
 <div
     data-angular-treeview="true"
     data-tree-id="ghTree"
-    data-tree-model="tree"
+    data-tree-model="tree | orderBy: ['-type','name'] "
     data-node-id="ID"
     data-node-label="name"
-    data-node-children="children" >
+    data-node-children="children"
+    data-node-type="type" >
 </div>
 
