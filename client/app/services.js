@@ -48,7 +48,8 @@ angular.module('codeColab.services', [])
     })
   }
 
-  var loadShare = function ($scope) {
+
+var loadShare = function ($scope) {
     var repo = $scope.selected;
     console.log('repp', repo)
     var codeEditor = CodeMirror.MergeView(document.getElementById('area'), {
@@ -61,16 +62,19 @@ angular.module('codeColab.services', [])
     var socket = new BCSocket(null, {reconnect: true});
     var sjs = new sharejs.Connection(socket);
     var doc = sjs.get('documents', repo);
-    doc.subscribe();
     console.log('doc',doc)
     doc.whenReady(function() {
       // if doc doesn't exist, create it as text
-      if (!doc.type) doc.create('text')
+      if (!doc.type) {console.log('created');doc.create('text')}
+      // else {console.log('found',doc.snapshot)}
       // this check is probably not necessary
-      if (doc.type && doc.type.name === 'text')
+      // if (doc.type && doc.type.name === 'text')
       // this updates the CodeMirror editor window
+      codeEditor.editor().setValue(doc.snapshot)
       doc.attachCodeMirror(codeEditor.editor())
+      doc.subscribe();
     })
+    // codeEditor.editor().setValue(doc.snapshot)
 
     //need to finish importing all of the sublime shortcuts and whatnot: http://codemirror.net/doc/manual.html#addons
 
@@ -78,7 +82,7 @@ angular.module('codeColab.services', [])
     // of the possible CodeMirror instances; we only use editor and rightOriginal in our version right now.
     // console.log('editor: ',codeEditor.editor().getValue(),"\n",'original: ',codeEditor.rightOriginal().getValue())
     // codeEditor.editor().setValue('this is a test')
-    return codeEditor
+    return doc
   }
 
   return {
