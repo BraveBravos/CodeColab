@@ -17,6 +17,7 @@ angular.module('codeColab.main', [])
   $scope.saveRepo = function(repo) {
     $scope.selected = repo.name;
     $scope.editor = Share.loadShare($scope);
+    setTimeout(function() {console.log('saveRepo',$scope.editor)},3500)
   }
 
   $scope.init();

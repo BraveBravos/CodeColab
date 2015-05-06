@@ -51,29 +51,37 @@ var loadShare = function ($scope) {
   //the CodeMirror.  This code deletes any children that already exist.
   var children = target.getElementsByClassName('CodeMirror-merge')
   if(!!children.length) {
-    target.removeChild(children[0]) //there should only ever be one of these
+    console.log('child elements exist',children[0])
+    // target.removeChild(children[0]) //there should only ever be one of these
+    doc.whenReady(function() {
+      console.log('editor?',$scope.editor)
+      // $scope.editor.editor().swapDoc(doc)
+      // console.log('swapped',$scope.editor.editor())
+      // return
+    })
   }
-  doc.whenReady(function() {
+  var codeEditor;
+  return doc.whenReady(function() {
     if (!doc.type) {
       console.log('created');
       doc.create('text');
     }
 
-    var codeEditor = CodeMirror.MergeView(target, {
+    codeEditor = CodeMirror.MergeView(target, {
       'origRight':'', //this will eventually contain the original code
       'value':doc.getSnapshot(),      //this is the updated value with the users' changes
       'theme':'erlang-dark',
       lineNumbers: true
     })
     
-    console.log('ready')
+    console.log('ready',codeEditor)
     doc.subscribe(function(err) {
-      console.log('subscribed',doc.getSnapshot())
+      // console.log('subscribed',doc.getSnapshot())
 
       // instead of deleting and re-adding editors, it might be possible
       // to do a swapDoc from CodeMirror.
       doc.attachCodeMirror(codeEditor.editor())
-      console.log('after subscribed',doc.getSnapshot(),codeEditor.editor().getValue())
+      // console.log('after subscribed',doc.getSnapshot(),codeEditor.editor().getValue())
       
     });
       
@@ -83,6 +91,8 @@ var loadShare = function ($scope) {
     codeEditor.editor().on('update', function() {
       console.log('updated')
     })
+    // codeEditor.editor().swapDoc(codeEditor.editor().doc,doc)
+    return codeEditor
   });
 
   //need to finish importing all of the sublime shortcuts and whatnot: http://codemirror.net/doc/manual.html#addons
@@ -92,7 +102,6 @@ var loadShare = function ($scope) {
   // console.log('editor: ',codeEditor.editor().getValue(),"\n",'original: ',codeEditor.rightOriginal().getValue())
   // codeEditor.editor().setValue('this is a test')
 
-  // return codeEditor
 }
 
 
