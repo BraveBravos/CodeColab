@@ -32,45 +32,145 @@ angular.module('codeColab.fileStruct', [])
 
       bigTree = data.tree;
       console.log("the bigTree is ", bigTree)
+
+            var tree = {};
+
+            bigTree.forEach(function(item) {
+
+               if (item.type === 'tree' || item.path.lastIndexOf('/')===-1) {
+                tree[item.path] = {top:true, name:item.path, ID:item.sha, url:item.url, children:[]}
+               }
+               var divider = item.path.lastIndexOf('/');
+               // var divider = item.path.lastIndexOf('/')
+              //  if(divider>0) {
+              //   var tmp = item.path.substring(item.path.lastIndexOf('/'));
+              //   tree.push({top:false, name:tmp, ID:item.sha, url:item.url, children:[]});
+              // }
+              if(divider<0){return}
+               var path = item.path.slice(0,divider)
+               var fileName = item.path.slice(divider+1)
+               if (item.type === 'tree') {
+                   tree[path].children.push(tree[item.path])
+                   tree[item.path].top=false
+               } else {
+                  // console.log("path", path, "item.path", item.path)
+                 //  if (typeof(tree[path]) === 'undefined'){
+                 //    tree.push(item.path)
+                 // } else {
+                    item.path=item.path.slice(divider+1)
+                    tree[path].children.push(item.path)
+                 // }
+               }
+            })
+            var results = []
+            for (var q in tree) {
+               if (!tree[q].top) {
+                   tree[q].name = tree[q].name.slice(tree[q].name.lastIndexOf('/')+1)
+               }
+            }
+            for (var q in tree) {
+               if (tree[q].top) {
+                   results.push(tree[q])
+               }
+            }
+
+            console.log('final tree',results)
+            
+            $scope.tree = results;
+
+
+      // bigTree = data.tree;
+      // console.log("the bigTree is ", bigTree)
       
-      var tree = [];
+      // var tree = {};
 
-      bigTree.forEach(function(item) {
+      // bigTree.forEach(function(item) {
 
-         if (item.type === 'tree' || item.path.indexOf('/')) {
-          tree[item.path] = {top:true, name:item.path, ID:item.sha, url:item.url, children:[]}
-         }
-         var divider = item.type === 'blob' ? item.path.length : item.path.lastIndexOf('/');
-         // var divider = item.path.lastIndexOf('/')
-         if(divider<0) {
-          var tmp = item.path.substring(item.path.lastIndexOf('/'));
-          tree.push({top:false, name:tmp, ID:item.sha, url:item.url, children:[]});
-        }
-         var path = item.path.slice(0,divider)
-         // var fileName = item.path.slice(divider+1)
-         if (item.type === 'tree') {
-             tree[path].children.push(tree[item.path])
-             tree[item.path].top=false
-         } else {
-            console.log("path", path, "item.path", item.path)
-            if (typeof(tree[path]) === 'undefined'){
-              tree.push(item.path)
-           } else {
-              tree[path].children.push(item.path)
-           }
-         }
-      })
+      //    if (item.type === 'tree' || item.name.lastIndexOf('/')===-1) {
+      //     tree[item.path] = {top:true, name:item.path, ID:item.sha, url:item.url, children:[]}
+      //    }
+      //    var divider = item.path.lastIndexOf('/');
+      //    // var divider = item.path.lastIndexOf('/')
+      //   //  if(divider>0) {
+      //   //   var tmp = item.path.substring(item.path.lastIndexOf('/'));
+      //   //   tree.push({top:false, name:tmp, ID:item.sha, url:item.url, children:[]});
+      //   // }
+      //   if(divider<0){return}
+      //    var path = item.path.slice(0,divider)
+      //    var fileName = item.path.slice(divider+1)
+      //    if (item.type === 'tree') {
+      //        tree[path].children.push(tree[item.path])
+      //        tree[item.path].top=false
+      //    } else {
+      //       // console.log("path", path, "item.path", item.path)
+      //      //  if (typeof(tree[path]) === 'undefined'){
+      //      //    tree.push(item.path)
+      //      // } else {
+      //         tree[path].children.push(item.path)
+      //      // }
+      //    }
+      // })
+      // var results = []
+      // for (var q in tree) {
+      //    if (tree[q].top) {
+      //        results.push(tree[q])
+      //    }
+      // }
 
-      for (var q in tree) {
-        //have an else, push to some array(tree)
-         if (!tree[q].top) {
-             delete tree[q]
-         }
-      }
-
-      console.log('final tree',tree)
+      // console.log('final tree',results)
       
-      $scope.tree = tree;
+      // $scope.tree = results;
+
+
+
+
+
+
+
+
+
+
+      // bigTree = data.tree;
+      // console.log("the bigTree is ", bigTree)
+      
+      // var tree = {};
+
+      // bigTree.forEach(function(item) {
+
+      //    if (item.type === 'tree' || item.path.indexOf('/') === -1) {
+      //     tree[item.path] = {top:true, name:item.path, ID:item.sha, url:item.url, children:[]}
+      //    }
+      //    var divider = item.type === 'blob' ? item.path.length : item.path.lastIndexOf('/');
+      //    // var divider = item.path.lastIndexOf('/')
+      //    if(divider<0) {
+      //     var tmp = item.path.substring(item.path.lastIndexOf('/'));
+      //     tree.push({top:false, name:tmp, ID:item.sha, url:item.url, children:[]});
+      //   }
+      //    var path = item.path.slice(0,divider)
+      //    // var fileName = item.path.slice(divider+1)
+      //    if (item.type === 'tree') {
+      //        tree[path].children.push(tree[item.path])
+      //        tree[item.path].top=false
+      //    } else {
+      //       console.log("path", path, "item.path", item.path)
+      //       if (typeof(tree[path]) === 'undefined'){
+      //         tree.push(item.path)
+      //      } else {
+      //         tree[path].children.push(item.path)
+      //      }
+      //    }
+      // })
+
+      // for (var q in tree) {
+      //   //have an else, push to some array(tree)
+      //    if (!tree[q].top) {
+      //        delete tree[q]
+      //    }
+      // }
+
+      // console.log('final tree',tree)
+      
+      // $scope.tree = tree;
 
 /*      
       $scope.roleList1 = [
