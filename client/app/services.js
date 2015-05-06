@@ -176,6 +176,3 @@ var loadShare = function ($scope, id, data) {
 
 
 
-
-
-
