@@ -23,7 +23,7 @@ angular.module('codeColab.fileStruct', [])
       bigTree.forEach(function(item) {
 
         if (item.type === 'tree' || item.path.lastIndexOf('/')===-1) {
-          tree[item.path] = {top:true, name:item.path, ID:item.sha, url:item.url, collapsed:true, children:[]}
+          tree[item.path] = {top:true, label:item.path, id:item.sha, url:item.url, collapsed:true, children:[]}
         }
 
         var divider = item.path.lastIndexOf('/');
@@ -31,20 +31,21 @@ angular.module('codeColab.fileStruct', [])
         if(divider<0){return}
         var path = item.path.slice(0,divider)
         if (item.type === 'tree') {
+          console.log('tree[item.path]', tree[item.path])
           tree[path].children.push(tree[item.path])
           tree[item.path].top=false
         } else {
           item.path=item.path.slice(divider+1)
-          tree[path].children.push(item.path)
+          tree[path].children.push({label:item.path})
         }
       })
 
     var results = []
 
-    // parses tree.path into a node name when node is not a "top" 
+    // parses tree.path into a node label when node is not a "top" 
     for (var q in tree) {
       if (!tree[q].top) {
-        tree[q].name = tree[q].name.slice(tree[q].name.lastIndexOf('/')+1)
+        tree[q].label = tree[q].label.slice(tree[q].label.lastIndexOf('/')+1)
       }
     }
 
