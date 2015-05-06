@@ -1,12 +1,14 @@
 .video-chat-area {
   /*font-family: Arial, sans-serif;*/
   font-family: 'Open Sans',Arial,Helvetica Neue,sans-serif;
-  /*background-color: gray;*/
+  background-color: gray;
   position: fixed;
   width: 180px;
   bottom:10px;
   left:10px;
   color: white;
+  height: 50%;
+  overflow: auto;
 }
 
 .shown {
@@ -32,6 +34,7 @@
 
 #video-call-controls {
   /*background-color: gray;*/
+  bottom:2px;
 }
 
 #video-container {
@@ -52,8 +55,16 @@
   text-align: center;
 }
 
+#setup-new-meeting {
+  text-align: center;
+  bottom:8px;
+  cursor: pointer;
+}
+
 #leave-current-meeting {
-  
+  text-align: center;
+  bottom:8px;
+  cursor: pointer;
 }
 
 
