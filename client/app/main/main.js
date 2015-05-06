@@ -8,6 +8,8 @@ angular.module('codeColab.main', [])
   $scope.modalShown = false;
   $scope.repos = [];
   $scope.selectRepo = "";
+  $scope.selected;
+  $scope.doc;
 
   $scope.init = function () {
     Share.getRepos($scope);
@@ -15,7 +17,9 @@ angular.module('codeColab.main', [])
 
   $scope.saveRepo = function(repo) {
     $scope.selected = repo.name;
-    Share.loadShare($scope);
+    if($scope.doc) {console.log('unsubscribe');$scope.doc.unsubscribe()};
+    $scope.doc = Share.loadShare($scope);
+    $scope.doc.subscribe()
   }
 
   $scope.init();
