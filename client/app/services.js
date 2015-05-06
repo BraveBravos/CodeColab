@@ -3,8 +3,8 @@ angular.module('codeColab.services', [])
 
 .factory('Share', function ($http) {
 
-var getRepos = function ($scope) {
-  return $http({
+  var getRepos = function ($scope) {
+    return $http({
       method: 'GET',
       url: '/api/repos',
     })

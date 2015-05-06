@@ -59,7 +59,6 @@ app.use(function (req, res, next) {
 })
 
 app.get('/auth/github/callback', function (req, res, next) {
-  // console.log('callback: ',req.session)
   if (req.session) {
     sess = req.session;
   } else {

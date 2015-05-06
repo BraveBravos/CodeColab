@@ -24,7 +24,6 @@ html, body {
 	height: 100%;
 	display:inline-block;
 	vertical-align:top;
-	/*border: 2px solid black;*/
 }
 
 #area {
@@ -61,12 +60,12 @@ html, body {
   font-weight: 300;
 }
 
-.signinbtn:hover, .logout:hover {
+.signinbtn:hover, .logout:hover, .submit:hover {
   color: #329999;
   text-decoration: underline;
 }
 
-.logout, .clone  {
+.logout {
   text-align: center;
   text-decoration: none;
   color: #D6D6D6;
@@ -78,15 +77,20 @@ html, body {
 }
 
 .navbar {
-  /*border: 2px solid white;*/
   margin-bottom: 5px;
   height: 25px;
 }
 
+.repo-list > p, .submit {
+  color: #D6D6D6;
+  font-family: 'Open Sans',Arial,Helvetica Neue,sans-serif;
+  font-size: 16px;
+  font-weight: 300;
+}
 
-
-
-
+.submit {
+  margin-left: 5px;
+}
 
 
 

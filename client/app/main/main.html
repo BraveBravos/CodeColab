@@ -8,12 +8,15 @@
     <div class = 'navbar'>
       <a href='/logout' class='logout'>
         <span class="fa fa-sign-out"></span>
-        Logout
+        Logout  
       </a>
       <div class = "repo-list">
         <p>Please select a repository:</p>
         <select ng-options = "repo.name for repo in repos track by repo.id" ng-model = "selectRepo" ng-change="saveRepo(selectRepo)" >
         </select>
+        <a href='#' class='submit' ng-show='check()'> 
+          Submit Changes 
+        </a>
       </div>
     </div>
   </div>

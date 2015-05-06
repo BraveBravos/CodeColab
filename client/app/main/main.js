@@ -18,5 +18,9 @@ angular.module('codeColab.main', [])
     Share.loadShare($scope);
   }
 
+  $scope.check = function(){
+    return !!($scope.selected)
+  }
+
   $scope.init();
 })
