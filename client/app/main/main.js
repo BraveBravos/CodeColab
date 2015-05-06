@@ -17,14 +17,18 @@ angular.module('codeColab.main', [])
   $scope.saveRepo = function(repo) {
     $scope.selected = repo.name;
     if($scope.editor) {
-      $scope.editor.socket.close();
-      console.log('unsubscribe');
-      $scope.editor.doc.unsubscribe()
+      // $scope.editor.socket.close();
+      $scope.editor.doc.unsubscribe(function(err) {
+        console.log('unsubscribed');
+        $scope.editor = Share.loadShare($scope);
+      })
+      return
       // $scope.editor.codeEditor.editor().setValue('')
     };
+    console.log('new')
     $scope.editor = Share.loadShare($scope);
-    $scope.editor.codeEditor.editor().setValue($scope.editor.doc.snapshot || 'Start editing.')
-    $scope.editor.doc.subscribe()
+    // $scope.editor.codeEditor.editor().setValue($scope.editor.doc.snapshot || 'Start editing.')
+    // $scope.editor.doc.subscribe()
   }
 
   $scope.init();
