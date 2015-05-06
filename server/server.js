@@ -59,7 +59,6 @@ app.use(function (req, res, next) {
 })
 
 app.get('/auth/github/callback', function (req, res, next) {
-  // console.log('callback: ',req.session)
   if (req.session) {
     sess = req.session;
   } else {
@@ -78,13 +77,10 @@ app.listen(app.get('port'), function() {
 
 passport.serializeUser(function(user, done) {
   db.get('Users').find({githubId: user.id}, function (err, result) {
-    if(result.length === 0){
-      //User isn't in the database yet (FIRST TIMER!)
-      //Insert data is the first thing stored for users
+    if(result.length === 0){ //User isn't in DB (FIRST TIMER!)
       var insertData = [{githubId: user.id, username: user.username}]
       db.get('Users').insert(insertData);
-    } else {
-      //User is already in the database, just return their data
+    } else { //User is already in DB, just return their data
       done(null, result);
     }
   });
@@ -107,7 +103,7 @@ passport.use(new GitHubStrategy({
     req.session.userID = profile.id
     req.session.username = profile.username;
     return done(null, profile)
-      }
+  }
 ));
 
 
@@ -152,6 +148,13 @@ app.post ('/api/orgs/repos', function (req, res) {
       res.status(200).json(data)
     });
 });
+
+app.post('api/repos/commit', function(req, res){
+  console.log('commit req', req)
+  //request({
+    //will go to github
+  //})
+})
 
 app.get('/auth/github',
   passport.authenticate('github', {scope: ['repo', 'user', 'admin:public_key']})
