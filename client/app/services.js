@@ -48,7 +48,6 @@ angular.module('codeColab.services', [])
     })
   }
 
-
   var loadShare = function ($scope) {
     var repo = $scope.selected;
     console.log('repp', repo)
@@ -81,7 +80,6 @@ angular.module('codeColab.services', [])
     // codeEditor.editor().setValue('this is a test')
     return codeEditor
   }
-
 
   return {
     getRepos : getRepos,
