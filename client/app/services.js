@@ -32,18 +32,18 @@ angular.module('codeColab.services', [])
   }
 
   var commit = function(message){
-    var message=message
+    var message=message;
     var parents;
     var tree;
 
     console.log('inside share.commit()')
-    console.log("message",message)
+    console.log("message", message)
     return $http({
       method: 'POST',
       url: '/api/repos/commit',
-      data: {message: message, parents: parents, tree: tree}
+      params: {message: message, parents: parents, tree: tree}
     })
-    .then(function(){
+    .then(function(response){
       console.log('commiting!')
     })
   }

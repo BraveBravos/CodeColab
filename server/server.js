@@ -151,7 +151,9 @@ app.post ('/api/orgs/repos', function (req, res) {
 
 app.post('api/repos/commit', function(req, res){
   console.log('commit req', req)
-  //send response data back to commit function in Share
+  //request({
+    //will go to github
+  //})
 })
 
 app.get('/auth/github',

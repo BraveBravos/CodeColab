@@ -23,7 +23,8 @@ angular.module('codeColab.main', [])
   }
 
   $scope.commit = function(message){
-    Share.commit(message) //collect message from textbox
+    Share.commit(message) 
+    //collect message from textbox
   }
 
   $scope.init();
