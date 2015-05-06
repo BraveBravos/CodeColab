@@ -19,6 +19,7 @@ meeting.onaddstream = function(e) {
 // check pre-created meeting rooms
 // it is useful to auto-join
 // or search pre-created sessions
+// TODO set roomname to repo
 meeting.check('meeting room name');
 
 meeting.firebase = 'webrtc-codecolab';
@@ -40,25 +41,13 @@ document.getElementById('leave-current-meeting').onclick = function(){
   document.getElementById('setup-new-meeting').className = 'shown';
 };
 </script>
+  <div class='video-chats-area'>
+      <div id='video-chats'>
+        <!-- <div id='video-chat-title'>CodeColab Video Chat</div> -->
+        <div id='remote-media-streams'></div>
+        <div id='video-call-controls'></div>
 
-<div class='video-chat-area'>
-    <div id='video-chats'>
-      <!-- <div id='video-chat-title'>CodeColab Video Chat</div> -->
-    <div id='remote-media-streams'></div>
-    <div id='video-call-controls'>
-     
       <div id='setup-new-meeting'>Join Video Chat</div>
       <div id='leave-current-meeting' class='hidden'>Leave Video Chat</div>
-
     </div>
-</div>
-
-
-
-
-
-
-
-
-
-
+  </div>
