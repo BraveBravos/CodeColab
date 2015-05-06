@@ -4,7 +4,8 @@ angular.module('codeColab', [
 	'codeColab.main',
 	'codeColab.services',
   'codeColab.fileStruct',
-	'ngRoute'
+	'ngRoute',
+  'angularTreeview'
 	])
 
 .config(['$routeProvider', function ($routeProvider) {
