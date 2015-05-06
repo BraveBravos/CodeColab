@@ -68,7 +68,7 @@
             }
 
             function onerror(e) {
-                console.error(e);
+                // console.error(e);
             }
         }
 
@@ -122,7 +122,7 @@
             // for pretty logging
                 console.debug(JSON.stringify(message, function (key, value) {
                 if (value && value.sdp) {
-                    console.log(value.sdp.type, '---', value.sdp.sdp);
+                    // console.log(value.sdp.type, '---', value.sdp.sdp);
                     return '';
                 } else return value;
             }, '---'));
@@ -244,7 +244,7 @@
                 });
             },
             onaddstream: function (stream, _userid) {
-                console.debug('onaddstream', '>>>>>>', stream);
+                // console.debug('onaddstream', '>>>>>>', stream);
 
                 stream.onended = function () {
                     if (root.onuserleft) root.onuserleft(_userid);
@@ -479,7 +479,7 @@
     function onSdpSuccess() {}
 
     function onSdpError(e) {
-        console.error('sdp error:', JSON.stringify(e, null, '\t'));
+        // console.error('sdp error:', JSON.stringify(e, null, '\t'));
     }
 
     // var offer = Offer.createOffer(config);
