@@ -60,18 +60,20 @@ var loadShare = function ($scope) {
     })
 
     var socket = new BCSocket(null, {reconnect: true});
+    console.log('socket',socket)
     var sjs = new sharejs.Connection(socket);
     var doc = sjs.get('documents', repo);
     console.log('doc',doc)
     doc.whenReady(function() {
+      // codeEditor.editor().setValue('')
       // if doc doesn't exist, create it as text
       if (!doc.type) {console.log('created');doc.create('text')}
       // else {console.log('found',doc.snapshot)}
       // this check is probably not necessary
       // if (doc.type && doc.type.name === 'text')
       // this updates the CodeMirror editor window
-      codeEditor.editor().setValue(doc.snapshot)
       doc.attachCodeMirror(codeEditor.editor())
+      codeEditor.editor().setValue(doc.snapshot || 'test')
       doc.subscribe();
     })
     // codeEditor.editor().setValue(doc.snapshot)
@@ -82,7 +84,7 @@ var loadShare = function ($scope) {
     // of the possible CodeMirror instances; we only use editor and rightOriginal in our version right now.
     // console.log('editor: ',codeEditor.editor().getValue(),"\n",'original: ',codeEditor.rightOriginal().getValue())
     // codeEditor.editor().setValue('this is a test')
-    return doc
+    return {doc:doc,codeEditor:codeEditor,socket:socket}
   }
 
   return {
