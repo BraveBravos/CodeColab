@@ -10,18 +10,11 @@
         <span class="fa fa-sign-out"></span>
         Logout
       </a>
-      <a href='#' class=clone>  <!-- add ng-click='clone()' -->
-        <span class="fa fa-files-o"></span>
-        Clone
-      </a>
+      <div class = "repo-list">
+        <p>Please select a repository:</p>
+        <select ng-options = "repo.name for repo in repos track by repo.id" ng-model = "selectRepo" ng-change="saveRepo(selectRepo)" >
+        </select>
+      </div>
     </div>
   </div>
-  <repo-modal show='modalShown' width="300" height="150">
-    <div class = "repo-list">
-      <h3>Please select a repo</h3>
-      <select ng-options = "repo.name for repo in repos track by repo.id" ng-model = "selectRepo" ng-change="saveRepo(selectRepo)" >
-      </select>
-      <button ng-click = "hideModal()">Submit</button>
-    </div>
-  </repo-modal>
 </div>

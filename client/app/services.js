@@ -9,7 +9,7 @@ var getRepos = function ($scope) {
       url: '/api/repos',
     })
     .then(function (repos) {
-      $scope.repos = repos.data;
+      $scope.repos = $scope.repos.concat(repos.data);
       return $http({
         method: 'GET',
         url: '/api/orgs'
@@ -25,7 +25,6 @@ var getRepos = function ($scope) {
             orgRepos.data.forEach(function (orgRepo) {
               $scope.repos.push(orgRepo);
             })
-            $scope.modalShown = true;
           })
         })
       })
