@@ -180,6 +180,3 @@ angular.module('codeColab.services', [])
 
 
 
-
-
-
