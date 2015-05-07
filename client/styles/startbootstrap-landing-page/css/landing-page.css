@@ -198,7 +198,6 @@ p.copyright {
     width: 90%;
     padding: 2%;
     margin: auto;
-    /*border: 2px solid blue;*/
     margin-bottom: 10px
 }
 
@@ -217,7 +216,9 @@ p.copyright {
 }
 
 
-
+.description {
+    
+}
 
 
 
