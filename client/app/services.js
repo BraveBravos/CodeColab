@@ -5,6 +5,7 @@ angular.module('codeColab.services', [])
 
   var getRepos = function ($scope) {
     return $http({
+
       method: 'GET',
       url: '/api/repos',
     })
@@ -172,7 +173,6 @@ angular.module('codeColab.services', [])
 
 
   return {
-    getSHA: getSHA,
     getRepos : getRepos,
     loadShare: loadShare,
     commit: commit,
