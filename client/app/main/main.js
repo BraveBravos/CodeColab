@@ -26,6 +26,7 @@ angular.module('codeColab.main', [])
 
   $scope.saveRepo = function(repo) {
     $scope.selected = repo.name;
+
     if(!$scope.ref) {
       $scope.createBranch()
     }
