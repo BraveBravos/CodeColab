@@ -18,6 +18,10 @@ angular.module('codeColab', [
       templateUrl : '/app/main/main.html',
       controller: 'codeCtrl',
       authenticate: true
+    })  
+    .when ('/about', {
+      templateUrl : '/app/about/about.html',
+      authenticate: false
     })
 		.otherwise({
 			redirectTo: '/'
@@ -51,3 +55,13 @@ angular.module('codeColab', [
 
   return {checkAuth: checkAuth};
 })
+
+
+
+
+
+
+
+
+
+
