@@ -10,10 +10,8 @@
         <div id='remote-media-streams'></div>
         <div id='local-media-stream'></div>
       </div>
-      <div id='setup-new-meeting'>Join Video Chat</div>
-      <div id='leave-current-meeting' class='hidden'>Leave Video Chat</div>
-    
   </div>
+   
 <script src="//cdn.webrtc-experiment.com/firebase.js"> </script>
 <script type="text/javascript" src="app/videochat/meeting.js"></script>
 <script type="text/javascript">
@@ -56,4 +54,5 @@ document.getElementById('leave-current-meeting').onclick = function(){
   document.getElementById('setup-new-meeting').className = 'shown';
 };
 </script>
-</div>
+<div id='setup-new-meeting'>Join Video Chat</div>
+      <div id='leave-current-meeting' class='hidden'>Leave Video Chat</div>

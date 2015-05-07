@@ -76,19 +76,21 @@
 
 #setup-new-meeting {
   display:inline-block;
-  width:100%;
-  position: absolute;
+  width:190px;
+  position: fixed;
   text-align: center;
+  left:10px;
   bottom:2px;
   cursor: pointer;
 }
 
 #leave-current-meeting {
   display:inline-block;
-  width:100%;
-  position: absolute;
+  width:190px;
+  position: fixed;
   text-align: center;
   bottom:2px;
+  left:10px;
   cursor: pointer;
 }
 
