@@ -1,5 +1,20 @@
 <div class='video-chat-area'>
+<!--
+<iframe src="app/videochat/inner-vidchat.html" class='video-chat-area'>
 
+</iframe>
+-->
+<div class='video-chats-area'>
+      <div id='video-chats'>
+        <!-- <div id='video-chat-title'>CodeColab Video Chat</div> -->
+        <div id='remote-media-streams'></div>
+        <div id='local-media-stream'></div>
+      </div>
+      <div id='setup-new-meeting'>Join Video Chat</div>
+      <div id='leave-current-meeting' class='hidden'>Leave Video Chat</div>
+    
+  </div>
+<script src="//cdn.webrtc-experiment.com/firebase.js"> </script>
 <script type="text/javascript" src="app/videochat/meeting.js"></script>
 <script type="text/javascript">
 var meeting = new Meeting('webrtc-code-colab-id');
@@ -41,13 +56,4 @@ document.getElementById('leave-current-meeting').onclick = function(){
   document.getElementById('setup-new-meeting').className = 'shown';
 };
 </script>
-  <div class='video-chats-area'>
-      <div id='video-chats'>
-        <!-- <div id='video-chat-title'>CodeColab Video Chat</div> -->
-        <div id='remote-media-streams'></div>
-        <div id='video-call-controls'></div>
-
-      <div id='setup-new-meeting'>Join Video Chat</div>
-      <div id='leave-current-meeting' class='hidden'>Leave Video Chat</div>
-    </div>
-  </div>
+</div>

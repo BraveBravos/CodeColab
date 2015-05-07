@@ -1,19 +1,25 @@
 .video-chat-area {
   /*font-family: Arial, sans-serif;*/
   font-family: 'Open Sans',Arial,Helvetica Neue,sans-serif;
-  /*background-color: gray;*/
+  background-color: gray;
   /*position: absolute;*/
   position: fixed;
   width: 190px;
   bottom:4px;
   left:5px;
   color: white;
-  height: 50%;
-  overflow: auto;
+  height: 25%;
+  overflow: scroll;
+}
+
+#video-chats {
+ 
 }
 
 .video-chats-area {
-  position: fixed;
+  
+  overflow: scroll;
+  
   width: 190px;
   bottom:4px;
 }
@@ -56,14 +62,14 @@
   position: static;
   display:block;
   bottom:20px;
-  width: 100%;
+  width: 190px;
  
   /*background-color: white;*/
   text-align: center;
 }
 
 .their-video {
-  width: 100%;
+  width: 190px;
   /*background-color: gray;*/
   text-align: center;
 }
