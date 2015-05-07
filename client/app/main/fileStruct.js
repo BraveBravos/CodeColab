@@ -82,10 +82,10 @@ angular.module('fileStruct', [])
   
   var getSHA = function (repoName){
     var repo = repoName.name.split('/')
-    console.log("repo in filestruct client is", repo)  
+    console.log("repo in filestruct client is", repo); 
     return $http({
       method: 'POST',
-      url: '/api/fileStruct',
+      url: '/api/fileStruct/sha',
       data: {repo: repo}
     })
     .then(/* parse data for repo sha
@@ -98,11 +98,7 @@ angular.module('fileStruct', [])
 
 
 
-  return {
-  getSHA:getSHA,
-  getTree:getTree
-  }
-}
+  return { getSHA:getSHA, getTree:getTree }
 })
 
 
