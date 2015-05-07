@@ -53,6 +53,13 @@ var loadShare = function ($scope) {
   var repo = $scope.selected;
   // console.log('repp', repo)
 
+  // this fires if we already have an existing doc and connection
+  if($scope.share){
+    $scope.share.doc.unsubscribe()
+    $scope.share.sjs.disconnect()
+  }
+
+
   var socket = new BCSocket(null, {reconnect: true});
   // console.log('socket',socket)
   var sjs = new sharejs.Connection(socket);
@@ -109,7 +116,9 @@ var loadShare = function ($scope) {
   // console.log('editor: ',codeEditor.editor().getValue(),"\n",'original: ',codeEditor.rightOriginal().getValue())
   // codeEditor.editor().setValue('this is a test')
 
-  // return codeEditor
+  // return connection and doc, so that we can disconnect from them later if needed
+  // otherwise, the connection or doc subscription or both build up and make us unable to fetch other documents
+  return {sjs:sjs,doc:doc}
 }
 
   return {
