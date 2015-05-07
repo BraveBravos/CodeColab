@@ -271,11 +271,13 @@ app.use(browserChannel( function(client) {
   });
 
   client.on('close', function(reason) {
+    console.log('closed')
     stream.push(null);
     stream.emit('close');
   });
 
   stream.on('end', function() {
+    console.log('end')
     client.close();
   });
 
