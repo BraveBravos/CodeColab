@@ -9,8 +9,8 @@ module.exports = {
 	  // $http.get('https://api.github.com/repos/SFoskitt/MKS14-n-queens/git/refs/heads/master')
 	  // $http.get('https://api.github.com/repos/' + repo[0] + '/' + repo[1] + '/git/refs/heads/master')
 	  .success(function(data){
-	  	console.log(" this SUCCESS should not show up")
-	    // console.log("data from api.github.refs in server/fileStruct.js", data)
+	  	// console.log(" this SUCCESS should not show up")
+	    console.log("data from api.github.refs in server/fileStruct.js", data)
 	  })
 	  .error(function(err){
 	    console.log("error inside server/fileStruct.getSHA is ", err)

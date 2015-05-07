@@ -69,13 +69,34 @@ app.get('/auth/github/callback', function (req, res, next) {
   next();
 })
 
+// app.post('/api/fileStruct/sha', function (req, res, next){
+//   console.log("request data from client/fileStruct is ", req.body.data)
+//   // request({ 
+//   //   url: 'https://api.github.com/repos/'+ repo[0] + '/' + + repo[1] + '/git/refs/heads/master?access_token='+ req.session.token,
+//   //   headers: {'User-Agent': req.session.passport.user[0].username}
+//   }
+//   // function (err, resp, body) {
+//   //   console.log("raw refs from server.api/fileStruct/sha", refs)
+//   //   return refs;
+//   // };
+//   res.status(200).json(refs)
+// );
 
-// app.get('/api/fileStruct/sha', fileStruct.getSHA (req, res, next));
-app.get('/api/fileStruct/sha', function (req, res, next){
-  console.log("request data from client/fileStruct is ", req.data)
-})
-
-// app.get('/api/fileStruct/tree', fileStruct.getTree(req, res, next));
+app.post ('/api/fileStruct/sha', function (req, res) {
+  console.log('req.body.repo ', req.body.repo)
+  var repo = req.body.repo;
+  request({
+    url: 'https://api.github.com/repos/' +repo[0]+ '/' +repo[1]+ '/git/refs/heads/master?access_token='+ req.session.token,
+    headers: {'User-Agent': req.session.passport.user[0].username}
+  },
+    function (err, resp, body) {
+      console.log("resp is", resp, "and body is ", body)
+      // var data = JSON.parse(body).map(function (repo) {
+      //   return {name: repo.full_name, id: repo.id};
+      });
+      res.status(200).json(data)
+    });
+});
 
 app.listen(app.get('port'), function() {
   console.log('Node app running on port', app.get('port'));
@@ -120,8 +141,8 @@ app.get('/api/repos', function (req, res) {
   },
   function(err,resp,body) {
     var data = JSON.parse(body).map(function (repo) {
-      console.log("body from server.api/repos", body)
-      console.log("repo from server.api/repos", repo)
+      // console.log("body from server.api/repos", body)
+      // console.log("repo from server.api/repos", repo)
       return {name: repo.full_name, id: repo.id};
     })
       res.status(200).json(data)
@@ -150,9 +171,7 @@ app.post ('/api/orgs/repos', function (req, res) {
     headers: {'User-Agent': req.session.passport.user[0].username}
   },
     function (err, resp, body) {
-      // console.log('response body from server.api/orgs/repos', res.body)  <-- undefined
       var data = JSON.parse(body).map(function (repo) {
-        console.log("raw repo from server.api/orgs/repos", repo)
         return {name: repo.full_name, id: repo.id};
       });
       res.status(200).json(data)
@@ -199,12 +218,6 @@ app.get('/auth/github/callback', passport.authenticate(
 app.get('/api/auth', function(req, res){
   res.status(200).json(req.isAuthenticated());
 })
-// app.get('/test', function(req, res){
-//   res.status(200).json({
-//     isAuth: req.isAuthenticated(),
-//     user: req.user || 'none'
-//   });
-// })
 
 app.get('/logout', function (req, res){
   //req.session.destroy()
@@ -313,10 +326,5 @@ app.use(browserChannel( function(client) {
   });
 
   return share.listen(stream);
+
 }));
-
-
-
-
-
-
