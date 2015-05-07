@@ -51,30 +51,41 @@ var loadShare = function ($scope) {
   //the CodeMirror.  This code deletes any children that already exist.
   var children = target.getElementsByClassName('CodeMirror-merge')
   if(!!children.length) {
-    console.log('child elements exist',children[0])
     // target.removeChild(children[0]) //there should only ever be one of these
+    var cache = $scope.editor
+    // console.log('swap?',cache)
     doc.whenReady(function() {
-      console.log('editor?',$scope.editor)
-      // $scope.editor.editor().swapDoc(doc)
-      // console.log('swapped',$scope.editor.editor())
-      // return
+      var t = CodeMirror.Doc(doc.getSnapshot(),'javascript')
+      // console.log('t',t)
+      cache.editor().swapDoc(t)
+      console.log('editor',cache.editor().getValue())
+      // return cache
+      
     })
+    return cache
   }
-  var codeEditor;
-  return doc.whenReady(function() {
+
+  var codeEditor = CodeMirror.MergeView(target, {
+    'origRight':'', //this will eventually contain the original code
+    'value':'',      //this is the updated value with the users' changes
+    'theme':'erlang-dark',
+    lineNumbers: true
+  })
+
+  doc.whenReady(function() {
     if (!doc.type) {
       console.log('created');
       doc.create('text');
     }
 
-    codeEditor = CodeMirror.MergeView(target, {
-      'origRight':'', //this will eventually contain the original code
-      'value':doc.getSnapshot(),      //this is the updated value with the users' changes
-      'theme':'erlang-dark',
-      lineNumbers: true
-    })
+    // var codeEditor = CodeMirror.MergeView(target, {
+    //   'origRight':'', //this will eventually contain the original code
+    //   'value':doc.getSnapshot(),      //this is the updated value with the users' changes
+    //   'theme':'erlang-dark',
+    //   lineNumbers: true
+    // })
     
-    console.log('ready',codeEditor)
+    console.log('ready')
     doc.subscribe(function(err) {
       // console.log('subscribed',doc.getSnapshot())
 
@@ -85,15 +96,12 @@ var loadShare = function ($scope) {
       
     });
       
-    codeEditor.editor().on('change', function(change) {
-      console.log('changed',change)
-    })
-    codeEditor.editor().on('update', function() {
-      console.log('updated')
-    })
-    // codeEditor.editor().swapDoc(codeEditor.editor().doc,doc)
-    return codeEditor
-  });
+    // codeEditor.editor().on('change', function(change) {
+    //   console.log('changed',change)
+    // })
+    // codeEditor.editor().on('update', function() {
+    //   console.log('updated')
+  })
 
   //need to finish importing all of the sublime shortcuts and whatnot: http://codemirror.net/doc/manual.html#addons
 
@@ -101,7 +109,8 @@ var loadShare = function ($scope) {
   // of the possible CodeMirror instances; we only use editor and rightOriginal in our version right now.
   // console.log('editor: ',codeEditor.editor().getValue(),"\n",'original: ',codeEditor.rightOriginal().getValue())
   // codeEditor.editor().setValue('this is a test')
-
+  // console.log('returned',codeEditor)
+  return codeEditor
 }
 
 
