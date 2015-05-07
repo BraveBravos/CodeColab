@@ -61,8 +61,9 @@
                     userid: 'self',
                     type: 'local'
                 });
-                var vidCtrl = document.getElementById('video-call-controls'); 
-                document.getElementById('video-chats').insertBefore(video,vidCtrl);
+                var lms = document.getElementById('local-media-stream'); 
+                document.getElementById('video-chats').insertBefore(video,lms);
+                //vidChats.insertBefore(video,this);
                 video.play();
                 callback(stream);
             }

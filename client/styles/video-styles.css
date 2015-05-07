@@ -2,11 +2,26 @@
   /*font-family: Arial, sans-serif;*/
   font-family: 'Open Sans',Arial,Helvetica Neue,sans-serif;
   /*background-color: gray;*/
+  /*position: absolute;*/
   position: fixed;
-  width: 180px;
-  bottom:10px;
-  left:10px;
+  width: 190px;
+  bottom:4px;
+  left:5px;
   color: white;
+  height: 50%;
+  overflow: scroll;
+}
+
+#video-chats {
+ 
+}
+
+.video-chats-area {
+  
+  overflow: scroll;
+  
+  width: 190px;
+  bottom:4px;
 }
 
 .shown {
@@ -32,6 +47,10 @@
 
 #video-call-controls {
   /*background-color: gray;*/
+  height:100%;
+  width:100%;
+  position: absolute;
+  bottom:2px;
 }
 
 #video-container {
@@ -40,20 +59,39 @@
 }
 
 .my-video {
-  width: 100%;
-  padding-bottom: 8px;
+  position: static;
+  display:block;
+  bottom:20px;
+  width: 190px;
+ 
   /*background-color: white;*/
   text-align: center;
 }
 
 .their-video {
-  width: 100%;
+  width: 190px;
   /*background-color: gray;*/
   text-align: center;
 }
 
+#setup-new-meeting {
+  display:inline-block;
+  width:190px;
+  position: fixed;
+  text-align: center;
+  left:10px;
+  bottom:2px;
+  cursor: pointer;
+}
+
 #leave-current-meeting {
-  
+  display:inline-block;
+  width:190px;
+  position: fixed;
+  text-align: center;
+  bottom:2px;
+  left:10px;
+  cursor: pointer;
 }
 
 
