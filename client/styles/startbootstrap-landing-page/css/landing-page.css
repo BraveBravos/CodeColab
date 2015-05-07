@@ -26,11 +26,12 @@ h6 {
 }
 
 .intro-header {
-    padding-top: 50px; /* If you're making other pages, make sure there is 50px of padding to make sure the navbar doesn't overlap content! */
+    padding-top: 50px; 
+    /* If making other pages, make sure theres 50px of padding so navbar doesn't overlap content! */
     padding-bottom: 50px;
     text-align: center;
     color: #f8f8f8;
-    background: linear-gradient(rgba(0, 0, 0, .2), rgba(0, 0, 0, .2)), url(../img/intro-bg.jpg) no-repeat center center;
+    background: url(../img/intro-bg.jpg) no-repeat center center;
     background-size: cover;
 }
 
@@ -111,10 +112,9 @@ h6 {
 .banner {
     padding: 50px;
     color: #f8f8f8;
-    background:linear-gradient(rgba(0, 0, 0, .5), rgba(0, 0, 0, .5)), url(../img/footer.jpg) no-repeat center center;
+    background: url(../img/banner-bg.jpg) no-repeat center center;
     background-size: cover;
 }
-
 
 .banner h2 {
     margin: 0;
@@ -175,43 +175,15 @@ p.copyright {
     text-align: center;
 }
 
+.image-container {
+    padding: 0px;
+}
+
 .team {
     display:inline-block;
-    margin-left: 1.5em;
+    margin-left: 2em;
 }
 
-
-.quote {
-    padding: 20px;
-    text-align: center;
-    font-family: 'Noto Serif', serif;
-    font-style: italic;
-    font-weight: 900;
-    color: #88c3e0;
-    font-size: 64px;
-}
-
-.containsAbout {
-    width: 90%;
-    padding: 2%;
-    margin: auto;
-    /*border: 2px solid blue;*/
-    margin-bottom: 10px
-}
-
-.aboutpic {
-    float: left;
-    width: 50%;
-    margin: 1%;
-}
-
-.blurb {
-    color: gray;
-}
-
-.blurb > h3 {
-    text-align: center;
-}
 
 
 
