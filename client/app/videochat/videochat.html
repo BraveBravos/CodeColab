@@ -1,12 +1,6 @@
 <div class='video-chat-area'>
-<!--
-<iframe src="app/videochat/inner-vidchat.html" class='video-chat-area'>
-
-</iframe>
--->
 <div class='video-chats-area'>
       <div id='video-chats'>
-        <!-- <div id='video-chat-title'>CodeColab Video Chat</div> -->
         <div id='remote-media-streams'></div>
         <div id='local-media-stream'></div>
       </div>
@@ -15,17 +9,16 @@
 <script src="//cdn.webrtc-experiment.com/firebase.js"> </script>
 <script type="text/javascript" src="app/videochat/meeting.js"></script>
 <script type="text/javascript">
+var isJoin = false;
+
 var meeting = new Meeting('webrtc-code-colab-id');
 
-var remoteMediaStreams = document.getElementById('remote-media-streams');
+var remoteMediaStreams = document.getElementById('video-chats');
 var localMediaStream = document.getElementById('local-media-stream');
 
 // on getting local or remote streams
 meeting.onaddstream = function(e) {
-    // e.type == 'local' ---- it is local media stream
-    // e.type == 'remote' --- it is remote media stream
-    //document.body.appendChild(e.video);
-    if (e.type == 'remote') remoteMediaStreams.insertBefore(e.video, remoteMediaStreams.firstChild);
+    if (e.type == 'remote' && isJoin) remoteMediaStreams.insertBefore(e.video, remoteMediaStreams.firstChild);
     e.video.className = 'their-video';
 };
 
@@ -44,11 +37,13 @@ meeting.onuserleft = function(userid) {
 
 document.getElementById('setup-new-meeting').onclick = function() {
     meeting.setup('meeting room name');
+    isJoin = true;
     this.className = 'hidden';
     document.getElementById('leave-current-meeting').className = 'shown';
 };
 
 document.getElementById('leave-current-meeting').onclick = function(){
+  isJoin = false;
   meeting.leave();
   this.className = 'hidden';
   document.getElementById('setup-new-meeting').className = 'shown';

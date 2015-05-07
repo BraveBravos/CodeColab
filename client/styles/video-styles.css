@@ -1,14 +1,14 @@
 .video-chat-area {
   /*font-family: Arial, sans-serif;*/
   font-family: 'Open Sans',Arial,Helvetica Neue,sans-serif;
-  background-color: gray;
+  /*background-color: gray;*/
   /*position: absolute;*/
   position: fixed;
   width: 190px;
   bottom:4px;
   left:5px;
   color: white;
-  height: 25%;
+  height: 50%;
   overflow: scroll;
 }
 
