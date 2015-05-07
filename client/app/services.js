@@ -74,21 +74,47 @@ var loadShare = function ($scope) {
   //when we change an element to a CodeMirror, we don't really change it - we actually append
   //the CodeMirror.  This code deletes any children that already exist.
   var children = target.getElementsByClassName('CodeMirror-merge')
-  if(!!children.length) {
-    target.removeChild(children[0]) //there should only ever be one of these
+  // if(!!children.length) {
+  //   // target.removeChild(children[0]) //there should only ever be one of these
+
+  //   doc.whenReady(function() {
+  //     //this is the new doc - we need to use a doc for a swap
+  //     var newEditor = CodeMirror.Doc(doc.getSnapshot(),'javascript')
+  //     $scope.share.codeEditor.editor().swapDoc(newEditor)
+  //   })
+  //   //so we can use the doc, sjs, and codeEditor references in future
+  //   return {sjs:sjs,doc:doc,codeEditor:$scope.share.codeEditor}
+  // }
+  if(!children.length) {
+    var codeEditor = CodeMirror.MergeView(target, {
+      'origRight':'', //this will eventually contain the original code
+      'value':'',      //this is the updated value with the users' changes
+      'theme':'erlang-dark',
+      lineNumbers: true
+    })
   }
+
   doc.whenReady(function() {
     if (!doc.type) {
       console.log('created');
       doc.create('text');
     }
 
-    var codeEditor = CodeMirror.MergeView(target, {
-      'origRight':'', //this will eventually contain the original code
-      'value':doc.getSnapshot(),      //this is the updated value with the users' changes
-      'theme':'erlang-dark',
-      lineNumbers: true
-    })
+    //this is the new doc - we need to use a doc for a swap
+    var newEditor = CodeMirror.Doc(doc.getSnapshot(),'javascript')
+    // $scope.share.codeEditor.editor().swapDoc(newEditor)
+    if($scope.share) {
+      $scope.share.codeEditor.editor().swapDoc(newEditor)  
+    } else {
+     codeEditor.editor().swapDoc(newEditor)
+    }
+
+    // codeEditor = CodeMirror.MergeView(target, {
+    //   'origRight':'', //this will eventually contain the original code
+    //   'value':doc.getSnapshot(),      //this is the updated value with the users' changes
+    //   'theme':'erlang-dark',
+    //   lineNumbers: true
+    // })
     
     console.log('ready')
     doc.subscribe(function(err) {
@@ -107,6 +133,8 @@ var loadShare = function ($scope) {
     codeEditor.editor().on('update', function() {
       console.log('updated')
     })
+    
+
   });
 
   //need to finish importing all of the sublime shortcuts and whatnot: http://codemirror.net/doc/manual.html#addons
@@ -118,7 +146,12 @@ var loadShare = function ($scope) {
 
   // return connection and doc, so that we can disconnect from them later if needed
   // otherwise, the connection or doc subscription or both build up and make us unable to fetch other documents
-  return {sjs:sjs,doc:doc}
+  if($scope.share) {
+    return {sjs:sjs,doc:doc,codeEditor:$scope.share.codeEditor}
+  }
+  
+  return {sjs:sjs,doc:doc,codeEditor:codeEditor}
+
 }
 
   return {
