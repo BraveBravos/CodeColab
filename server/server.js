@@ -70,8 +70,12 @@ app.get('/auth/github/callback', function (req, res, next) {
 })
 
 
-app.get('/api/fileStruct', fileStruct.getFileStruct);
+// app.get('/api/fileStruct/sha', fileStruct.getSHA (req, res, next));
+app.get('/api/fileStruct/sha', function (req, res, next){
+  console.log("request data from client/fileStruct is ", req.data)
+})
 
+// app.get('/api/fileStruct/tree', fileStruct.getTree(req, res, next));
 
 app.listen(app.get('port'), function() {
   console.log('Node app running on port', app.get('port'));

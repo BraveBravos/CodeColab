@@ -78,9 +78,32 @@ angular.module('fileStruct', [])
     Share.loadFile($scope.$parent,file.url, file.id);
   }
 });
+.factory ('FileStructGets', function ($http){
+  
+  var getSHA = function (repoName){
+    var repo = repoName.name.split('/')
+    console.log("repo in filestruct client is", repo)  
+    return $http({
+      method: 'POST',
+      url: '/api/fileStruct',
+      data: {repo: repo}
+    })
+    .then(/* parse data for repo sha
+      and setup variable for next request*/ 
+      function(gitHubRefs){
+        console.log("refs back from server is ", gitHubRefs)
+    })
+  // .then(/* setup get request for tree info */)
+  // .then(/* send tree info to controller */)
 
 
 
+  return {
+  getSHA:getSHA,
+  getTree:getTree
+  }
+}
+})
 
 
 

@@ -5,6 +5,7 @@ angular.module('codeColab.services', [])
 
   var getRepos = function ($scope) {
     return $http({
+
       method: 'GET',
       url: '/api/repos',
     })
@@ -66,7 +67,10 @@ angular.module('codeColab.services', [])
   }
 
 
-var loadShare = function ($scope, id, data) {
+var loadShare = function ($scope) {
+
+  var repo = $scope.selected;
+  // console.log('repp', repo)
 
 
   // this fires if we already have an existing doc and connection
@@ -168,7 +172,6 @@ var loadShare = function ($scope, id, data) {
 
 
   return {
-    getSHA: getSHA,
     getRepos : getRepos,
     loadShare: loadShare,
     commit: commit,
