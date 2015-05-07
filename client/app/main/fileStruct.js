@@ -1,20 +1,4 @@
-angular.module('codeColab.fileStruct', [])
-
-.factory('FileStruct', function($http){
-
-  var getSHA = function (repoName){  //add these later? ($scope, $http)
-    console.log("repoName in fileStruct.js/getSHA", repoName)
-  };
-
-  var getTree = function ($scope){
-    //move some functionality from below into here - 
-    //the controller below should be just the info that goes to template
-  }
-
-  return {
-  getSHA:getSHA
-  }
-})
+angular.module('fileStruct', [])
 
 .controller('fileStructCtrl', function($scope, $http){
 

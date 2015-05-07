@@ -117,6 +117,7 @@ app.get('/api/repos', function (req, res) {
   function(err,resp,body) {
     var data = JSON.parse(body).map(function (repo) {
       console.log("body from server.api/repos", body)
+      console.log("repo from server.api/repos", repo)
       return {name: repo.full_name, id: repo.id};
     })
       res.status(200).json(data)
@@ -145,8 +146,9 @@ app.post ('/api/orgs/repos', function (req, res) {
     headers: {'User-Agent': req.session.passport.user[0].username}
   },
     function (err, resp, body) {
-      console.log('response body from server.api/orgs/repos', res.body)
+      // console.log('response body from server.api/orgs/repos', res.body)  <-- undefined
       var data = JSON.parse(body).map(function (repo) {
+        console.log("raw repo from server.api/orgs/repos", repo)
         return {name: repo.full_name, id: repo.id};
       });
       res.status(200).json(data)
