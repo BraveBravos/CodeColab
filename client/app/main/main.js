@@ -14,8 +14,20 @@ angular.module('codeColab.main', [])
     Share.getRepos($scope);
   }
 
+  $scope.createBranch = function(){
+    //save ref and sha to use in commit
+    Share.createBranch($scope.selected).then(function(branch) {
+      console.log("Got branch info:", branch)
+      $scope.ref = branch.ref;
+      $scope.sha = branch.sha;
+    })
+  }
+
   $scope.saveRepo = function(repo) {
     $scope.selected = repo.name;
+    if(!$scope.ref) {
+      $scope.createBranch()
+    }
     $scope.share = Share.loadShare($scope);
   }
 
@@ -24,7 +36,7 @@ angular.module('codeColab.main', [])
   }
 
   $scope.commit = function(message){
-    Share.commit(message) 
+    Share.commit(message, $scope.ref, $scope.sha) 
   }
 
   $scope.init();

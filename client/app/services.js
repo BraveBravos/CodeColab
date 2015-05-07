@@ -31,10 +31,25 @@ angular.module('codeColab.services', [])
     })
   }
 
-  var commit = function(message){
-    var message=message;
-    var parents;
-    var tree;
+  var createBranch = function(repo){
+    // console.log('REPO',repo);
+    return $http({
+      method: 'POST',
+      url: '/branch',
+      data: {
+        repo: repo
+      }
+    })
+    .then(function(branchInfo){
+      console.log('New branch created!')
+      return branchInfo  //return ref and sha 
+    })
+  }
+
+  var commit = function(message, ref, sha){
+    var message = message;
+    var parents; //whut
+    var tree = sha
 
     console.log('inside share.commit()')
     console.log("message", message)
@@ -157,7 +172,8 @@ var loadShare = function ($scope) {
   return {
     getRepos : getRepos,
     loadShare: loadShare,
-    commit: commit
+    commit: commit,
+    createBranch: createBranch
   }
 })
 

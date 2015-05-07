@@ -28,6 +28,7 @@ var express = require('express'),
       backend: backend
     }),
     request = require('request'),
+    axios = require('axios'),
     sess;
 
 
@@ -138,7 +139,7 @@ app.post ('/api/orgs/repos', function (req, res) {
   var org = req.body.org;
   console.log('org', org)
   request({
-    url: 'https://api.github.com/orgs/'+ org+ '/repos?access_token='+ req.session.token,
+    url: 'https://api.github.com/orgs/'+ org + '/repos?access_token='+ req.session.token,
     headers: {'User-Agent': req.session.passport.user[0].username}
   },
     function (err, resp, body) {
@@ -179,6 +180,78 @@ app.get('/logout', function (req, res){
   req.logout();
   res.redirect('/');
 })
+
+app.post('/branch', function(req, res){
+  var owner=req.session.username, 
+      repo = req.body.repo;
+
+  console.log('/branch: ',repo)
+  // console.log('/branch owner: ', owner)
+  
+  //get request to github for master commit SHA code
+  // axios.get('/repos/' + owner +'/'+repo +'/git/refs/master', {
+  //   headers: {'User-Agent': req.session.passport.user[0].username}
+  // })
+ 
+  request({
+    url: 'https://api.github.com/repos/' + repo +'/git/refs/heads/master?access_token='+ req.session.token,
+    headers: {'User-Agent': owner}
+  },
+    function (err, resp, body) {
+      if (err) console.log(err);
+
+      console.log('INSIDE GIT BRANCH')
+      var ref = JSON.parse(body).ref,
+          sha = JSON.parse(body).object.sha;
+      // var branchName = 'newBranch'
+
+      var send = JSON.stringify({
+        ref: 'refs/heads/'+'CODECOLAB', //the new branch name 
+        sha: sha
+      });
+
+      //creating the new branch
+      console.log("Sending:", send)
+      request.post({
+        url: 'https://api.github.com/repos/' + repo + '/git/refs?access_token='+ req.session.token,
+        headers: {'User-Agent': owner, 'Content-Type': 'application/json'},
+        body: send
+      }, 
+        function(err, resp, body){
+          if (err) console.log('ERROR:',err)
+          console.log('success!', body)
+          res.send(body) //send back to client to use for commits
+        }
+      )
+    }
+  );
+
+
+  // .then(function(branch){ 
+  //   console.log('INSIDE GIT BRANCH-response: ',branch)
+
+  //   var sha = branch.something, //the sha code to create branch
+  //       ref = branch.something; //create/get branch name 
+
+  //   //creating the new branch
+  //   axios.post('/repos/' + owner +'/' + repo + '/git/refs',
+  //     {
+  //       sha: sha,
+  //       ref: 'branch-name',
+  //       headers: {'User-Agent': req.session.passport.user[0].username}
+  //     }
+  //   ).then(function(body){
+  //     console.log('SUCCESS: ', body)
+  //     res.send(body) //send ref and sha back to client to use for commits
+  //   }).catch(function(err){
+  //     console.log('error:',err)
+  //   })
+  // })
+})
+
+  // http://blog.api.mks.io/blog-posts
+  // title: 
+  // content: 
 
 app.use(browserChannel( function(client) {
   var stream = new Duplex({objectMode: true});

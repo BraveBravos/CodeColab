@@ -184,10 +184,41 @@ p.copyright {
     margin-left: 2em;
 }
 
+.quote {
+    padding: 20px;
+    text-align: center;
+    font-family: 'Noto Serif', serif;
+    font-style: italic;
+    font-weight: 900;
+    color: #88c3e0;
+    font-size: 64px;
+}
+
+.containsAbout {
+    width: 90%;
+    padding: 2%;
+    margin: auto;
+    margin-bottom: 10px
+}
+
+.aboutpic {
+    float: left;
+    width: 50%;
+    margin: 1%;
+}
+
+.blurb {
+    color: gray;
+}
+
+.blurb > h3 {
+    text-align: center;
+}
 
 
-
-
+.description {
+    
+}
 
 
 
