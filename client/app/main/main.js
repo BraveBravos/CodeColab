@@ -8,6 +8,7 @@ angular.module('codeColab.main', [])
   $scope.modalShown = false;
   $scope.repos = [];
   $scope.selectRepo = "";
+  $scope.editor;
 
   $scope.init = function () {
     Share.getRepos($scope);
@@ -15,7 +16,7 @@ angular.module('codeColab.main', [])
 
   $scope.saveRepo = function(repo) {
     $scope.selected = repo.name;
-    Share.loadShare($scope);
+    $scope.editor = Share.loadShare($scope);
   }
 
   $scope.check = function(){
