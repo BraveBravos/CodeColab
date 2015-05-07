@@ -127,12 +127,12 @@ var loadShare = function ($scope) {
       
     });
       
-    codeEditor.editor().on('change', function(change) {
-      console.log('changed',change)
-    })
-    codeEditor.editor().on('update', function() {
-      console.log('updated')
-    })
+    // codeEditor.editor().on('change', function(change) {
+    //   console.log('changed',change)
+    // })
+    // codeEditor.editor().on('update', function() {
+    //   console.log('updated')
+    // })
     
 
   });
