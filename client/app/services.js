@@ -71,28 +71,16 @@ var loadShare = function ($scope) {
   //this is the element we have selected to "turn" into a CodeMirror
   var target = document.getElementById('area') 
   
-  //when we change an element to a CodeMirror, we don't really change it - we actually append
-  //the CodeMirror.  This code deletes any children that already exist.
-  var children = target.getElementsByClassName('CodeMirror-merge')
-  // if(!!children.length) {
-  //   // target.removeChild(children[0]) //there should only ever be one of these
+  // //when we change an element to a CodeMirror, we don't really change it - we actually append
+  // //the CodeMirror.  This code deletes any children that already exist.
+  // var children = target.getElementsByClassName('CodeMirror-merge')
 
-  //   doc.whenReady(function() {
-  //     //this is the new doc - we need to use a doc for a swap
-  //     var newEditor = CodeMirror.Doc(doc.getSnapshot(),'javascript')
-  //     $scope.share.codeEditor.editor().swapDoc(newEditor)
-  //   })
-  //   //so we can use the doc, sjs, and codeEditor references in future
-  //   return {sjs:sjs,doc:doc,codeEditor:$scope.share.codeEditor}
-  // }
-  if(!children.length) {
-    var codeEditor = CodeMirror.MergeView(target, {
+  var codeEditor = !!$scope.share ? $scope.share.codeEditor : CodeMirror.MergeView(target, {
       'origRight':'', //this will eventually contain the original code
       'value':'',      //this is the updated value with the users' changes
       'theme':'erlang-dark',
       lineNumbers: true
     })
-  }
 
   doc.whenReady(function() {
     if (!doc.type) {
@@ -108,22 +96,13 @@ var loadShare = function ($scope) {
     } else {
      codeEditor.editor().swapDoc(newEditor)
     }
-
-    // codeEditor = CodeMirror.MergeView(target, {
-    //   'origRight':'', //this will eventually contain the original code
-    //   'value':doc.getSnapshot(),      //this is the updated value with the users' changes
-    //   'theme':'erlang-dark',
-    //   lineNumbers: true
-    // })
     
     console.log('ready')
     doc.subscribe(function(err) {
-      console.log('subscribed',doc.getSnapshot())
+      // console.log('subscribed',doc.getSnapshot())
 
-      // instead of deleting and re-adding editors, it might be possible
-      // to do a swapDoc from CodeMirror.
       doc.attachCodeMirror(codeEditor.editor())
-      console.log('after subscribed',doc.getSnapshot(),codeEditor.editor().getValue())
+      // console.log('after subscribed',doc.getSnapshot(),codeEditor.editor().getValue())
       
     });
       

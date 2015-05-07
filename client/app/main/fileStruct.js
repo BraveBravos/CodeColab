@@ -16,7 +16,7 @@ angular.module('codeColab.fileStruct', [])
     .success(function(data) {
 
       bigTree = data.tree;
-      console.log("the bigTree is ", bigTree)
+      // console.log("the bigTree is ", bigTree)
 
       var tree = {};
 
@@ -31,7 +31,7 @@ angular.module('codeColab.fileStruct', [])
         if(divider<0){return}
         var path = item.path.slice(0,divider)
         if (item.type === 'tree') {
-          console.log('tree[item.path]', tree[item.path])
+          // console.log('tree[item.path]', tree[item.path])
           tree[path].children.push(tree[item.path])
           tree[item.path].top=false
         } else {
@@ -65,7 +65,7 @@ angular.module('codeColab.fileStruct', [])
       }
     }
 
-    console.log('final tree',results)
+    // console.log('final tree',results)
     
     $scope.tree = results;
   })
