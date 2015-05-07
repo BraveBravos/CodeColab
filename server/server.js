@@ -69,35 +69,6 @@ app.get('/auth/github/callback', function (req, res, next) {
   next();
 })
 
-// app.post('/api/fileStruct/sha', function (req, res, next){
-//   console.log("request data from client/fileStruct is ", req.body.data)
-//   // request({ 
-//   //   url: 'https://api.github.com/repos/'+ repo[0] + '/' + + repo[1] + '/git/refs/heads/master?access_token='+ req.session.token,
-//   //   headers: {'User-Agent': req.session.passport.user[0].username}
-//   }
-//   // function (err, resp, body) {
-//   //   console.log("raw refs from server.api/fileStruct/sha", refs)
-//   //   return refs;
-//   // };
-//   res.status(200).json(refs)
-// );
-
-app.post ('/api/fileStruct/sha', function (req, res) {
-  console.log('req.body.repo ', req.body.repo)
-  var repo = req.body.repo;
-  request({
-    url: 'https://api.github.com/repos/' +repo[0]+ '/' +repo[1]+ '/git/refs/heads/master?access_token='+ req.session.token,
-    headers: {'User-Agent': req.session.passport.user[0].username}
-  },
-    function (err, resp, body) {
-      console.log("resp is", resp, "and body is ", body)
-      // var data = JSON.parse(body).map(function (repo) {
-      //   return {name: repo.full_name, id: repo.id};
-      });
-      res.status(200).json(data)
-    });
-});
-
 app.listen(app.get('port'), function() {
   console.log('Node app running on port', app.get('port'));
 });
@@ -206,6 +177,35 @@ app.post('api/repos/commit', function(req, res){
     //will go to github
   //})
 })
+
+app.post ('/api/fileStruct/sha', function (req, res) {
+  var owner = req.body.repo[0];
+  var repo = req.body.repo[1];
+  request({
+    url: 'https://api.github.com/repos/' +owner+ '/' +repo+ '/git/refs/heads/master?access_token='+ req.session.token,
+    headers: {'User-Agent': req.session.passport.user[0].username}
+  },
+  function (err, resp, body) {
+    var data = JSON.parse(body);
+    var sha = data.object.sha;
+    console.log("sha", sha)
+    var base = 'https://api.github.com/repos'
+    var more = '/git/trees/'
+    var last = '?recursive=1&access_token='
+    var concat = base + '/' +owner+ '/' + repo + more + sha + last + req.session.token
+    
+    request({
+      url: concat,
+      headers: {'User-Agent': req.session.passport.user[0].username}
+      },
+      function (err, resp, body){
+        console.log("BODY FOR TREE", body)
+        var tree = JSON.parse(body)
+        res.status(200).json(tree)
+      }
+    )   // this is a request inside of a request, so the ) may need to move
+  });
+});
 
 app.get('/auth/github',
   passport.authenticate('github', {scope: ['repo', 'user', 'admin:public_key']})
