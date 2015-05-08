@@ -200,8 +200,8 @@ app.post ('/api/fileStruct/sha', function (req, res) {
       },
       function (err, resp, body){
         console.log("BODY FOR TREE", body)
-        var tree = JSON.parse(body)
-        res.status(200).json(tree)
+        var data = JSON.parse(body)
+        res.status(200).json(data.tree)
       }
     )   // this is a request inside of a request, so the ) may need to move
   });
