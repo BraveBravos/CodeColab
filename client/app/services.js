@@ -64,93 +64,97 @@ angular.module('codeColab.services', [])
   }
 
 
-var loadShare = function ($scope, id, data) {
+  var loadShare = function ($scope, id, data) {
 
-
-  // this fires if we already have an existing doc and connection
-  if($scope.share){
-    console.log('disconnecting')
-    $scope.share.doc.unsubscribe()
-    $scope.share.sjs.disconnect()
-  }
-
-
-  var socket = new BCSocket(null, {reconnect: true});
-  // console.log('socket',socket)
-  var sjs = new sharejs.Connection(socket);
-  var doc = sjs.get('documents', id);
-
-  // console.log('doc',doc)
-  doc.subscribe()
-
-  //this is the element we have selected to "turn" into a CodeMirror
-  var target = document.getElementById('area')
-
-  // //when we change an element to a CodeMirror, we don't really change it - we actually append
-  // //the CodeMirror.  This code deletes any children that already exist.
-  // var children = target.getElementsByClassName('CodeMirror-merge')
-
-  var codeEditor = !!$scope.share ? $scope.share.codeEditor : CodeMirror.MergeView(target, {
-      'origRight':'', //this will eventually contain the original code
-      'value':'',      //this is the updated value with the users' changes
-      'theme':'erlang-dark',
-      lineNumbers: true
-    })
-
-  doc.whenReady(function() {
-    if (!doc.type) {
-      console.log('created');
-      doc.create('text');
+    // this fires if we already have an existing doc and connection
+    if($scope.share){
+      $scope.share.doc.unsubscribe()
+      $scope.share.sjs.disconnect()
     }
 
-    //this is the new doc - we need to use a doc for a swap
-    var newEditor = CodeMirror.Doc(doc.getSnapshot(),'javascript')
-    // $scope.share.codeEditor.editor().swapDoc(newEditor)
-    if($scope.share) {
-      $scope.share.codeEditor.editor().setValue(doc.getSnapshot())
-      $scope.share.codeEditor.editor().swapDoc(newEditor)
-    } else {
-      codeEditor.editor().setValue(doc.getSnapshot())
-      codeEditor.editor().swapDoc(newEditor)
-    }
+    var socket = new BCSocket(null, {reconnect: true});
+    // console.log('socket',socket)
+    var sjs = new sharejs.Connection(socket);
+    var doc = sjs.get('documents', id);
 
-    console.log('ready')
-    doc.subscribe(function(err) {
-      // console.log('subscribed',doc.getSnapshot())
+    // console.log('doc',doc)
+    doc.subscribe()
+
+    //this is the element we have selected to "turn" into a CodeMirror
+    var target = document.getElementById('area')
+
+    // //when we change an element to a CodeMirror, we don't really change it - we actually append
+    // //the CodeMirror.  This code deletes any children that already exist.
+    // var children = target.getElementsByClassName('CodeMirror-merge')
+
+    var codeEditor = !!$scope.share ? $scope.share.codeEditor : CodeMirror.MergeView(target, {
+        'origRight':'', //this will eventually contain the original code
+        'value':'',      //this is the updated value with the users' changes
+        'theme':'erlang-dark',
+        lineNumbers: true
+      })
+
+    doc.whenReady(function() {
+      if (!doc.type) {
+        console.log('created');
+        doc.create('text');
+      }
+
+      //this is the new doc - we need to use a doc for a swap
+      var newEditor = doc.getSnapshot()==='' ? CodeMirror.Doc(data,'javascript') : CodeMirror.Doc(doc.getSnapshot(),'javascript')
+
+      if($scope.share) {
+        $scope.share.codeEditor.editor().setValue(newEditor.getValue())
+        $scope.share.codeEditor.editor().swapDoc(newEditor)
+      } else {
+        codeEditor.editor().setValue(newEditor.getValue())
+        codeEditor.editor().swapDoc(newEditor)
+      }
+
+      console.log('ready')
+      doc.subscribe(function(err) {
+        // console.log('subscribed',doc.getSnapshot())
 
         codeEditor.rightOriginal().setValue(data);
         doc.attachCodeMirror(codeEditor.editor())
-        // codeEditor.editor().setValue(codeEditor.rightOriginal().getValue())
-      // console.log('after subscribed',doc.getSnapshot(),codeEditor.editor().getValue())
+
+        // probably some more efficient way to do this, but it works for now - if doc exists in
+        // origDocs database but not in regular Docs database, this will copy the string into the editor immediately after
+        // the subscription takes hold, which also copies it into the Docs database.
+        if(doc.getSnapshot()==='') {
+          codeEditor.editor().setValue(codeEditor.rightOriginal().getValue())
+        }
+        // console.log('after subscribed',doc.getSnapshot(),codeEditor.editor().getValue())
+
+      });
+
+      // codeEditor.editor().on('change', function(change) {
+      //   console.log('changed',change)
+      // })
+      // codeEditor.editor().on('update', function() {
+      //   console.log('updated')
+      // })
+
 
     });
 
-    // codeEditor.editor().on('change', function(change) {
-    //   console.log('changed',change)
-    // })
-    // codeEditor.editor().on('update', function() {
-    //   console.log('updated')
-    // })
+    //need to finish importing all of the sublime shortcuts and whatnot: http://codemirror.net/doc/manual.html#addons
 
+    // this is the syntax needed for .getValue and .setValue.  rightOriginal, leftOriginal, and editor are all
+    // of the possible CodeMirror instances; we only use editor and rightOriginal in our version right now.
+    // console.log('editor: ',codeEditor.editor().getValue(),"\n",'original: ',codeEditor.rightOriginal().getValue())
+    // codeEditor.editor().setValue('this is a test')
 
-  });
+    // return connection and doc, so that we can disconnect from them later if needed
+    // otherwise, the connection or doc subscription or both build up and make us unable to fetch other documents
+    if($scope.share) {
+      return {sjs:sjs,doc:doc,codeEditor:$scope.share.codeEditor}
+    }
 
-  //need to finish importing all of the sublime shortcuts and whatnot: http://codemirror.net/doc/manual.html#addons
-
-  // this is the syntax needed for .getValue and .setValue.  rightOriginal, leftOriginal, and editor are all
-  // of the possible CodeMirror instances; we only use editor and rightOriginal in our version right now.
-  // console.log('editor: ',codeEditor.editor().getValue(),"\n",'original: ',codeEditor.rightOriginal().getValue())
-  // codeEditor.editor().setValue('this is a test')
-
-  // return connection and doc, so that we can disconnect from them later if needed
-  // otherwise, the connection or doc subscription or both build up and make us unable to fetch other documents
-  if($scope.share) {
-    return {sjs:sjs,doc:doc,codeEditor:$scope.share.codeEditor}
+    return {sjs:sjs,doc:doc,codeEditor:codeEditor}
   }
 
-  return {sjs:sjs,doc:doc,codeEditor:codeEditor}
-}
-    var loadFile = function ($scope, url, id) {
+  var loadFile = function ($scope, url, id) {
     return $http ({
       method:'POST',
       url: '/api/files',
@@ -162,9 +166,7 @@ var loadShare = function ($scope, id, data) {
     .then (function (data) {
       $scope.share = loadShare($scope, id, data.data.file)
     });
-
-
-}
+  }
 
   return {
     getRepos : getRepos,
