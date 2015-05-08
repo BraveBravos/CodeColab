@@ -172,10 +172,25 @@ app.post('/api/sjs', function (req, res) {
 
 
 app.post('api/repos/commit', function(req, res){
-  // console.log('commit req', req)
-  //request({
-    //will go to github
-  //})
+  console.log('INSIDE COMMIT req.body: ', req.body)
+
+  var repo = req.body.repo
+  var message; 
+  var tree;
+  var parents;
+
+  var send = {
+    message: message,
+    tree: tree,
+    parents: parens
+  }
+  request({
+    url: 'https://api.github.com/repos/' + repo + '/git/commits?access_token='+ req.session.token,
+    headers: {'User-Agent': req.session.passport.user[0].username}
+  }),
+  function(err, resp, body){
+    console.log('git commit sent!', body)
+  }
 })
 
 app.post ('/api/fileStruct/tree', function (req, res) {
@@ -255,7 +270,7 @@ app.post('/branch', function(req, res){
       });
 
       //creating the new branch
-      console.log("Sending:", send)
+      // console.log("Sending:", send)
       request.post({
         url: 'https://api.github.com/repos/' + repo + '/git/refs?access_token='+ req.session.token,
         headers: {'User-Agent': owner, 'Content-Type': 'application/json'},
@@ -304,13 +319,13 @@ app.use(browserChannel( function(client) {
   stream._write = function(chunk, encoding, callback) {
     if (client.state !== 'closed') {
       client.send(chunk);
-      console.log('received',chunk)
+      // console.log('received',chunk)
     }
     callback();
   };
 
   client.on('message', function(data) {
-    console.log('message',data)
+    // console.log('message',data)
     stream.push(data);
   });
 
@@ -328,3 +343,9 @@ app.use(browserChannel( function(client) {
   return share.listen(stream);
 
 }));
+
+
+
+
+
+
