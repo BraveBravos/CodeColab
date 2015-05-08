@@ -175,18 +175,26 @@ app.post('api/repos/commit', function(req, res){
   console.log('INSIDE COMMIT req.body: ', req.body)
 
   var repo = req.body.repo
+  var path;
   var message; 
-  var tree;
-  var parents;
+  var sha;
+  var content;
 
-  var send = {
+  var send = JSON.stringify({
     message: message,
-    tree: tree,
-    parents: parens
-  }
+    path: path,
+    sha: sha,
+    content: content,
+    branch: 'CODECOLAB'
+  })
+  // request({
+  //   url: 'https://api.github.com/repos/' + repo + '/git/commits?access_token='+ req.session.token,
+  //   headers: {'User-Agent': req.session.passport.user[0].username}
+  // }),  
   request({
-    url: 'https://api.github.com/repos/' + repo + '/git/commits?access_token='+ req.session.token,
+    url: 'https://api.github.com/repos/' + repo + '/contents/' + path + '?access_token='+ req.session.token,
     headers: {'User-Agent': req.session.passport.user[0].username}
+    body: send
   }),
   function(err, resp, body){
     console.log('git commit sent!', body)
@@ -262,7 +270,6 @@ app.post('/branch', function(req, res){
       console.log('INSIDE GIT BRANCH')
       var ref = JSON.parse(body).ref,
           sha = JSON.parse(body).object.sha;
-      // var branchName = 'newBranch'
 
       var send = JSON.stringify({
         ref: 'refs/heads/'+'CODECOLAB', //the new branch name

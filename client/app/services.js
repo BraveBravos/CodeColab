@@ -49,20 +49,26 @@ angular.module('codeColab.services', [])
     })
   }
 
-  var commit = function(message, ref, sha){
+  var commit = function(message){
     var message = message;
-    var parents = []
-    var tree = sha
+    var sha;
+    var content = codeEditor.editor().getValue(),
+        encodedContent = to_b64(content),
+        path;
+
+    var to_b64 = function(str) {
+      return window.btoa(unescape(encodeURIComponent(str)));
+    }
 
     console.log('inside Share.commit()')
-    // console.log("message", message)
+
     return $http({
       method: 'POST',
       url: '/api/repos/commit',
-      params: {message: message, parents: parents, tree: tree}
+      params: {message: message, content: encodedcontent, sha: sha, path:path}
     })
     .then(function(response){
-      console.log('commiting!')
+      console.log('commiting successsss!')
     })
   }
 
