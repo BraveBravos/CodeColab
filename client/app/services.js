@@ -64,9 +64,8 @@ angular.module('codeColab.services', [])
   }
 
 
-var loadShare = function ($scope) {
-  var repo = $scope.selected;
-  // console.log('repp', repo)
+var loadShare = function ($scope, id, data) {
+
 
   // this fires if we already have an existing doc and connection
   if($scope.share){
@@ -78,7 +77,7 @@ var loadShare = function ($scope) {
   var socket = new BCSocket(null, {reconnect: true});
   // console.log('socket',socket)
   var sjs = new sharejs.Connection(socket);
-  var doc = sjs.get('documents', repo);
+  var doc = sjs.get('documents', id);
 
   // console.log('doc',doc)
   doc.subscribe()
@@ -116,7 +115,9 @@ var loadShare = function ($scope) {
     doc.subscribe(function(err) {
       // console.log('subscribed',doc.getSnapshot())
 
-      doc.attachCodeMirror(codeEditor.editor())
+        codeEditor.rightOriginal().setValue(data);
+          doc.attachCodeMirror(codeEditor.editor())
+          codeEditor.editor().setValue(codeEditor.rightOriginal().getValue())
       // console.log('after subscribed',doc.getSnapshot(),codeEditor.editor().getValue())
       
     });
@@ -145,6 +146,20 @@ var loadShare = function ($scope) {
   }
   
   return {sjs:sjs,doc:doc,codeEditor:codeEditor}
+}
+    var loadFile = function ($scope, url, id) {
+    return $http ({
+      method:'POST',
+      url: '/api/files',
+      data: {
+        url: url,
+        fileId: id
+      }
+    })
+    .then (function (data) {
+      loadShare($scope, id, data.data.file)
+    });
+  
 
 }
 
@@ -153,21 +168,9 @@ var loadShare = function ($scope) {
     loadShare: loadShare,
     commit: commit,
     createBranch: createBranch
+    loadFile: loadFile
   }
 })
-
-.factory('FileStruct', function(){
-
-  var fileStruct = function ($scope){
-  
-  };
-
-  return {
-    fileStruct: fileStruct
-  }
-})
-
-
 
 
 

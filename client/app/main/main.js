@@ -8,7 +8,8 @@ angular.module('codeColab.main', [])
   $scope.modalShown = false;
   $scope.repos = [];
   $scope.selectRepo = "";
-  $scope.share;
+
+
 
   $scope.init = function () {
     Share.getRepos($scope);
@@ -28,7 +29,7 @@ angular.module('codeColab.main', [])
     if(!$scope.ref) {
       $scope.createBranch()
     }
-    $scope.share = Share.loadShare($scope);
+
   }
 
   $scope.check = function(){

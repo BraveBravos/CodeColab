@@ -1,6 +1,6 @@
 angular.module('codeColab.fileStruct', [])
 
-.controller('fileStructCtrl', function($scope, $http){
+.controller('fileStructCtrl', function($scope, $http, Share){
 
   var base = 'https://api.github.com/repos'
   var owner = '/BraveBravos'
@@ -36,13 +36,13 @@ angular.module('codeColab.fileStruct', [])
           tree[item.path].top=false
         } else {
           item.path=item.path.slice(divider+1)
-          tree[path].children.push({label:item.path})
+          tree[path].children.push({label:item.path, url: item.url, id: item.sha, children: []})
         }
       })
 
     var results = []
 
-    // parses tree.path into a node label when node is not a "top" 
+    // parses tree.path into a node label when node is not a "top"
     for (var q in tree) {
       if (!tree[q].top) {
         tree[q].label = tree[q].label.slice(tree[q].label.lastIndexOf('/')+1)
@@ -65,13 +65,18 @@ angular.module('codeColab.fileStruct', [])
       }
     }
 
-    // console.log('final tree',results)
-    
+    console.log('final tree',results)
+    console.log('filescope', $scope)
+
     $scope.tree = results;
   })
   .error(function(err) {
 		console.log("error in fileStructCtrl is ", err)
   })
+
+  $scope.loadFile = function(file){
+    Share.loadFile($scope.$parent,file.url, file.id);
+  }
 });
 
 

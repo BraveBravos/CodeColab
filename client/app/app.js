@@ -2,10 +2,10 @@
 
 angular.module('codeColab', [
 	'codeColab.main',
-	'codeColab.services',
   'codeColab.fileStruct',
-	'ngRoute',
-  'angularTreeview'
+  'ngRoute',
+  'angularTreeview',
+	'codeColab.services'
 	])
 
 .config(['$routeProvider', function ($routeProvider) {

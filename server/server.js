@@ -1,6 +1,7 @@
 var express = require('express'),
     connect = require('connect'),
     bodyParser = require ('body-parser'),
+    atob = require('atob'),
     app = express(),
     mongo = require('mongodb'),
     monk =require ('monk'),
@@ -137,7 +138,6 @@ app.get('/api/orgs', function (req, res) {
 
 app.post ('/api/orgs/repos', function (req, res) {
   var org = req.body.org;
-  console.log('org', org)
   request({
     url: 'https://api.github.com/orgs/'+ org + '/repos?access_token='+ req.session.token,
     headers: {'User-Agent': req.session.passport.user[0].username}
@@ -149,6 +149,28 @@ app.post ('/api/orgs/repos', function (req, res) {
       res.status(200).json(data)
     });
 });
+
+app.post('/api/files', function (req, res) {
+  var fileId = req.body.fileId;
+  request ({
+    url: req.body.url+'?access_token='+req.session.token,
+    headers: {'User-Agent': req.session.passport.user[0].username}
+  },
+    function (err, resp, body) {
+      var file = atob(JSON.parse(body).content);
+      docs.sendDoc(db, file, fileId);
+      // docs.setSjs(db, file, fileId);
+      res.status(200).send({file:file});
+    });
+})
+
+app.post('/api/sjs', function (req, res) {
+  var fileId = req.body.fileId,
+      file = req.body.file;
+    docs.setSjs(db, file, fileId);
+    res.sendStatus(200);
+});
+
 
 app.post('api/repos/commit', function(req, res){
   console.log('commit req', req)
