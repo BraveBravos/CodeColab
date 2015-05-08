@@ -1,29 +1,26 @@
 module.exports = {
 
-	getFileStruct : function(req, res){
-		//load the file struct info from GitHub
-		//and convert Base64 to plain text
-		//and load it all into JSON 
-		console.log("getTree in fileStruct.js")	
-		var tmp = 'https://api.github.com/repos/BraveBravos/CodeColab'
-		console.log("req.url is ", req.url)
-		req.url = tmp;
-		req.accepts('json, text');
-		req.protocol('https')
-		// console.log("req.url is now", req.url)
-		console.log("req.body is ", req.body)
-		console.log("res.body is ", res.body)
-		// console.log("res.bodyparser is", res.bodyparser)
-		// console.log("res.data is ", res.data)
-		// console.log("whole response is ", res)
-		// console.log("response headers are ", res.headers)
-		// console.log("request headers are ")
-		// console.log("REQUEST PARAMETERS ", req.params )
-		console.log("maybe json?", res.json)
-		res.send(data);
+	getSHA : function (req, res, next){  //add these later? ($scope, $http)
+	  console.log("req.body in server/fileStruct ", req.body)
+	  // IS THE DATA OBJECT IN THERE??
+	  // var repo = repoName.name.split('/');
+	  // console.log("repo is", repo)    
+	  // $http.get('https://api.github.com/repos/BraveBravos/CodeColab/git/refs/heads/master')
+	  // $http.get('https://api.github.com/repos/SFoskitt/MKS14-n-queens/git/refs/heads/master')
+	  // $http.get('https://api.github.com/repos/' + repo[0] + '/' + repo[1] + '/git/refs/heads/master')
+	  .success(function(data){
+	  	// console.log(" this SUCCESS should not show up")
+	    console.log("data from api.github.refs in server/fileStruct.js", data)
+	  })
+	  .error(function(err){
+	    console.log("error inside server/fileStruct.getSHA is ", err)
+	  })
 	},
+	  // console.log("repoName in fileStruct.js/getSHA", repoName)
 
-	drawTree : function(){
-		
+	getTree : function ($scope){
+	  //move some functionality from below into here - 
+	  //the controller below should be just the info that goes to template
 	}
+
 }

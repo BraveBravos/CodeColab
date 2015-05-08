@@ -1,88 +1,84 @@
 angular.module('codeColab.fileStruct', [])
 
-.controller('fileStructCtrl', function($scope, $http, Share){
+.factory ('FileStructDo', function ($http){
+  
+  var getTree = function ($scope, repoName) {
 
-  var base = 'https://api.github.com/repos'
-  var owner = '/BraveBravos'
-  var repo = '/CodeColab'
-  var more = '/git/trees/'
-  var sha = '0c7c0ec2bba26acc8e8b69a1ca242931610abf79'
-  var last = '?recursive=1&access_token=9893007403fdea813ce0479274aed5a892dccdf5' //<<< HEY HEY REMOVE MY KEY LATER - TODO
-  var concat = base + owner + repo + more + sha + last
-  var tree = {};
+    var repo = repoName.name.split('/')
+    return $http({
+      method: 'POST',
+      url: '/api/fileStruct/tree',
+      data: {repo: repo}
+    })
+    .then(function (data) {
+    console.log("BIG TREE BODY FROM SERVER ", data.data)
+    var bigTree = data.data;
+    var tree = {};
 
-  $http.get(concat)
-  // $http.get('/api/fileStruct')  <-- this *IS* the better way to do it but doesn't work this way on localhost
-    .success(function(data) {
+    // operate on each of the objects in the data.data array
+    bigTree.forEach(function(item) {
 
-      bigTree = data.tree;
-      // console.log("the bigTree is ", bigTree)
-
-      var tree = {};
-
-      bigTree.forEach(function(item) {
-
-        if (item.type === 'tree' || item.path.lastIndexOf('/')===-1) {
-          tree[item.path] = {top:true, label:item.path, id:item.sha, url:item.url, collapsed:true, children:[]}
-        }
-
-        var divider = item.path.lastIndexOf('/');
-
-        if(divider<0){return}
-        var path = item.path.slice(0,divider)
-        if (item.type === 'tree') {
-          // console.log('tree[item.path]', tree[item.path])
-          tree[path].children.push(tree[item.path])
-          tree[item.path].top=false
-        } else {
-          item.path=item.path.slice(divider+1)
-          tree[path].children.push({label:item.path, url: item.url, id: item.sha, children: []})
-        }
-      })
-
-    var results = []
-
-    // parses tree.path into a node label when node is not a "top"
-    for (var q in tree) {
-      if (!tree[q].top) {
-        tree[q].label = tree[q].label.slice(tree[q].label.lastIndexOf('/')+1)
+      if (item.type === 'tree' || item.path.lastIndexOf('/')===-1) {
+        tree[item.path] = {top:true, label:item.path, id:item.sha, url:item.url, collapsed:true, children:[]}
       }
-    }
 
-    // indicate node is either folder or file for sorting in the template
-    for (var q in tree){
-      if (tree[q].children.length === 0){
-        tree[q].type = 'file'
+      var divider = item.path.lastIndexOf('/');
+
+      if(divider<0){return}
+
+      var path = item.path.slice(0,divider)
+      
+      if (item.type === 'tree') {
+        // console.log('tree[item.path]', tree[item.path])
+        tree[path].children.push(tree[item.path])
+        tree[item.path].top=false
       } else {
-        tree[q].type = 'folder'
+        item.path=item.path.slice(divider+1)
+        tree[path].children.push({label:item.path, url:item.url, id:item.sha, children:[]})
       }
+    })
+
+  var results = []
+
+  // parses tree.path into a node label when node is not a "top" 
+  for (var q in tree) {
+    if (!tree[q].top) {
+      tree[q].label = tree[q].label.slice(tree[q].label.lastIndexOf('/')+1)
     }
+  }
 
-    // push node to results
-    for (var q in tree) {
-      if (tree[q].top) {
-        results.push(tree[q])
-      }
+  // indicate node is either folder or file for sorting in the template
+  for (var q in tree){
+    if (tree[q].children.length === 0){
+      tree[q].type = 'file'
+    } else {
+      tree[q].type = 'folder'
     }
+  }
 
-    console.log('final tree',results)
-    console.log('filescope', $scope)
+  // push node to results
+  for (var q in tree) {
+    if (tree[q].top) {
+      results.push(tree[q])
+    }
+  }
 
-    $scope.tree = results;
-  })
-  .error(function(err) {
-		console.log("error in fileStructCtrl is ", err)
-  })
+  console.log('final tree',results)
+  $scope.tree = results;
+  // return results;
+  
+  }) // end of .then(function(bigTree))
 
+}  // end of getTree function
+
+
+  return { getTree : getTree}
+
+})  // end of FileStructDo factory
+
+.controller('fileStructCtrl', function ($http, $scope, Share){
+ 
   $scope.loadFile = function(file){
     Share.loadFile($scope.$parent,file.url, file.id);
   }
-});
-
-
-
-
-
-
-
-
+})

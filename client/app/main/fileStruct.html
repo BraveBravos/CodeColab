@@ -1,12 +1,14 @@
 <!-- fileStruct template partial containing the file structure -->
 
 <ng-app="codeColab" ng-controller = "fileStructCtrl">
-<h2 class='fa-inverse'>Add GitHub repo name here</h2>
+<!-- <ng-app="codeColab" ng-controller = "codeCtrl"> -->
+
+<p class='fa-inverse'>Repository File Structure:</p> 
 
 <div
     data-angular-treeview="true"
     data-tree-id="ghTree"
-    data-tree-model="tree | orderBy: ['-type','name'] "
+    data-tree-model="tree | orderBy: ['-type','label'] "
     data-node-id="id"
     data-node-label="label"
     data-node-children="children"
