@@ -45,7 +45,7 @@ app.use(express.static(shareCodeMirror.scriptsDir));
 
 app.use(bodyParser.json());
 app.use (cookieParser());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({extended: true,limit: 1000000}));
 app.use(session({
   secret: 'oursecret',
   saveUninitialized: true,
