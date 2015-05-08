@@ -67,7 +67,7 @@ angular.module('codeColab.services', [])
   }
 
 
-var loadShare = function ($scope) {
+var loadShare = function ($scope, id, data) {
 
   var repo = $scope.selected;
   // console.log('repp', repo)
