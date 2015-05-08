@@ -5,10 +5,12 @@ angular.module('codeColab.services', [])
 
   var getRepos = function ($scope) {
     return $http({
+
       method: 'GET',
       url: '/api/repos',
     })
     .then(function (repos) {
+      // console.log("raw repos ", repos)
       $scope.repos = $scope.repos.concat(repos.data);
       return $http({
         method: 'GET',
@@ -24,6 +26,7 @@ angular.module('codeColab.services', [])
           .then(function (orgRepos){
             orgRepos.data.forEach(function (orgRepo) {
               $scope.repos.push(orgRepo);
+
             })
           })
         })
@@ -65,6 +68,9 @@ angular.module('codeColab.services', [])
 
 
 var loadShare = function ($scope, id, data) {
+
+  var repo = $scope.selected;
+  // console.log('repp', repo)
 
 
   // this fires if we already have an existing doc and connection
@@ -164,6 +170,7 @@ var loadShare = function ($scope, id, data) {
 
 }
 
+
   return {
     getRepos : getRepos,
     loadShare: loadShare,
@@ -172,9 +179,6 @@ var loadShare = function ($scope, id, data) {
     loadFile: loadFile
   }
 })
-
-
-
 
 
 

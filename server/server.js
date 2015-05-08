@@ -69,10 +69,6 @@ app.get('/auth/github/callback', function (req, res, next) {
   next();
 })
 
-
-app.get('/api/fileStruct', fileStruct.getFileStruct);
-
-
 app.listen(app.get('port'), function() {
   console.log('Node app running on port', app.get('port'));
 });
@@ -116,9 +112,12 @@ app.get('/api/repos', function (req, res) {
   },
   function(err,resp,body) {
     var data = JSON.parse(body).map(function (repo) {
+      // console.log("body from server.api/repos", body)
+      // console.log("repo from server.api/repos", repo)
       return {name: repo.full_name, id: repo.id};
     })
       res.status(200).json(data)
+      // res.status(200).data
   });
 });
 
@@ -173,11 +172,40 @@ app.post('/api/sjs', function (req, res) {
 
 
 app.post('api/repos/commit', function(req, res){
-  console.log('commit req', req)
+  // console.log('commit req', req)
   //request({
     //will go to github
   //})
 })
+
+app.post ('/api/fileStruct/tree', function (req, res) {
+  var owner = req.body.repo[0];
+  var repo = req.body.repo[1];
+  request({
+    url: 'https://api.github.com/repos/' +owner+ '/' +repo+ '/git/refs/heads/master?access_token='+ req.session.token,
+    headers: {'User-Agent': req.session.passport.user[0].username}
+  },
+  function (err, resp, body) {
+    var data = JSON.parse(body);
+    var sha = data.object.sha;
+    // console.log("sha", sha)
+    var base = 'https://api.github.com/repos'
+    var more = '/git/trees/'
+    var last = '?recursive=1&access_token='
+    var concat = base + '/' +owner+ '/' + repo + more + sha + last + req.session.token
+    
+    request({
+      url: concat,
+      headers: {'User-Agent': req.session.passport.user[0].username}
+      },
+      function (err, resp, body){
+        // console.log("BODY FOR TREE", body)
+        var data = JSON.parse(body)
+        res.status(200).json(data.tree)
+      }
+    )   // this is a request inside of a request, so the ) may need to move
+  });
+});
 
 app.get('/auth/github',
   passport.authenticate('github', {scope: ['repo', 'user', 'admin:public_key']})
@@ -190,12 +218,6 @@ app.get('/auth/github/callback', passport.authenticate(
 app.get('/api/auth', function(req, res){
   res.status(200).json(req.isAuthenticated());
 })
-// app.get('/test', function(req, res){
-//   res.status(200).json({
-//     isAuth: req.isAuthenticated(),
-//     user: req.user || 'none'
-//   });
-// })
 
 app.get('/logout', function (req, res){
   //req.session.destroy()
@@ -207,7 +229,7 @@ app.post('/branch', function(req, res){
   var owner=req.session.username,
       repo = req.body.repo;
 
-  console.log('/branch: ',repo)
+  // console.log('/branch: ',repo)
   // console.log('/branch owner: ', owner)
 
   //get request to github for master commit SHA code
@@ -304,10 +326,5 @@ app.use(browserChannel( function(client) {
   });
 
   return share.listen(stream);
+
 }));
-
-
-
-
-
-
