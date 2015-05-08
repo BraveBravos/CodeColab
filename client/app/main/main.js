@@ -32,7 +32,6 @@ angular.module('codeColab.main', [])
     if(!$scope.ref) {
       $scope.createBranch()
     }
-
   }
 
   $scope.check = function(){

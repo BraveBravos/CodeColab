@@ -42,6 +42,7 @@ angular.module('codeColab.fileStruct', [])
 
   // parses tree.path into a node label when node is not a "top" 
   for (var q in tree) {
+	tree[q].filepath = tree[q].label
     if (!tree[q].top) {
       tree[q].label = tree[q].label.slice(tree[q].label.lastIndexOf('/')+1)
     }
@@ -79,6 +80,6 @@ angular.module('codeColab.fileStruct', [])
 .controller('fileStructCtrl', function ($http, $scope, Share){
  
   $scope.loadFile = function(file){
-    Share.loadFile($scope.$parent,file.url, file.id);
+    Share.loadFile($scope.$parent,file.url, file.id, file.filepath);
   }
 })

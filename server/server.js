@@ -171,14 +171,14 @@ app.post('/api/sjs', function (req, res) {
 });
 
 
-app.post('api/repos/commit', function(req, res){
+app.post('/api/repos/commit', function(req, res){
   console.log('INSIDE COMMIT req.body: ', req.body)
 
-  var repo = req.body.repo
-  var path;
-  var message; 
-  var sha;
-  var content;
+  var repo = req.body.repo,
+      path= req.body.path,
+      message= req.body.message,
+      sha=req.body.sha,
+      content = req.body.content;
 
   var send = JSON.stringify({
     message: message,
@@ -187,10 +187,8 @@ app.post('api/repos/commit', function(req, res){
     content: content,
     branch: 'CODECOLAB'
   })
-  // request({
-  //   url: 'https://api.github.com/repos/' + repo + '/git/commits?access_token='+ req.session.token,
-  //   headers: {'User-Agent': req.session.passport.user[0].username}
-  // }),  
+
+  console.log('sending: ',send) 
   request({
     url: 'https://api.github.com/repos/' + repo + '/contents/' + path + '?access_token='+ req.session.token,
     headers: {'User-Agent': req.session.passport.user[0].username},
@@ -284,9 +282,19 @@ app.post('/branch', function(req, res){
         body: send
       },
         function(err, resp, body){
-          if (err) console.log('ERROR:',err)
-          console.log('success!', body)
-          res.send(body) //send back to client to use for commits
+          if (resp.statusCode === 422) { //branch exists 
+            console.log('Entering existing CODECOLAB branch', body) 
+            request.get({
+              url: 'https://api.github.com/repos/' + repo +'/git/refs/heads/CODECOLAB?access_token='+ req.session.token,
+              headers: {'User-Agent': owner}
+            },
+            function(err, resp, body){
+              res.send(body)
+            })
+          } else {
+            console.log('New Branch Created!', body)
+            res.send(body) //send back to client to use for commits
+          }
         }
       )
     }

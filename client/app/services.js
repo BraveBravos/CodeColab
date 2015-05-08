@@ -3,6 +3,8 @@ angular.module('codeColab.services', [])
 
 .factory('Share', function ($http) {
   var path;
+  var ce;
+  var id;
 
   var getRepos = function ($scope) {
     return $http({
@@ -51,22 +53,29 @@ angular.module('codeColab.services', [])
   }
 
   var commit = function(message){
-    var message = message;
-    var sha;
-    var content = codeEditor.editor().getValue(),
+    var message = message,
+        content = ce.editor().getValue(),
         encodedContent = to_b64(content),
-        path;
+        path = this.path,
+        sha = this.id;
 
-    var to_b64 = function(str) {
+    console.log('sha',sha) // fileId !== sha -__-
+
+    function to_b64(str) {
       return window.btoa(unescape(encodeURIComponent(str)));
     }
 
     console.log('inside Share.commit()')
 
-    return $http({
+    return $http({            //not sending
       method: 'POST',
       url: '/api/repos/commit',
-      params: {message: message, content: encodedcontent, sha: sha, path:path}
+      data: {
+        message: message, 
+        content: encodedContent, 
+        sha:sha, 
+        path:path
+      }
     })
     .then(function(response){
       console.log('commiting successsss!')
@@ -135,10 +144,9 @@ angular.module('codeColab.services', [])
         // the subscription takes hold, which also copies it into the Docs database.
         if(doc.getSnapshot()==='') {
           codeEditor.editor().setValue(codeEditor.rightOriginal().getValue())
-        }
-        // console.log('after subscribed',doc.getSnapshot(),codeEditor.editor().getValue())
-
-      });
+      // console.log('after subscribed',doc.getSnapshot(),codeEditor.editor().getValue())
+      ce=codeEditor;
+    });
 
       // codeEditor.editor().on('change', function(change) {
       //   console.log('changed',change)
@@ -168,9 +176,9 @@ angular.module('codeColab.services', [])
 
   return {sjs:sjs,doc:doc,codeEditor:codeEditor}
 }
-    var loadFile = function ($scope, url, id) {
-    path;
-    // console.log('currentURL',currentURL)
+    var loadFile = function ($scope, url, id, path) {
+    this.path = path
+    this.id = id;
 
     return $http ({
       method:'POST',
