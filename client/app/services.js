@@ -107,9 +107,11 @@ var loadShare = function ($scope, id, data) {
     var newEditor = CodeMirror.Doc(doc.getSnapshot(),'javascript')
     // $scope.share.codeEditor.editor().swapDoc(newEditor)
     if($scope.share) {
+      $scope.share.codeEditor.editor().setValue(doc.getSnapshot())
       $scope.share.codeEditor.editor().swapDoc(newEditor)
     } else {
-     codeEditor.editor().swapDoc(newEditor)
+      codeEditor.editor().setValue(doc.getSnapshot())
+      codeEditor.editor().swapDoc(newEditor)
     }
 
     console.log('ready')
@@ -117,8 +119,8 @@ var loadShare = function ($scope, id, data) {
       // console.log('subscribed',doc.getSnapshot())
 
         codeEditor.rightOriginal().setValue(data);
-          doc.attachCodeMirror(codeEditor.editor())
-          codeEditor.editor().setValue(codeEditor.rightOriginal().getValue())
+        doc.attachCodeMirror(codeEditor.editor())
+        // codeEditor.editor().setValue(codeEditor.rightOriginal().getValue())
       // console.log('after subscribed',doc.getSnapshot(),codeEditor.editor().getValue())
 
     });
