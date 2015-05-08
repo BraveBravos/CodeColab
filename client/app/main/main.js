@@ -1,7 +1,7 @@
 // var codeColab = angular.module('codeColab.main', [])
 angular.module('codeColab.main', [])
 
-.controller('codeCtrl', function ($scope, $location, Share) {
+.controller('codeCtrl', function ($scope, $location, Share, FileStructGets) {
   $scope.fileStruct = {url: "app/main/fileStruct.html"};
   $scope.videochat = {url : "app/videochat/videochat.html"};
   $scope.modalShown = false;
@@ -25,7 +25,7 @@ angular.module('codeColab.main', [])
 
   $scope.saveRepo = function(repo) {
     $scope.selected = repo.name;
-
+    $scope.tree = FileStructGets.getTree(repo)
     if(!$scope.ref) {
       $scope.createBranch()
     }

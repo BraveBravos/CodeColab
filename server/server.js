@@ -172,13 +172,13 @@ app.post('/api/sjs', function (req, res) {
 
 
 app.post('api/repos/commit', function(req, res){
-  console.log('commit req', req)
+  // console.log('commit req', req)
   //request({
     //will go to github
   //})
 })
 
-app.post ('/api/fileStruct/sha', function (req, res) {
+app.post ('/api/fileStruct/tree', function (req, res) {
   var owner = req.body.repo[0];
   var repo = req.body.repo[1];
   request({
@@ -188,7 +188,7 @@ app.post ('/api/fileStruct/sha', function (req, res) {
   function (err, resp, body) {
     var data = JSON.parse(body);
     var sha = data.object.sha;
-    console.log("sha", sha)
+    // console.log("sha", sha)
     var base = 'https://api.github.com/repos'
     var more = '/git/trees/'
     var last = '?recursive=1&access_token='
@@ -199,7 +199,7 @@ app.post ('/api/fileStruct/sha', function (req, res) {
       headers: {'User-Agent': req.session.passport.user[0].username}
       },
       function (err, resp, body){
-        console.log("BODY FOR TREE", body)
+        // console.log("BODY FOR TREE", body)
         var data = JSON.parse(body)
         res.status(200).json(data.tree)
       }
@@ -229,7 +229,7 @@ app.post('/branch', function(req, res){
   var owner=req.session.username,
       repo = req.body.repo;
 
-  console.log('/branch: ',repo)
+  // console.log('/branch: ',repo)
   // console.log('/branch owner: ', owner)
 
   //get request to github for master commit SHA code
