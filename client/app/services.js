@@ -2,6 +2,7 @@ angular.module('codeColab.services', [])
 
 
 .factory('Share', function ($http) {
+  var path;
 
   var getRepos = function ($scope) {
     return $http({
@@ -165,7 +166,12 @@ angular.module('codeColab.services', [])
     $scope.share = {sjs:sjs,doc:doc,codeEditor:codeEditor}
   }
 
-  var loadFile = function ($scope, url, id) {
+  return {sjs:sjs,doc:doc,codeEditor:codeEditor}
+}
+    var loadFile = function ($scope, url, id) {
+    path;
+    // console.log('currentURL',currentURL)
+
     return $http ({
       method:'POST',
       url: '/api/files',
@@ -177,7 +183,7 @@ angular.module('codeColab.services', [])
     .then (function (data) {
       loadShare($scope, id, data.data.file)
     });
-  }
+}
 
 
   return {
