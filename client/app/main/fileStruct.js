@@ -1,12 +1,8 @@
-angular.module('fileStruct', [])
+angular.module('codeColab.fileStruct', [])
 
-.controller('fileStructCtrl', function ($scope, $http){
- 
-})
-
-.factory ('FileStructGets', function ($scope, $http){
+.factory ('FileStructDo', function ($http){
   
-  var getTree = function (repoName) {
+  var getTree = function ($scope, repoName) {
 
     var repo = repoName.name.split('/')
     return $http({
@@ -19,6 +15,7 @@ angular.module('fileStruct', [])
     var bigTree = data.data;
     var tree = {};
 
+    // operate on each of the objects in the data.data array
     bigTree.forEach(function(item) {
 
       if (item.type === 'tree' || item.path.lastIndexOf('/')===-1) {
@@ -66,41 +63,22 @@ angular.module('fileStruct', [])
     }
   }
 
-  $scope.tree = results;
-  return results;
   console.log('final tree',results)
+  $scope.tree = results;
+  // return results;
   
   }) // end of .then(function(bigTree))
 
-}
-  return { getTree : getTree}
-})
+}  // end of getTree function
 
+
+  return { getTree : getTree}
+
+})  // end of FileStructDo factory
+
+.controller('fileStructCtrl', function ($http, $scope, Share){
+ 
   $scope.loadFile = function(file){
     Share.loadFile($scope.$parent,file.url, file.id);
   }
-});
-.factory ('FileStructGets', function ($http){
-  
- //  var getSHA = function (repoName) {
-
- //    var repo = repoName.name.split('/')
- //    return $http({
- //      method: 'POST',
- //      url: '/api/fileStruct/sha',
- //      data: {repo: repo}
- //    })
- //    .then(function (bigTree) {
- //      // console.log("TREE BODY FROM SERVER ", bigTree)
- //      fileStructCtrl.drawTree(bigTree)
- //    })
- // }
-
-  // return { getSHA:getSHA }
-
 })
-
-
-
-
-
