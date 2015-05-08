@@ -37,7 +37,7 @@ angular.module('codeColab.main', [])
   }
 
   $scope.commit = function(message){
-    Share.commit(message, $scope.ref, $scope.sha) 
+    Share.commit(message, $scope.ref, $scope.sha)
   }
 
   $scope.init();

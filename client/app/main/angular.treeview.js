@@ -86,7 +86,9 @@
 
 							//set currentNode
 							scope[treeId].currentNode = selectedNode;
-							scope.loadFile(scope[treeId].currentNode)
+							if (scope[treeId].currentNode.type !== 'folder') {
+								scope.loadFile(scope[treeId].currentNode)
+							}
 						};
 					}
 
@@ -96,18 +98,3 @@
 			}
 		};
 	}]);
-<<<<<<< HEAD
-})( angular );
-
-
-
-
-
-
-
-
-
-
-
-=======
->>>>>>> Loads files into codeEditor

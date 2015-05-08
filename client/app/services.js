@@ -42,7 +42,7 @@ angular.module('codeColab.services', [])
     })
     .then(function(branchInfo){
       console.log('New branch created!')
-      return branchInfo  //return ref and sha 
+      return branchInfo  //return ref and sha
     })
   }
 
@@ -83,8 +83,8 @@ var loadShare = function ($scope, id, data) {
   doc.subscribe()
 
   //this is the element we have selected to "turn" into a CodeMirror
-  var target = document.getElementById('area') 
-  
+  var target = document.getElementById('area')
+
   // //when we change an element to a CodeMirror, we don't really change it - we actually append
   // //the CodeMirror.  This code deletes any children that already exist.
   // var children = target.getElementsByClassName('CodeMirror-merge')
@@ -106,11 +106,11 @@ var loadShare = function ($scope, id, data) {
     var newEditor = CodeMirror.Doc(doc.getSnapshot(),'javascript')
     // $scope.share.codeEditor.editor().swapDoc(newEditor)
     if($scope.share) {
-      $scope.share.codeEditor.editor().swapDoc(newEditor)  
+      $scope.share.codeEditor.editor().swapDoc(newEditor)
     } else {
      codeEditor.editor().swapDoc(newEditor)
     }
-    
+
     console.log('ready')
     doc.subscribe(function(err) {
       // console.log('subscribed',doc.getSnapshot())
@@ -119,16 +119,16 @@ var loadShare = function ($scope, id, data) {
           doc.attachCodeMirror(codeEditor.editor())
           codeEditor.editor().setValue(codeEditor.rightOriginal().getValue())
       // console.log('after subscribed',doc.getSnapshot(),codeEditor.editor().getValue())
-      
+
     });
-      
+
     // codeEditor.editor().on('change', function(change) {
     //   console.log('changed',change)
     // })
     // codeEditor.editor().on('update', function() {
     //   console.log('updated')
     // })
-    
+
 
   });
 
@@ -144,7 +144,7 @@ var loadShare = function ($scope, id, data) {
   if($scope.share) {
     return {sjs:sjs,doc:doc,codeEditor:$scope.share.codeEditor}
   }
-  
+
   return {sjs:sjs,doc:doc,codeEditor:codeEditor}
 }
     var loadFile = function ($scope, url, id) {
@@ -157,9 +157,9 @@ var loadShare = function ($scope, id, data) {
       }
     })
     .then (function (data) {
-      loadShare($scope, id, data.data.file)
+      $scope.share = loadShare($scope, id, data.data.file)
     });
-  
+
 
 }
 
@@ -167,7 +167,7 @@ var loadShare = function ($scope, id, data) {
     getRepos : getRepos,
     loadShare: loadShare,
     commit: commit,
-    createBranch: createBranch
+    createBranch: createBranch,
     loadFile: loadFile
   }
 })

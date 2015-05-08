@@ -19,7 +19,7 @@ module.exports = {
     collection.find({id: fileId}, function (err, found){
       if (found.length!==0) {
 
-        console.log('not err', found);
+        // console.log('not err', found);
 
         collection.update({id: fileId},
           {$set:
@@ -38,13 +38,13 @@ module.exports = {
       }
     })
   },
- setSjs : function(db, file, fileId) {
-  console.log('updating', file);
-   var sjsFile = DB.collection('documents').find({_id: fileId});
-   sjsFile.on('data', function (newDoc){
-      DB.collection('documents').update({_id: fileId}, {$set: {_data: file}}) = file;
-   })
-  },
+ // setSjs : function(db, file, fileId) {
+ //  console.log('updating', file);
+ //   var sjsFile = DB.collection('documents').find({_id: fileId});
+ //   sjsFile.on('data', function (newDoc){
+ //      DB.collection('documents').update({_id: fileId}, {$set: {_data: file}}) = file;
+ //   })
+ //  },
 
   getDoc : function (req, cb) {
     var db = req.db,
