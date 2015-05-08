@@ -49,7 +49,7 @@
     "phantomjs": "^1.9.16"
   },
   "engines": {
-    "node": "0.11.9"
+    "node": "0.12.2"
   },
   "repository": {
     "type": "git",
