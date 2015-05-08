@@ -67,6 +67,7 @@ angular.module('codeColab.services', [])
   }
 
 
+
   var loadShare = function ($scope, id, data) {
 
     // this fires if we already have an existing doc and connection
