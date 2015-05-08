@@ -1,9 +1,22 @@
 angular.module('fileStruct', [])
 
-.controller('fileStructCtrl', function($scope, $http){
+.controller('fileStructCtrl', function ($scope, $http){
+ 
+})
 
-  var drawTree = function (bigTree) {
+.factory ('FileStructGets', function ($scope, $http){
+  
+  var getTree = function (repoName) {
 
+    var repo = repoName.name.split('/')
+    return $http({
+      method: 'POST',
+      url: '/api/fileStruct/tree',
+      data: {repo: repo}
+    })
+    .then(function (data) {
+    console.log("BIG TREE BODY FROM SERVER ", data.data)
+    var bigTree = data.data;
     var tree = {};
 
     bigTree.forEach(function(item) {
@@ -53,38 +66,14 @@ angular.module('fileStruct', [])
     }
   }
 
+  $scope.tree = results;
+  return results;
   console.log('final tree',results)
   
-  $scope.tree = results;
+  }) // end of .then(function(bigTree))
+
 }
-
-
- var getSHA = function (repoName) {
-
-   var repo = repoName.name.split('/')
-   return $http({
-     method: 'POST',
-     url: '/api/fileStruct/sha',
-     data: {repo: repo}
-   })
-   .then(function (bigTree) {
-     // console.log("TREE BODY FROM SERVER ", bigTree)
-     fileStructCtrl.drawTree(bigTree)
-   })
-}
-
-    console.log('final tree',results)
-    console.log('filescope', $scope)
-
-    $scope.tree = results;
-  })
-  .error(function(err) {
-		console.log("error in fileStructCtrl is ", err)
-  })
-
-
-return { getSHA : getSHA }
-
+  return { getTree : getTree}
 })
 
   $scope.loadFile = function(file){
