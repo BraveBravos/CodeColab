@@ -42,7 +42,7 @@ angular.module('codeColab.services', [])
     })
     .then(function(branchInfo){
       console.log('New branch created!')
-      return branchInfo  //return ref and sha 
+      return branchInfo  //return ref and sha
     })
   }
 
@@ -64,12 +64,12 @@ angular.module('codeColab.services', [])
   }
 
 
-var loadShare = function ($scope) {
-  var repo = $scope.selected;
-  // console.log('repp', repo)
+var loadShare = function ($scope, id, data) {
+
 
   // this fires if we already have an existing doc and connection
   if($scope.share){
+    console.log('disconnecting')
     $scope.share.doc.unsubscribe()
     $scope.share.sjs.disconnect()
   }
@@ -78,14 +78,14 @@ var loadShare = function ($scope) {
   var socket = new BCSocket(null, {reconnect: true});
   // console.log('socket',socket)
   var sjs = new sharejs.Connection(socket);
-  var doc = sjs.get('documents', repo);
+  var doc = sjs.get('documents', id);
 
   // console.log('doc',doc)
   doc.subscribe()
 
   //this is the element we have selected to "turn" into a CodeMirror
-  var target = document.getElementById('area') 
-  
+  var target = document.getElementById('area')
+
   // //when we change an element to a CodeMirror, we don't really change it - we actually append
   // //the CodeMirror.  This code deletes any children that already exist.
   // var children = target.getElementsByClassName('CodeMirror-merge')
@@ -107,27 +107,29 @@ var loadShare = function ($scope) {
     var newEditor = CodeMirror.Doc(doc.getSnapshot(),'javascript')
     // $scope.share.codeEditor.editor().swapDoc(newEditor)
     if($scope.share) {
-      $scope.share.codeEditor.editor().swapDoc(newEditor)  
+      $scope.share.codeEditor.editor().swapDoc(newEditor)
     } else {
      codeEditor.editor().swapDoc(newEditor)
     }
-    
+
     console.log('ready')
     doc.subscribe(function(err) {
       // console.log('subscribed',doc.getSnapshot())
 
-      doc.attachCodeMirror(codeEditor.editor())
+        codeEditor.rightOriginal().setValue(data);
+          doc.attachCodeMirror(codeEditor.editor())
+          codeEditor.editor().setValue(codeEditor.rightOriginal().getValue())
       // console.log('after subscribed',doc.getSnapshot(),codeEditor.editor().getValue())
-      
+
     });
-      
+
     // codeEditor.editor().on('change', function(change) {
     //   console.log('changed',change)
     // })
     // codeEditor.editor().on('update', function() {
     //   console.log('updated')
     // })
-    
+
 
   });
 
@@ -143,8 +145,22 @@ var loadShare = function ($scope) {
   if($scope.share) {
     return {sjs:sjs,doc:doc,codeEditor:$scope.share.codeEditor}
   }
-  
+
   return {sjs:sjs,doc:doc,codeEditor:codeEditor}
+}
+    var loadFile = function ($scope, url, id) {
+    return $http ({
+      method:'POST',
+      url: '/api/files',
+      data: {
+        url: url,
+        fileId: id
+      }
+    })
+    .then (function (data) {
+      $scope.share = loadShare($scope, id, data.data.file)
+    });
+
 
 }
 
@@ -152,22 +168,10 @@ var loadShare = function ($scope) {
     getRepos : getRepos,
     loadShare: loadShare,
     commit: commit,
-    createBranch: createBranch
+    createBranch: createBranch,
+    loadFile: loadFile
   }
 })
-
-.factory('FileStruct', function(){
-
-  var fileStruct = function ($scope){
-  
-  };
-
-  return {
-    fileStruct: fileStruct
-  }
-})
-
-
 
 
 

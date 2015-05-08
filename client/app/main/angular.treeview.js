@@ -22,7 +22,7 @@
 	</div>
 */
 
-(function ( angular ) {
+
 	'use strict';
 
 	angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', function( $compile ) {
@@ -31,7 +31,7 @@
 			link: function ( scope, element, attrs ) {
 				//tree id
 				var treeId = attrs.treeId;
-			
+
 				//tree model
 				var treeModel = attrs.treeModel;
 
@@ -62,7 +62,7 @@
 
 					//root node
 					if( attrs.angularTreeview ) {
-					
+
 						//create tree object if not exists
 						scope[treeId] = scope[treeId] || {};
 
@@ -86,6 +86,9 @@
 
 							//set currentNode
 							scope[treeId].currentNode = selectedNode;
+							if (scope[treeId].currentNode.type !== 'folder') {
+								scope.loadFile(scope[treeId].currentNode)
+							}
 						};
 					}
 
@@ -95,15 +98,3 @@
 			}
 		};
 	}]);
-})( angular );
-
-
-
-
-
-
-
-
-
-
-

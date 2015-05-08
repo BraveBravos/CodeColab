@@ -1,23 +1,21 @@
+
+
 module.exports = {
 
-  sendDoc : function(data) {
-    var db = data.db,
-        doc = data.body.doc,
-        githubId = data.githubId;
 
-    console.log('data', data.githubId)
 
-    var collection = db.get('documents');
-    collection.find({githubId: githubId}, function (err, found){
+  sendDoc : function(db, file, fileId) {
+
+
+    var collection = db.get('origDocuments');
+    collection.find({id: fileId}, function (err, found){
       if (found.length!==0) {
 
-        console.log('not err', found);
-        console.log('update', doc)
+        // console.log('not err', found);
 
-        collection.update({githubId: githubId},
+        collection.update({id: fileId},
           {$set:
-            { left: doc.left,
-              right: doc.right }
+            { data: file }
           },
           function (err) {
             if (err) console.log('update error');
@@ -26,13 +24,13 @@ module.exports = {
       } else {
         console.log('err');
         collection.insert({
-          left: doc.left,
-          right: doc.right,
-          githubId: githubId
+          data: file,
+          id: fileId
         })
       }
     })
   },
+
 
   getDoc : function (req, cb) {
     var db = req.db,
@@ -43,7 +41,7 @@ module.exports = {
         // console.log('heres a document', found)
         cb(found[0]);
       } else {
-        console.log('doesnt esixst')
+        console.log('doesnt exist')
         collection.find({githubId: 'default'}, function (err, found) {
           cb (found[0]);
         })
