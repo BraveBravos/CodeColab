@@ -69,6 +69,7 @@ var loadShare = function ($scope, id, data) {
 
   // this fires if we already have an existing doc and connection
   if($scope.share){
+    console.log('disconnecting')
     $scope.share.doc.unsubscribe()
     $scope.share.sjs.disconnect()
   }

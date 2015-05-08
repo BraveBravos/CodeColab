@@ -1,12 +1,4 @@
-var mongod = require('mongodb'),
-   DB;
-  mongod.connect('mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810', function (err, db){
-    if (err) {
-      console.log ('mongo error');
-    } else {
-      DB = db;
-    }
-  })
+
 
 module.exports = {
 
@@ -38,13 +30,7 @@ module.exports = {
       }
     })
   },
- // setSjs : function(db, file, fileId) {
- //  console.log('updating', file);
- //   var sjsFile = DB.collection('documents').find({_id: fileId});
- //   sjsFile.on('data', function (newDoc){
- //      DB.collection('documents').update({_id: fileId}, {$set: {_data: file}}) = file;
- //   })
- //  },
+
 
   getDoc : function (req, cb) {
     var db = req.db,
