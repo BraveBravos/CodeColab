@@ -72,6 +72,7 @@ angular.module('codeColab.services', [])
     })
     .then(function(response){
       console.log('commiting successsss!')
+      alert('succesful commit!')
     })
   }
 
