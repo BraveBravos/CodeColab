@@ -114,7 +114,7 @@ function(accessToken, refreshToken, profile, done) {
   console.log('accessToken', accessToken);
   console.log('profile', profile);
   // User.findOrCreate({ githubId: profile.id }, function (err, user) {
-  //   return done(err, user);
+    // return done(err, user);
   // });
 }));
 
@@ -169,7 +169,6 @@ app.post('/api/files', function (req, res) {
     headers: {'User-Agent': req.session.passport.user[0].username}
   },
     function (err, resp, body) {
-      console.log('filebody', body)
       var fileSha=JSON.parse(body).sha
       var file = atob(JSON.parse(body).content);
       docs.sendDoc(db, file, fileId, fileSha);
@@ -191,7 +190,6 @@ app.post('/api/repos/commit', function(req, res){
   var path = req.body.path,
       message = req.body.message,
       sha=req.body.sha,
-      // encodedContent = req.body.encoded,
       content = req.body.content;
 
   var client = github.client(req.session.token);
@@ -200,8 +198,9 @@ app.post('/api/repos/commit', function(req, res){
   console.log("Sending", path, '::', message, '::', sha)
   ghrepo.updateContents(path, message, content, sha, 'CODECOLAB',
   function(err, resp, body){
-    if (err) console.log(err, resp, body)
+    if (err) console.log(err)
     else {
+      console.log('git commit sent!', body)
       res.sendStatus(200)
     }
   })
@@ -244,6 +243,7 @@ app.get('/auth/github/callback', passport.authenticate(
   'github', { successRedirect: '/#/main', failureRedirect: '/' }
 ));
 
+
 app.get('/auth/heroku', passport.authenticate('heroku'));
 
 app.get('/auth/heroku/callback',
@@ -283,7 +283,7 @@ app.post('/branch', function(req, res){
     function (err, resp, body) {
       if (err) console.log(err);
 
-      console.log('INSIDE GIT BRANCH')
+      // console.log('INSIDE GIT BRANCH')
       var ref = JSON.parse(body).ref,
           sha = JSON.parse(body).object.sha;
 
