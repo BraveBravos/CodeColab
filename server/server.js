@@ -61,6 +61,7 @@ app.use(function (req, res, next) {
   next();
 })
 
+
 app.get('/auth/github/callback', function (req, res, next) {
   if (req.session) {
     sess = req.session;
@@ -111,6 +112,7 @@ passport.use(new HerokuStrategy({
   callbackURL: process.env.HEROKU_CALLBACK || keys.herokuCallback
 },
 function(accessToken, refreshToken, profile, done) {
+  req.session.herokuToken = accessToken;
   console.log('accessToken', accessToken);
   console.log('profile', profile);
   // User.findOrCreate({ githubId: profile.id }, function (err, user) {
