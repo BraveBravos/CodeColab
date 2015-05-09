@@ -114,7 +114,7 @@ function(accessToken, refreshToken, profile, done) {
   console.log('accessToken', accessToken);
   console.log('profile', profile);
   // User.findOrCreate({ githubId: profile.id }, function (err, user) {
-  //   return done(err, user);
+    // return done(err, user);
   // });
 }));
 
@@ -283,7 +283,7 @@ app.post('/branch', function(req, res){
     function (err, resp, body) {
       if (err) console.log(err);
 
-      console.log('INSIDE GIT BRANCH')
+      // console.log('INSIDE GIT BRANCH')
       var ref = JSON.parse(body).ref,
           sha = JSON.parse(body).object.sha;
 
