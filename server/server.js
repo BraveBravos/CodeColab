@@ -244,7 +244,6 @@ app.get('/auth/github/callback', passport.authenticate(
   'github', { successRedirect: '/#/main', failureRedirect: '/' }
 ));
 
-
 app.get('/auth/heroku', passport.authenticate('heroku'));
 
 app.get('/auth/heroku/callback',
