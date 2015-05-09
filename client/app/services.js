@@ -4,11 +4,10 @@ angular.module('codeColab.services', [])
 .factory('Share', function ($http) {
   var path;
   var ce;
-  var id;
+  var fileSha;
 
   var getRepos = function ($scope) {
     return $http({
-
       method: 'GET',
       url: '/api/repos',
     })
@@ -55,13 +54,13 @@ angular.module('codeColab.services', [])
   var commit = function(message){
     var message = message,
         content = ce.editor().getValue(),
-        encodedContent = to_b64(content),
+        encodedContent = utf8_to_b64(content),
         path = this.path,
-        sha = this.id;
+        sha = this.fileSha;
 
-    console.log('sha',sha) // fileId !== sha -__-
+        // console.log('content:',content);
 
-    function to_b64(str) {
+    function utf8_to_b64(str) {
       return window.btoa(unescape(encodeURIComponent(str)));
     }
 
@@ -72,7 +71,7 @@ angular.module('codeColab.services', [])
       url: '/api/repos/commit',
       data: {
         message: message, 
-        content: encodedContent, 
+        content: content, 
         sha:sha, 
         path:path
       }
@@ -176,7 +175,7 @@ angular.module('codeColab.services', [])
 
     var loadFile = function ($scope, url, id, path) {
     this.path = path
-    this.id = id;
+    var that = this;
 
     return $http ({
       method:'POST',
@@ -187,6 +186,8 @@ angular.module('codeColab.services', [])
       }
     })
     .then (function (data) {
+      that.fileSha = data.data.fileSha;
+      console.log(this.fileSha)
       loadShare($scope, id, data.data.file)
     });
 }
