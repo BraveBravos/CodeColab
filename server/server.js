@@ -113,12 +113,8 @@ passport.use(new HerokuStrategy({
   callbackURL: process.env.HEROKU_CALLBACK || keys.herokuCallback
 },
 function(accessToken, refreshToken, profile, done) {
-  req.session.herokuToken = accessToken;
-  console.log('accessToken', accessToken);
-  console.log('profile', profile);
-  // User.findOrCreate({ githubId: profile.id }, function (err, user) {
-    // return done(err, user);
-  // });
+  // req.session.herokuToken = accessToken;
+  return done(null, profile);
 }));
 
 app.get('/api/repos', function (req, res) {
@@ -257,9 +253,27 @@ app.get('/auth/heroku/callback',
     res.redirect('/')
     });
 
-app.get('/auth/heroku/success', function(req, res) {
-  console.log('success!')
-
+app.get('/api/deploy', function(req, res) {
+  var repo = "CodeColab";
+  var user = "phillydorn";
+  request({
+    method: "POST",
+    url: "https://api.heroku.com/app-setups",
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/vnd.heroku+json; version=3'
+    },
+    data: {
+      "source-blob": "https://gitub.com/" + user+ "/" + repo + "/tarball/master/"
+    }
+  }),
+    function (err, resp, body) {
+      if (err) {
+        console.log('err', err)
+      } else {
+        console.log('response', resp)
+      }
+  }
 
 });
 
