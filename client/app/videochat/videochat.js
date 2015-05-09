@@ -1,7 +1,10 @@
 
   navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
-  var isAutoAnswer = false;
+  var isAutoAnswer = true;
+
+  var lms = document.getElementById('local-media-stream');
+  var rms = document.getElementById('remote-media-streams');
 
   var peer = new Peer({ 
     key: 'npzhit884gupiudi', 
@@ -18,7 +21,7 @@
   });
 
   peer.on('open', function(){
-    document.getElementById('my-id').innerHTML = peer.id;
+    //document.getElementById('my-id').innerHTML = peer.id;
     console.log('PeerJS peer.on open');
   });
 
@@ -33,28 +36,32 @@
   });
 
   peer.on('call', function(call){
-    if(isAutoAnswer){
+//    if(isAutoAnswer){
       call.answer(window.localStream);
       call.on('stream', function(stream){
-        document.getElementById('their-video').setAttribute('src', URL.createObjectURL(stream));
+      var video = document.createElement('video');
+      video.className = 'their-video';
+      video.setAttribute('src', URL.createObjectURL(stream));
+      video.autoplay = true;
+      rms.insertBefore(video,rms.firstChild);
       });
-    }else{
-      setCallStatus('INCOMING CALL');
-      document.getElementById('btn-answer').onclick = function(){
-        var btnStatus = this.innerHTML;
-        if (btnStatus === 'Answer'){
-          call.answer(window.localStream);
-          call.on('stream', function(stream){
-            document.getElementById('their-video').setAttribute('src', URL.createObjectURL(stream));
-          });
-          this.innerHTML = 'End Call';
-          setCallStatus('IN CALL');
-        }else if(btnStatus === 'End Call'){
-          endCall();
+    // }else{
+    //   setCallStatus('INCOMING CALL');
+    //   document.getElementById('btn-answer').onclick = function(){
+    //     var btnStatus = this.innerHTML;
+    //     if (btnStatus === 'Answer'){
+    //       call.answer(window.localStream);
+    //       call.on('stream', function(stream){
+    //         document.getElementById('their-video').setAttribute('src', URL.createObjectURL(stream));
+    //       });
+    //       this.innerHTML = 'End Call';
+    //       setCallStatus('IN CALL');
+    //     }else if(btnStatus === 'End Call'){
+    //       endCall();
           
-        }
-      }
-    }
+    //     }
+    //   }
+    // }
   });
 
   peer.on('error', function(err){
@@ -67,7 +74,11 @@
     console.log('PeerJS : init');
     //console.log(peer.listAllPeers());
     navigator.getUserMedia({audio: true, video: true}, function(stream){
-      document.getElementById('my-video').setAttribute('src', URL.createObjectURL(stream));
+      var video = document.createElement('video');
+      video.className = 'my-video';
+      video.setAttribute('src', URL.createObjectURL(stream));
+      video.autoplay = true;
+      lms.insertBefore(video,lms.firstChild);
       window.localStream = stream;
     }, function(){ console.log('PeerJS : init error') });
   };
@@ -101,32 +112,32 @@
   };
 
   function setCallStatus(strStatus){
-    document.getElementById('video-call-status').innerHTML = strStatus;
+    //document.getElementById('video-call-status').innerHTML = strStatus;
   };
 
-  document.getElementById('btn-answer').onclick = function(){
-    var btnStatus = this.innerHTML;
-    if (btnStatus === 'Answer'){
-      // TODO add answer logic here
-      this.innerHTML = 'End Call';
-    }else{
-      endCall();
-      this.innerHTML = 'Answer';
-    }
-  };
+  // document.getElementById('btn-answer').onclick = function(){
+  //   var btnStatus = this.innerHTML;
+  //   if (btnStatus === 'Answer'){
+  //     // TODO add answer logic here
+  //     this.innerHTML = 'End Call';
+  //   }else{
+  //     endCall();
+  //     this.innerHTML = 'Answer';
+  //   }
+  // };
 
-  document.getElementById('cbx-autoanswer').onchange = function(){
-    if(this.checked){
-      isAutoAnswer = true;
-    }else{
-      isAutoAnswer = false;
-    }
-  };
+  // document.getElementById('cbx-autoanswer').onchange = function(){
+  //   if(this.checked){
+  //     isAutoAnswer = true;
+  //   }else{
+  //     isAutoAnswer = false;
+  //   }
+  // };
 
-  document.getElementById('btn-call').onclick = function(){
-    var callId = document.getElementById('video-callto-id').value;
-    callPeer(window.existingCall);
-  };
+  // document.getElementById('btn-call').onclick = function(){
+  //   var callId = document.getElementById('video-callto-id').value;
+  //   callPeer(window.existingCall);
+  // };
 
   init();
 

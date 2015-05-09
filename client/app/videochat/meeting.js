@@ -44,16 +44,13 @@
                 self.stream = stream;
 
                 var video = document.createElement('video');
-                
-                
                 video.id = 'self';
-                video.className = 'my-video';
                 video[isFirefox ? 'mozSrcObject' : 'src'] = isFirefox ? stream : window.webkitURL.createObjectURL(stream);
                 video.autoplay = true;
-                video.controls = false;
-                video.muted = false;
-                video.volume = 0.8;
-                
+                video.controls = true;
+                video.muted = true;
+                video.volume = 0;
+                video.play();
 
                 self.onaddstream({
                     video: video,
@@ -61,15 +58,12 @@
                     userid: 'self',
                     type: 'local'
                 });
-                var lms = document.getElementById('local-media-stream'); 
-                document.getElementById('video-chats').insertBefore(video,lms);
-                //vidChats.insertBefore(video,this);
-                video.play();
+
                 callback(stream);
             }
 
             function onerror(e) {
-                // console.error(e);
+                console.error(e);
             }
         }
 
@@ -123,7 +117,7 @@
             // for pretty logging
                 console.debug(JSON.stringify(message, function (key, value) {
                 if (value && value.sdp) {
-                    // console.log(value.sdp.type, '---', value.sdp.sdp);
+                    console.log(value.sdp.type, '---', value.sdp.sdp);
                     return '';
                 } else return value;
             }, '---'));
@@ -245,7 +239,7 @@
                 });
             },
             onaddstream: function (stream, _userid) {
-                // console.debug('onaddstream', '>>>>>>', stream);
+                console.debug('onaddstream', '>>>>>>', stream);
 
                 stream.onended = function () {
                     if (root.onuserleft) root.onuserleft(_userid);
@@ -480,7 +474,7 @@
     function onSdpSuccess() {}
 
     function onSdpError(e) {
-        // console.error('sdp error:', JSON.stringify(e, null, '\t'));
+        console.error('sdp error:', JSON.stringify(e, null, '\t'));
     }
 
     // var offer = Offer.createOffer(config);
@@ -570,10 +564,3 @@
         return swapped;
     }
 })();
-
-
-
-
-
-
-
