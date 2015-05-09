@@ -25,10 +25,10 @@ angular.module('codeColab.main', [])
     $scope.selected = repo.name;
     // FileStructDo.getTree(repo)
     FileStructDo.getTree($scope, repo)
-    
+
     // if editor exists, get rid of it
     document.getElementsByClassName('CodeMirror-merge')[0] && document.getElementById('area').removeChild(document.getElementsByClassName('CodeMirror-merge')[0])
-    
+
     if(!$scope.ref) {
       $scope.createBranch()
     }
@@ -42,6 +42,10 @@ angular.module('codeColab.main', [])
     Share.commit(message)
     var input = document.getElementById('commitMessage');
     input.value=''
+  }
+
+  $scope.deployApp = function(){
+    Share.deployApp($scope.selected);
   }
 
   $scope.init();
