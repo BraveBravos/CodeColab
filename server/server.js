@@ -2,6 +2,7 @@ var express = require('express'),
     connect = require('connect'),
     bodyParser = require ('body-parser'),
     atob = require('atob'),
+    btoa = require('btoa'),
     app = express(),
     mongo = require('mongodb'),
     monk =require ('monk'),
@@ -30,6 +31,7 @@ var express = require('express'),
     }),
     request = require('request'),
     // axios = require('axios'),
+    github = require('octonode'),
     sess;
 
 
@@ -156,10 +158,12 @@ app.post('/api/files', function (req, res) {
     headers: {'User-Agent': req.session.passport.user[0].username}
   },
     function (err, resp, body) {
+      var fileSha=JSON.parse(body).sha
+      console.log("fileSha",fileSha);
       var file = atob(JSON.parse(body).content);
-      docs.sendDoc(db, file, fileId);
+      docs.sendDoc(db, file, fileId, fileSha);
       // docs.setSjs(db, file, fileId);
-      res.status(200).send({file:file});
+      res.status(200).send({file:file, fileSha:fileSha});
     });
 })
 
@@ -170,12 +174,27 @@ app.post('/api/sjs', function (req, res) {
     res.sendStatus(200);
 });
 
+var repo;
 
-app.post('api/repos/commit', function(req, res){
-  // console.log('commit req', req)
-  //request({
-    //will go to github
-  //})
+app.post('/api/repos/commit', function(req, res){
+  console.log('INSIDE COMMIT req.body: ', req.body)
+
+  var path = req.body.path,
+      message = req.body.message,
+      sha=req.body.sha,
+      content = req.body.content;
+
+  var client = github.client(req.session.token);
+  var ghrepo = client.repo(repo)
+
+  ghrepo.updateContents(path, message, content, sha, 
+  function(err, resp, body){
+    if (err) console.log(err)
+    else {
+      console.log('git commit sent!', body)
+      res.sendStatus(200)
+    }
+  })
 })
 
 app.post ('/api/fileStruct/tree', function (req, res) {
@@ -188,7 +207,6 @@ app.post ('/api/fileStruct/tree', function (req, res) {
   function (err, resp, body) {
     var data = JSON.parse(body);
     var sha = data.object.sha;
-    // console.log("sha", sha)
     var base = 'https://api.github.com/repos'
     var more = '/git/trees/'
     var last = '?recursive=1&access_token='
@@ -226,8 +244,8 @@ app.get('/logout', function (req, res){
 })
 
 app.post('/branch', function(req, res){
-  var owner=req.session.username,
-      repo = req.body.repo;
+  var owner=req.session.username;
+  repo = req.body.repo;
 
   // console.log('/branch: ',repo)
   // console.log('/branch owner: ', owner)
@@ -247,7 +265,6 @@ app.post('/branch', function(req, res){
       console.log('INSIDE GIT BRANCH')
       var ref = JSON.parse(body).ref,
           sha = JSON.parse(body).object.sha;
-      // var branchName = 'newBranch'
 
       var send = JSON.stringify({
         ref: 'refs/heads/'+'CODECOLAB', //the new branch name
@@ -255,16 +272,26 @@ app.post('/branch', function(req, res){
       });
 
       //creating the new branch
-      console.log("Sending:", send)
+      // console.log("Sending:", send)
       request.post({
         url: 'https://api.github.com/repos/' + repo + '/git/refs?access_token='+ req.session.token,
         headers: {'User-Agent': owner, 'Content-Type': 'application/json'},
         body: send
       },
         function(err, resp, body){
-          if (err) console.log('ERROR:',err)
-          console.log('success!', body)
-          res.send(body) //send back to client to use for commits
+          if (resp.statusCode === 422) { //branch exists 
+            console.log('Entering existing CODECOLAB branch') 
+            request.get({
+              url: 'https://api.github.com/repos/' + repo +'/git/refs/heads/CODECOLAB?access_token='+ req.session.token,
+              headers: {'User-Agent': owner}
+            },
+            function(err, resp, body){
+              res.send(body)
+            })
+          } else {
+            console.log('New Branch Created!', body)
+            res.send(body) //send back to client to use for commits
+          }
         }
       )
     }
@@ -304,13 +331,13 @@ app.use(browserChannel( function(client) {
   stream._write = function(chunk, encoding, callback) {
     if (client.state !== 'closed') {
       client.send(chunk);
-      console.log('received',chunk)
+      // console.log('received',chunk)
     }
     callback();
   };
 
   client.on('message', function(data) {
-    console.log('message',data)
+    // console.log('message',data)
     stream.push(data);
   });
 
@@ -328,3 +355,9 @@ app.use(browserChannel( function(client) {
   return share.listen(stream);
 
 }));
+
+
+
+
+
+

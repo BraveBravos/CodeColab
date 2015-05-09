@@ -4,7 +4,7 @@ module.exports = {
 
 
 
-  sendDoc : function(db, file, fileId) {
+  sendDoc : function(db, file, fileId, fileSha) {
 
 
     var collection = db.get('origDocuments');
@@ -15,7 +15,7 @@ module.exports = {
 
         collection.update({id: fileId},
           {$set:
-            { data: file }
+            { data: file, fileSha:fileSha }
           },
           function (err) {
             if (err) console.log('update error');
@@ -25,7 +25,8 @@ module.exports = {
         console.log('err');
         collection.insert({
           data: file,
-          id: fileId
+          id: fileId,
+          fileSha: fileSha
         })
       }
     })

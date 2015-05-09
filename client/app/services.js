@@ -2,15 +2,16 @@ angular.module('codeColab.services', [])
 
 
 .factory('Share', function ($http) {
+  var path;
+  var ce;
+  var fileSha;
 
   var getRepos = function ($scope) {
     return $http({
-
       method: 'GET',
       url: '/api/repos',
     })
     .then(function (repos) {
-      // console.log("raw repos ", repos)
       $scope.repos = $scope.repos.concat(repos.data);
       return $http({
         method: 'GET',
@@ -26,7 +27,6 @@ angular.module('codeColab.services', [])
           .then(function (orgRepos){
             orgRepos.data.forEach(function (orgRepo) {
               $scope.repos.push(orgRepo);
-
             })
           })
         })
@@ -49,22 +49,32 @@ angular.module('codeColab.services', [])
     })
   }
 
-  var commit = function(message, ref, sha){
-    var message = message;
-    var parents; //whut
-    var tree = sha
+  var commit = function(message){
+    var message = message,
+        content = ce.editor().getValue(),
+        path = this.path,
+        sha = this.fileSha;
 
-    console.log('inside share.commit()')
-    console.log("message", message)
-    return $http({
+    // function utf8_to_b64(str) {
+    //   return window.btoa(unescape(encodeURIComponent(str)));
+    // }
+
+    return $http({      
       method: 'POST',
       url: '/api/repos/commit',
-      params: {message: message, parents: parents, tree: tree}
+      data: {
+        message: message, 
+        content: content, 
+        sha:sha, 
+        path:path
+      }
     })
     .then(function(response){
-      console.log('commiting!')
+      console.log('commiting successsss!')
+      alert('succesful commit!')
     })
   }
+
 
 
   var loadShare = function ($scope, id, data) {
@@ -130,7 +140,7 @@ angular.module('codeColab.services', [])
           codeEditor.editor().setValue(codeEditor.rightOriginal().getValue())
         }
         // console.log('after subscribed',doc.getSnapshot(),codeEditor.editor().getValue())
-
+        ce = codeEditor
       });
 
       // codeEditor.editor().on('change', function(change) {
@@ -159,7 +169,11 @@ angular.module('codeColab.services', [])
     $scope.share = {sjs:sjs,doc:doc,codeEditor:codeEditor}
   }
 
-  var loadFile = function ($scope, url, id) {
+
+    var loadFile = function ($scope, url, id, path) {
+    this.path = path
+    var that = this;
+
     return $http ({
       method:'POST',
       url: '/api/files',
@@ -169,10 +183,10 @@ angular.module('codeColab.services', [])
       }
     })
     .then (function (data) {
+      that.fileSha = data.data.fileSha;
       loadShare($scope, id, data.data.file)
     });
-  }
-
+}
 
   return {
     getRepos : getRepos,

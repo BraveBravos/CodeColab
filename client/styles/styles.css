@@ -92,6 +92,17 @@ html, body {
   margin-left: 5px;
 }
 
+.submit:visited {
+  text-align: center;
+  text-decoration: none;
+  color: #D6D6D6;
+  font-size: 16px;
+  font-weight: 300;
+  float: right;
+  margin-left: 10px;
+  font-family: 'Open Sans',Arial,Helvetica Neue,sans-serif;
+}
+
 .dev {
   border: 2px solid black;
 }

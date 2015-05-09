@@ -32,7 +32,6 @@ angular.module('codeColab.main', [])
     if(!$scope.ref) {
       $scope.createBranch()
     }
-
   }
 
   $scope.check = function(){
@@ -40,8 +39,15 @@ angular.module('codeColab.main', [])
   }
 
   $scope.commit = function(message){
-    Share.commit(message, $scope.ref, $scope.sha)
+    Share.commit(message)
+    var input = document.getElementById('commitMessageg');
+    input.value=''
   }
 
   $scope.init();
 })
+
+
+
+
+
