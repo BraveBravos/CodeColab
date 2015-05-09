@@ -2,7 +2,6 @@ var express = require('express'),
     connect = require('connect'),
     bodyParser = require ('body-parser'),
     atob = require('atob'),
-    btoa = require('btoa'),
     app = express(),
     mongo = require('mongodb'),
     monk =require ('monk'),
@@ -30,7 +29,6 @@ var express = require('express'),
       backend: backend
     }),
     request = require('request'),
-    // axios = require('axios'),
     github = require('octonode'),
     sess;
 
