@@ -173,7 +173,6 @@ angular.module('codeColab.services', [])
 
     var loadFile = function ($scope, url, id, path) {
     this.path = path
-    console.log('path set', this.path)
     var that = this;
 
     return $http ({

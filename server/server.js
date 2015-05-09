@@ -199,7 +199,7 @@ app.post('/api/repos/commit', function(req, res){
   console.log("Sending", path, '::', message, '::', sha)
   ghrepo.updateContents(path, message, content, sha, 'CODECOLAB',
   function(err, resp, body){
-    if (err) console.log(err, resp, body)
+    if (err) console.log(err)
     else {
       console.log('git commit sent!', body)
       res.sendStatus(200)
