@@ -188,7 +188,8 @@ app.post('/api/repos/commit', function(req, res){
     branch: 'CODECOLAB'
   })
 
-  console.log('sending: ',send) 
+  // console.log('sending: ',send) 
+  
   request({
     url: 'https://api.github.com/repos/' + repo + '/contents/' + path + '?access_token='+ req.session.token,
     headers: {'User-Agent': req.session.passport.user[0].username},
