@@ -3,8 +3,9 @@
 .CodeMirror {
   /* Set height, width, borders, and global font properties here */
   font-family: monospace;
-  /*height: 300px;*/
-  height: 100%;
+  height: 300px;
+  /*height: 100%;*/
+  /*height: 75%;*/
   color: black;
 }
 
@@ -15,6 +16,13 @@
 }
 .CodeMirror pre {
   padding: 0 4px; /* Horizontal padding of content */
+}
+
+.CodeMirror-fullscreen {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  height: 100%;
+  z-index: 9;
 }
 
 .CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {
