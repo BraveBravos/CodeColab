@@ -15,7 +15,7 @@ angular.module('codeColab.main', [])
   $scope.createBranch = function(){
     //save ref and sha to use in commit
     Share.createBranch($scope.selected).then(function(branch) {
-      console.log("Got branch info:", branch)
+      // console.log("Got branch info:", branch)
       $scope.ref = branch.ref;
       $scope.sha = branch.sha;
     })
@@ -25,6 +25,10 @@ angular.module('codeColab.main', [])
     $scope.selected = repo.name;
     // FileStructDo.getTree(repo)
     FileStructDo.getTree($scope, repo)
+    
+    // if editor exists, get rid of it
+    document.getElementsByClassName('CodeMirror-merge')[0] && document.getElementById('area').removeChild(document.getElementsByClassName('CodeMirror-merge')[0])
+    
     if(!$scope.ref) {
       $scope.createBranch()
     }

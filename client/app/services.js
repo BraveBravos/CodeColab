@@ -44,7 +44,7 @@ angular.module('codeColab.services', [])
       }
     })
     .then(function(branchInfo){
-      console.log('New branch created!')
+      // console.log('New branch created!')
       return branchInfo  //return ref and sha
     })
   }
@@ -67,8 +67,13 @@ angular.module('codeColab.services', [])
   }
 
 
-
   var loadShare = function ($scope, id, data) {
+
+    //this variable just tracks whether a repo file is currently loaded or not.
+    var newRepo = !document.getElementById('area').getElementsByClassName('CodeMirror-merge').length
+    if(newRepo) {
+      delete $scope.share
+    }
 
     // this fires if we already have an existing doc and connection
     if($scope.share){
@@ -87,11 +92,7 @@ angular.module('codeColab.services', [])
     //this is the element we have selected to "turn" into a CodeMirror
     var target = document.getElementById('area')
 
-    // //when we change an element to a CodeMirror, we don't really change it - we actually append
-    // //the CodeMirror.  This code deletes any children that already exist.
-    // var children = target.getElementsByClassName('CodeMirror-merge')
-
-    var codeEditor = !!$scope.share ? $scope.share.codeEditor : CodeMirror.MergeView(target, {
+    var codeEditor = !newRepo ? $scope.share.codeEditor : CodeMirror.MergeView(target, {
         'origRight':'', //this will eventually contain the original code
         'value':'',      //this is the updated value with the users' changes
         'theme':'erlang-dark',
@@ -100,24 +101,24 @@ angular.module('codeColab.services', [])
 
     doc.whenReady(function() {
       if (!doc.type) {
-        console.log('created');
+        // console.log('created');
         doc.create('text');
       }
 
-      //this is the new doc - we need to use a doc for a swap
-      var newEditor = doc.getSnapshot()==='' ? CodeMirror.Doc(data,'javascript') : CodeMirror.Doc(doc.getSnapshot(),'javascript')
-
-      if($scope.share) {
-        $scope.share.codeEditor.editor().setValue(newEditor.getValue())
-        $scope.share.codeEditor.editor().swapDoc(newEditor)
-      } else {
-        codeEditor.editor().setValue(newEditor.getValue())
-        codeEditor.editor().swapDoc(newEditor)
-      }
-
-      console.log('ready')
+      // console.log('ready')
       doc.subscribe(function(err) {
-        // console.log('subscribed',doc.getSnapshot())
+        // console.log('subscribed')
+
+        //this is the new doc - we need to use a doc for a swap
+        var newEditor = doc.getSnapshot()==='' ? CodeMirror.Doc(data,'javascript') : CodeMirror.Doc(doc.getSnapshot(),'javascript')
+
+        if(!!$scope.share) {
+          $scope.share.codeEditor.editor().setValue(newEditor.getValue())
+          $scope.share.codeEditor.editor().swapDoc(newEditor)
+        } else {
+          codeEditor.editor().setValue(newEditor.getValue())
+          codeEditor.editor().swapDoc(newEditor)
+        }
 
         codeEditor.rightOriginal().setValue(data);
         doc.attachCodeMirror(codeEditor.editor())
@@ -152,10 +153,10 @@ angular.module('codeColab.services', [])
     // return connection and doc, so that we can disconnect from them later if needed
     // otherwise, the connection or doc subscription or both build up and make us unable to fetch other documents
     if($scope.share) {
-      return {sjs:sjs,doc:doc,codeEditor:$scope.share.codeEditor}
+      $scope.share = {sjs:sjs,doc:doc,codeEditor:$scope.share.codeEditor}
     }
 
-    return {sjs:sjs,doc:doc,codeEditor:codeEditor}
+    $scope.share = {sjs:sjs,doc:doc,codeEditor:codeEditor}
   }
 
   var loadFile = function ($scope, url, id) {
@@ -168,7 +169,7 @@ angular.module('codeColab.services', [])
       }
     })
     .then (function (data) {
-      $scope.share = loadShare($scope, id, data.data.file)
+      loadShare($scope, id, data.data.file)
     });
   }
 
