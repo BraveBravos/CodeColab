@@ -186,7 +186,7 @@ angular.module('codeColab.services', [])
     console.log('deploying')
     return $http({
       method: 'GET',
-      url: '/auth/heroku'
+      url: '/api/deploy'
     })
     .then (function(data){
       console.log('Deployed!')

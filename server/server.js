@@ -68,7 +68,7 @@ app.get('/auth/github/callback', function (req, res, next) {
     console.log('no session')
   }
   next();
-})
+});
 
 app.listen(app.get('port'), function() {
   console.log('Node app running on port', app.get('port'));
@@ -111,12 +111,8 @@ passport.use(new HerokuStrategy({
   callbackURL: process.env.HEROKU_CALLBACK || keys.herokuCallback
 },
 function(accessToken, refreshToken, profile, done) {
-  req.session.herokuToken = accessToken;
-  console.log('accessToken', accessToken);
-  console.log('profile', profile);
-  // User.findOrCreate({ githubId: profile.id }, function (err, user) {
-    // return done(err, user);
-  // });
+  // req.session.herokuToken = accessToken;
+  return done(null, profile);
 }));
 
 app.get('/api/repos', function (req, res) {
@@ -251,9 +247,39 @@ app.get('/auth/heroku/callback',
   passport.authenticate('heroku', { failureRedirect: '/auth/heroku/fail' }),
   function(req, res) {
     // Successful authentication, redirect home.
-    res.sendStatus(200);
-  });
+    console.log("session",req.session)
+    res.redirect('/')
+    });
 
+app.get('/api/deploy', function(req, res) {
+  var repo = "CodeColab";
+  var user = "phillydorn";
+  request({
+    method: "POST",
+    url: "https://api.heroku.com/app-setups",
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/vnd.heroku+json; version=3'
+    },
+    data: {
+      "source-blob": "https://gitub.com/" + user+ "/" + repo + "/tarball/master/"
+    }
+  }),
+    function (err, resp, body) {
+      if (err) {
+        console.log('err', err)
+      } else {
+        console.log('response', resp)
+      }
+  }
+
+});
+
+app.get('/auth/heroku/fail', function(req, res) {
+  console.log('fail!')
+
+
+});
 
 app.get('/api/auth', function(req, res){
   res.status(200).json(req.isAuthenticated());
@@ -269,13 +295,6 @@ app.post('/branch', function(req, res){
   var owner=req.session.username;
   repo = req.body.repo;
 
-  // console.log('/branch: ',repo)
-  // console.log('/branch owner: ', owner)
-
-  //get request to github for master commit SHA code
-  // axios.get('/repos/' + owner +'/'+repo +'/git/refs/master', {
-  //   headers: {'User-Agent': req.session.passport.user[0].username}
-  // })
 
   request({
     url: 'https://api.github.com/repos/' + repo +'/git/refs/heads/master?access_token='+ req.session.token,
@@ -320,26 +339,6 @@ app.post('/branch', function(req, res){
   );
 
 
-  // .then(function(branch){
-  //   console.log('INSIDE GIT BRANCH-response: ',branch)
-
-  //   var sha = branch.something, //the sha code to create branch
-  //       ref = branch.something; //create/get branch name
-
-  //   //creating the new branch
-  //   axios.post('/repos/' + owner +'/' + repo + '/git/refs',
-  //     {
-  //       sha: sha,
-  //       ref: 'branch-name',
-  //       headers: {'User-Agent': req.session.passport.user[0].username}
-  //     }
-  //   ).then(function(body){
-  //     console.log('SUCCESS: ', body)
-  //     res.send(body) //send ref and sha back to client to use for commits
-  //   }).catch(function(err){
-  //     console.log('error:',err)
-  //   })
-  // })
 })
 
   // http://blog.api.mks.io/blog-posts
