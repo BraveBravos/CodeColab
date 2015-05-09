@@ -17,10 +17,10 @@
         <select ng-options = "repo.name for repo in repos track by repo.id" ng-model = "selectRepo" ng-change="saveRepo(selectRepo)">
         </select>
         <input ng-model='commitMSG' id='commitMessage' placeholder='Your Changes'></input>
-        <a href='/#/main' class='submit' ng-show='check()' ng-click='commit(commitMSG)'> 
-          Submit Changes 
+        <a href='/#/main' class='submit' ng-show='check()' ng-click='commit(commitMSG)'>
+          Submit Changes
         </a>
-        <a href="#" ng-click='DeployApp()'>
+        <a href="#" ng-click='deployApp()'>
           <img src="https://www.herokucdn.com/deploy/button.png" alt="Deploy">
         </a>
       </div>

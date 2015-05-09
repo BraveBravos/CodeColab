@@ -59,13 +59,13 @@ angular.module('codeColab.services', [])
     //   return window.btoa(unescape(encodeURIComponent(str)));
     // }
 
-    return $http({      
+    return $http({
       method: 'POST',
       url: '/api/repos/commit',
       data: {
-        message: message, 
-        content: content, 
-        sha:sha, 
+        message: message,
+        content: content,
+        sha:sha,
         path:path
       }
     })
@@ -188,6 +188,7 @@ angular.module('codeColab.services', [])
     });
   }
   var deployApp = function(repo){
+    console.log('deploying')
     return $http({
       method: 'GET',
       url: '/auth/heroku'
