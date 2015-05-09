@@ -1,7 +1,8 @@
 
 html, body {
+  overflow: hidden; 
 	height:100%;
-  background: linear-gradient(314deg, #227d66, #144496) no-repeat center center fixed;
+  background: linear-gradient(314deg, #227d66, #144496) no-repeat center center;
   background-size: 100% 100%
 
   -webkit-animation: AnimationName 37s ease infinite;
@@ -32,6 +33,7 @@ html, body {
   display:inline-block;
   font-size: 16px;
   font-weight: 300;
+  height: 390px;
 }
 
 #signin {
