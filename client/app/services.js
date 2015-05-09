@@ -12,7 +12,6 @@ angular.module('codeColab.services', [])
       url: '/api/repos',
     })
     .then(function (repos) {
-      // console.log("raw repos ", repos)
       $scope.repos = $scope.repos.concat(repos.data);
       return $http({
         method: 'GET',
@@ -28,7 +27,6 @@ angular.module('codeColab.services', [])
           .then(function (orgRepos){
             orgRepos.data.forEach(function (orgRepo) {
               $scope.repos.push(orgRepo);
-
             })
           })
         })
@@ -54,19 +52,15 @@ angular.module('codeColab.services', [])
   var commit = function(message){
     var message = message,
         content = ce.editor().getValue(),
-        encodedContent = utf8_to_b64(content),
+        // encodedContent = utf8_to_b64(content),
         path = this.path,
         sha = this.fileSha;
 
-        // console.log('content:',content);
+    // function utf8_to_b64(str) {
+    //   return window.btoa(unescape(encodeURIComponent(str)));
+    // }
 
-    function utf8_to_b64(str) {
-      return window.btoa(unescape(encodeURIComponent(str)));
-    }
-
-    console.log('inside Share.commit()')
-
-    return $http({            //not sending
+    return $http({      
       method: 'POST',
       url: '/api/repos/commit',
       data: {
@@ -83,7 +77,7 @@ angular.module('codeColab.services', [])
 
 
 
- var loadShare = function ($scope, id, data) {
+  var loadShare = function ($scope, id, data) {
 
     //this variable just tracks whether a repo file is currently loaded or not.
     var newRepo = !document.getElementById('area').getElementsByClassName('CodeMirror-merge').length
@@ -97,16 +91,16 @@ angular.module('codeColab.services', [])
       $scope.share.sjs.disconnect()
     }
 
-     var socket = new BCSocket(null, {reconnect: true});
-     // console.log('socket',socket)
-     var sjs = new sharejs.Connection(socket);
-     var doc = sjs.get('documents', id);
+    var socket = new BCSocket(null, {reconnect: true});
+    // console.log('socket',socket)
+    var sjs = new sharejs.Connection(socket);
+    var doc = sjs.get('documents', id);
 
-     // console.log('doc',doc)
-     doc.subscribe()
+    // console.log('doc',doc)
+    doc.subscribe()
 
-     //this is the element we have selected to "turn" into a CodeMirror
-     var target = document.getElementById('area')
+    //this is the element we have selected to "turn" into a CodeMirror
+    var target = document.getElementById('area')
 
     var codeEditor = !newRepo ? $scope.share.codeEditor : CodeMirror.MergeView(target, {
         'origRight':'', //this will eventually contain the original code
@@ -128,49 +122,52 @@ angular.module('codeColab.services', [])
         //this is the new doc - we need to use a doc for a swap
         var newEditor = doc.getSnapshot()==='' ? CodeMirror.Doc(data,'javascript') : CodeMirror.Doc(doc.getSnapshot(),'javascript')
 
-       console.log('ready')
-       doc.subscribe(function(err) {
-         // console.log('subscribed',doc.getSnapshot())
+        if(!!$scope.share) {
+          $scope.share.codeEditor.editor().setValue(newEditor.getValue())
+          $scope.share.codeEditor.editor().swapDoc(newEditor)
+        } else {
+          codeEditor.editor().setValue(newEditor.getValue())
+          codeEditor.editor().swapDoc(newEditor)
+        }
 
-         codeEditor.rightOriginal().setValue(data);
-         doc.attachCodeMirror(codeEditor.editor())
+        codeEditor.rightOriginal().setValue(data);
+        doc.attachCodeMirror(codeEditor.editor())
 
-         // probably some more efficient way to do this, but it works for now - if doc exists in
-         // origDocs database but not in regular Docs database, this will copy the string into the editor immediately after
-         // the subscription takes hold, which also copies it into the Docs database.
-         if(doc.getSnapshot()==='') {
-           codeEditor.editor().setValue(codeEditor.rightOriginal().getValue())
-         }
-         ce=codeEditor;
-         // console.log('after subscribed',doc.getSnapshot(),codeEditor.editor().getValue())
+        // probably some more efficient way to do this, but it works for now - if doc exists in
+        // origDocs database but not in regular Docs database, this will copy the string into the editor immediately after
+        // the subscription takes hold, which also copies it into the Docs database.
+        if(doc.getSnapshot()==='') {
+          codeEditor.editor().setValue(codeEditor.rightOriginal().getValue())
+        }
+        // console.log('after subscribed',doc.getSnapshot(),codeEditor.editor().getValue())
+        ce = codeEditor
+      });
 
-       });
-
-       // codeEditor.editor().on('change', function(change) {
-       //   console.log('changed',change)
-       // })
-       // codeEditor.editor().on('update', function() {
-       //   console.log('updated')
-       // })
+      // codeEditor.editor().on('change', function(change) {
+      //   console.log('changed',change)
+      // })
+      // codeEditor.editor().on('update', function() {
+      //   console.log('updated')
+      // })
 
 
-     });
+    });
 
-     //need to finish importing all of the sublime shortcuts and whatnot: http://codemirror.net/doc/manual.html#addons
+    //need to finish importing all of the sublime shortcuts and whatnot: http://codemirror.net/doc/manual.html#addons
 
-     // this is the syntax needed for .getValue and .setValue.  rightOriginal, leftOriginal, and editor are all
-     // of the possible CodeMirror instances; we only use editor and rightOriginal in our version right now.
-     // console.log('editor: ',codeEditor.editor().getValue(),"\n",'original: ',codeEditor.rightOriginal().getValue())
-     // codeEditor.editor().setValue('this is a test')
+    // this is the syntax needed for .getValue and .setValue.  rightOriginal, leftOriginal, and editor are all
+    // of the possible CodeMirror instances; we only use editor and rightOriginal in our version right now.
+    // console.log('editor: ',codeEditor.editor().getValue(),"\n",'original: ',codeEditor.rightOriginal().getValue())
+    // codeEditor.editor().setValue('this is a test')
 
-     // return connection and doc, so that we can disconnect from them later if needed
-     // otherwise, the connection or doc subscription or both build up and make us unable to fetch other documents
-     if($scope.share) {
-       return {sjs:sjs,doc:doc,codeEditor:$scope.share.codeEditor}
-     }
+    // return connection and doc, so that we can disconnect from them later if needed
+    // otherwise, the connection or doc subscription or both build up and make us unable to fetch other documents
+    if($scope.share) {
+      $scope.share = {sjs:sjs,doc:doc,codeEditor:$scope.share.codeEditor}
+    }
 
-     return {sjs:sjs,doc:doc,codeEditor:codeEditor}
-   }
+    $scope.share = {sjs:sjs,doc:doc,codeEditor:codeEditor}
+  }
 
 
     var loadFile = function ($scope, url, id, path) {
@@ -187,11 +184,9 @@ angular.module('codeColab.services', [])
     })
     .then (function (data) {
       that.fileSha = data.data.fileSha;
-      console.log(this.fileSha)
       loadShare($scope, id, data.data.file)
     });
 }
-
 
   return {
     getRepos : getRepos,

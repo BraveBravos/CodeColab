@@ -179,14 +179,13 @@ var repo;
 app.post('/api/repos/commit', function(req, res){
   console.log('INSIDE COMMIT req.body: ', req.body)
 
-  var path= req.body.path,
-      message= req.body.message,
+  var path = req.body.path,
+      message = req.body.message,
       sha=req.body.sha,
-      content = req.body.content,
-      encodedContent = btoa(content);
+      content = req.body.content;
+      // encodedContent = btoa(content);
 
   var client = github.client(req.session.token);
-  console.log('client:',client)
   var ghrepo = client.repo(repo)
 
   ghrepo.updateContents(path, message, content, sha, 
