@@ -159,7 +159,6 @@ app.post('/api/files', function (req, res) {
   },
     function (err, resp, body) {
       var fileSha=JSON.parse(body).sha
-      console.log("fileSha",fileSha);
       var file = atob(JSON.parse(body).content);
       docs.sendDoc(db, file, fileId, fileSha);
       // docs.setSjs(db, file, fileId);
@@ -177,7 +176,6 @@ app.post('/api/sjs', function (req, res) {
 var repo;
 
 app.post('/api/repos/commit', function(req, res){
-  console.log('INSIDE COMMIT req.body: ', req.body)
 
   var path = req.body.path,
       message = req.body.message,
@@ -191,7 +189,6 @@ app.post('/api/repos/commit', function(req, res){
   function(err, resp, body){
     if (err) console.log(err)
     else {
-      console.log('git commit sent!', body)
       res.sendStatus(200)
     }
   })
