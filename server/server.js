@@ -116,7 +116,7 @@ function(accessToken, refreshToken, profile, done) {
   console.log('accessToken', accessToken);
   console.log('profile', profile);
   // User.findOrCreate({ githubId: profile.id }, function (err, user) {
-  //   return done(err, user);
+    // return done(err, user);
   // });
 }));
 

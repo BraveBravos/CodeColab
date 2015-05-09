@@ -190,6 +190,7 @@ angular.module('codeColab.services', [])
     });
   }
   var deployApp = function(repo){
+    console.log('deploying')
     return $http({
       method: 'GET',
       url: '/api/deploy'
