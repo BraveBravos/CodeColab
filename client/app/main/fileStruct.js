@@ -4,6 +4,10 @@ angular.module('codeColab.fileStruct', [])
   
   var getTree = function ($scope, repoName) {
 
+    // if editor exists, get rid of it
+    document.getElementsByClassName('CodeMirror-merge')[0] && document.getElementById('area').removeChild(document.getElementsByClassName('CodeMirror-merge')[0])
+    
+
     var repo = repoName.name.split('/')
     return $http({
       method: 'POST',
@@ -11,7 +15,7 @@ angular.module('codeColab.fileStruct', [])
       data: {repo: repo}
     })
     .then(function (data) {
-    console.log("BIG TREE BODY FROM SERVER ", data.data)
+    // console.log("BIG TREE BODY FROM SERVER ", data.data)
     var bigTree = data.data;
     var tree = {};
 
@@ -63,7 +67,7 @@ angular.module('codeColab.fileStruct', [])
     }
   }
 
-  console.log('final tree',results)
+  // console.log('final tree',results)
   $scope.tree = results;
   // return results;
   

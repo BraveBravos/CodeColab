@@ -15,7 +15,7 @@ angular.module('codeColab.main', [])
   $scope.createBranch = function(){
     //save ref and sha to use in commit
     Share.createBranch($scope.selected).then(function(branch) {
-      console.log("Got branch info:", branch)
+      // console.log("Got branch info:", branch)
       $scope.ref = branch.ref;
       $scope.sha = branch.sha;
     })
@@ -24,6 +24,7 @@ angular.module('codeColab.main', [])
   $scope.saveRepo = function(repo) {
     $scope.selected = repo.name;
     // FileStructDo.getTree(repo)
+    $scope.share && delete $scope.share && console.log('destroyed',$scope.share===undefined)
     FileStructDo.getTree($scope, repo)
     if(!$scope.ref) {
       $scope.createBranch()
