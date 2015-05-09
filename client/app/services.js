@@ -185,16 +185,26 @@ angular.module('codeColab.services', [])
       that.fileSha = data.data.fileSha;
       loadShare($scope, id, data.data.file)
     });
-}
+  }
+  var deployApp = function(repo){
+    return $http({
+      method: 'GET',
+      url: '/auth/heroku'
+    })
+    .then (function(data){
+      console.log('Deployed!')
+    })
+  }
 
   return {
     getRepos : getRepos,
     loadShare: loadShare,
     commit: commit,
     createBranch: createBranch,
-    loadFile: loadFile,
-    loadCM: loadCM,
+   loadCM: loadCM,
     resetCM: resetCM
+    loadFile: loadFile,
+    deployApp: deployApp
   }
 })
 
