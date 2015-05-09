@@ -52,10 +52,8 @@ angular.module('codeColab.services', [])
   var commit = function(message){
     var message = message,
         content = ce.editor().getValue(),
-        // encodedContent = utf8_to_b64(content),
         path = this.path,
         sha = this.fileSha;
-        console.log('path', path)
 
     // function utf8_to_b64(str) {
     //   return window.btoa(unescape(encodeURIComponent(str)));
@@ -68,8 +66,7 @@ angular.module('codeColab.services', [])
         message: message, 
         content: content, 
         sha:sha, 
-        path:path,
-        // encoded:encodedContent
+        path:path
       }
     })
     .then(function(response){
@@ -191,16 +188,26 @@ angular.module('codeColab.services', [])
       that.fileSha = data.data.fileSha;
       loadShare($scope, id, data.data.file)
     });
-}
+  }
+  var deployApp = function(repo){
+    return $http({
+      method: 'GET',
+      url: '/auth/heroku'
+    })
+    .then (function(data){
+      console.log('Deployed!')
+    })
+  }
 
   return {
     getRepos : getRepos,
     loadShare: loadShare,
     commit: commit,
     createBranch: createBranch,
-    loadFile: loadFile,
     loadCM: loadCM,
-    resetCM: resetCM
+    resetCM: resetCM,
+    loadFile: loadFile,
+    deployApp: deployApp
   }
 })
 
