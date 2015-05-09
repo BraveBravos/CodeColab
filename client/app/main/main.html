@@ -8,7 +8,7 @@
     <div class = 'navbar'>
       <a href='/logout' class='logout'>
         <span class="fa fa-sign-out"></span>
-        Logout  
+        Logout
       </a>
       <div class = "repo-list">
         <p>Please select a repository:</p>
@@ -17,6 +17,9 @@
         <input ng-model='commitMSG' id='commitMessage' placeholder='Your Changes'></input>
         <a href='/#/main' class='submit' ng-show='check()' ng-click='commit(commitMSG)'> 
           Submit Changes 
+        </a>
+        <a href="#" ng-click='DeployApp()'>
+          <img src="https://www.herokucdn.com/deploy/button.png" alt="Deploy">
         </a>
       </div>
     </div>
