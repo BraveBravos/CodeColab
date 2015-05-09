@@ -273,8 +273,12 @@ app.get('/api/deploy', function(req, res) {
       }
   },
     function (err, resp, body) {
+      if (err) {
+        console.log('err', err)
+      } else {
         console.log('response', resp)
-  })
+      }
+  }
 
 });
 
