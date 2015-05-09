@@ -114,7 +114,7 @@ function(accessToken, refreshToken, profile, done) {
   console.log('accessToken', accessToken);
   console.log('profile', profile);
   // User.findOrCreate({ githubId: profile.id }, function (err, user) {
-    // return done(err, user);
+  //   return done(err, user);
   // });
 }));
 
@@ -270,6 +270,16 @@ app.get('/auth/heroku/fail', function(req, res) {
 
 
 });
+
+app.get('/auth/heroku', passport.authenticate('heroku'));
+
+app.get('/auth/heroku/callback',
+  passport.authenticate('heroku', { failureRedirect: '/auth/heroku/fail' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.sendStatus(200);
+  });
+
 
 app.get('/api/auth', function(req, res){
   res.status(200).json(req.isAuthenticated());
