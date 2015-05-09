@@ -52,7 +52,6 @@ angular.module('codeColab.services', [])
   var commit = function(message){
     var message = message,
         content = ce.editor().getValue(),
-        // encodedContent = utf8_to_b64(content),
         path = this.path,
         sha = this.fileSha;
 
