@@ -18,6 +18,7 @@
 
         // get alerted for each new meeting
         this.onmeeting = function (room) {
+            console.log('onmeeting room',room);
             if (self.detectedRoom) return;
             self.detectedRoom = true;
 
@@ -25,6 +26,7 @@
         };
 
         function initSignaler() {
+            console.log('initSignaler');
             signaler = new Signaler(self);
         }
 
@@ -168,6 +170,7 @@
         // reusable function to create new offer
 
         function createOffer(to) {
+            console.log('createOffer to',to)
             var _options = options;
             _options.to = to;
             _options.stream = root.stream;
@@ -196,6 +199,7 @@
 
         // if someone shared SDP
         this.onsdp = function (message) {
+            console.log('sdp message',message);
             var sdp = message.sdp;
 
             if (sdp.type == 'offer') {
@@ -214,6 +218,7 @@
         var candidates = [];
         // if someone shared ICE
         this.onice = function (message) {
+            console.log('onice messsage',message);
             var peer = peers[message.userid];
             if (peer) {
                 peer.addIceCandidate(message.candidate);
@@ -287,6 +292,7 @@
 
         // call only for session initiator
         this.broadcast = function (_config) {
+            console.log('signaller broadcast _config',_config);
             signaler.roomid = _config.roomid || getToken();
             signaler.isbroadcaster = true;
             (function transmit() {
@@ -305,6 +311,7 @@
 
         // called for each new participant
         this.join = function (_config) {
+            console.log('signaller join _config',_config);
             signaler.roomid = _config.roomid;
             this.signal({
                 participationRequest: true,
@@ -402,6 +409,10 @@
     var iceServers = [];
 
     iceServers.push({
+        url: 'stun:stun.services.mozilla.com'
+    });
+
+    iceServers.push({
         url: 'stun:stun.l.google.com:19302'
     });
 
@@ -471,7 +482,9 @@
         return Math.round(Math.random() * 9999999999) + 9999999999;
     }
 
-    function onSdpSuccess() {}
+    function onSdpSuccess() {
+        console.log('onSdpSuccess');
+    }
 
     function onSdpError(e) {
         console.error('sdp error:', JSON.stringify(e, null, '\t'));
@@ -482,19 +495,23 @@
     // offer.addIceCandidate(candidate);
     var Offer = {
         createOffer: function (config) {
+            console.log('createOffer config',config);
             var peer = new RTCPeerConnection(iceServersObject, optionalArgument);
 
             if (config.stream) peer.addStream(config.stream);
 
             peer.onaddstream = function (event) {
+                console.log('peer.onaddstream event',event);
                 config.onaddstream(event.stream, config.to);
             };
 
             peer.onicecandidate = function (event) {
+                console.log('peer.onicecandidate event',event);
                 config.onicecandidate(event.candidate, config.to);
             };
 
             peer.createOffer(function (sdp) {
+                console.log('peer.createOffer sdp',sdp);
                 peer.setLocalDescription(sdp);
                 config.onsdp(sdp, config.to);
             }, onSdpError, offerAnswerConstraints);
