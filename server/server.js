@@ -180,10 +180,14 @@ app.post('/api/repos/commit', function(req, res){
   var path = req.body.path,
       message = req.body.message,
       sha=req.body.sha,
+      encodedContent = req.body.encoded,
       content = req.body.content;
 
   var client = github.client(req.session.token);
   var ghrepo = client.repo(repo)
+  // var blob = repo.create_blob(encodedContent, 'b64', function(){
+  //   console.log('blob created:',blob)
+  // })
 
   ghrepo.updateContents(path, message, content, sha,
   function(err, resp, body){

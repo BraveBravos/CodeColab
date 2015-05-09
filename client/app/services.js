@@ -52,6 +52,7 @@ angular.module('codeColab.services', [])
   var commit = function(message){
     var message = message,
         content = ce.editor().getValue(),
+        encodedContent = utf8_to_b64(content),
         path = this.path,
         sha = this.fileSha;
         console.log('path', path)
@@ -64,14 +65,16 @@ angular.module('codeColab.services', [])
       method: 'POST',
       url: '/api/repos/commit',
       data: {
-        message: message,
-        content: content,
-        sha:sha,
-        path:path
+        message: message, 
+        content: content, 
+        sha:sha, 
+        path:path,
+        encoded:encodedContent
       }
     })
     .then(function(response){
       console.log('commiting successsss!')
+      alert('succesful commit!')
     })
   }
 
