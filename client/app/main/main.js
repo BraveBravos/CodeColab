@@ -28,7 +28,6 @@ angular.module('codeColab.main', [])
     
     // if editor exists, get rid of it
     document.getElementsByClassName('CodeMirror-merge')[0] && document.getElementById('area').removeChild(document.getElementsByClassName('CodeMirror-merge')[0])
-    // $scope.share && delete $scope.share && console.log('destroyed',$scope.share===undefined)
     
     if(!$scope.ref) {
       $scope.createBranch()

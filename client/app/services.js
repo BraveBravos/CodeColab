@@ -92,12 +92,7 @@ angular.module('codeColab.services', [])
     //this is the element we have selected to "turn" into a CodeMirror
     var target = document.getElementById('area')
 
-    // //when we change an element to a CodeMirror, we don't really change it - we actually append
-    // //the CodeMirror.  This code deletes any children that already exist.
-    // var children = target.getElementsByClassName('CodeMirror-merge')
-
     var codeEditor = !newRepo ? $scope.share.codeEditor : CodeMirror.MergeView(target, {
-    // var codeEditor = !!$scope.share ? $scope.share.codeEditor : CodeMirror.MergeView(target, {
         'origRight':'', //this will eventually contain the original code
         'value':'',      //this is the updated value with the users' changes
         'theme':'erlang-dark',
@@ -109,7 +104,6 @@ angular.module('codeColab.services', [])
         // console.log('created');
         doc.create('text');
       }
-
 
       // console.log('ready')
       doc.subscribe(function(err) {
