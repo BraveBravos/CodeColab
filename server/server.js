@@ -114,7 +114,7 @@ function(accessToken, refreshToken, profile, done) {
   console.log('accessToken', accessToken);
   console.log('profile', profile);
   // User.findOrCreate({ githubId: profile.id }, function (err, user) {
-  //   return done(err, user);
+    // return done(err, user);
   // });
 }));
 
@@ -242,6 +242,7 @@ app.get('/auth/github',
 app.get('/auth/github/callback', passport.authenticate(
   'github', { successRedirect: '/#/main', failureRedirect: '/' }
 ));
+
 
 app.get('/auth/heroku', passport.authenticate('heroku'));
 
