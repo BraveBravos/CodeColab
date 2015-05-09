@@ -14,6 +14,7 @@ var express = require('express'),
     path = require('path'),
     passport = require('passport'),
     GitHubStrategy = require('passport-github').Strategy,
+    HerokuStrategy = require('passport-heroku').Strategy,
     livedb = require( 'livedb' ),
     Duplex = require( 'stream' ).Duplex,
     browserChannel = require('browserchannel').server,
@@ -104,6 +105,18 @@ passport.use(new GitHubStrategy({
   }
 ));
 
+passport.use(new HerokuStrategy({
+  clientID: process.env.HEROKU_CLIENT_ID || keys.herokuId,
+  clientSecret: process.env.HEROKU_CLIENT_SECRET || keys.herokuSecret,
+  callbackURL: process.env.HEROKU_CALLBACK || keys.herokuCallback
+},
+function(accessToken, refreshToken, profile, done) {
+  console.log('accessToken', accessToken);
+  console.log('profile', profile);
+  // User.findOrCreate({ githubId: profile.id }, function (err, user) {
+  //   return done(err, user);
+  // });
+}));
 
 app.get('/api/repos', function (req, res) {
   request({
@@ -206,7 +219,7 @@ app.post ('/api/fileStruct/tree', function (req, res) {
     var more = '/git/trees/'
     var last = '?recursive=1&access_token='
     var concat = base + '/' +owner+ '/' + repo + more + sha + last + req.session.token
-    
+
     request({
       url: concat,
       headers: {'User-Agent': req.session.passport.user[0].username}
@@ -227,6 +240,16 @@ app.get('/auth/github',
 app.get('/auth/github/callback', passport.authenticate(
   'github', { successRedirect: '/#/main', failureRedirect: '/' }
 ));
+
+app.get('/auth/heroku', passport.authenticate('heroku'));
+
+app.get('/auth/heroku/callback',
+  passport.authenticate('heroku', { failureRedirect: '/auth/heroku/fail' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.sendStatus(200);
+  });
+
 
 app.get('/api/auth', function(req, res){
   res.status(200).json(req.isAuthenticated());
@@ -318,6 +341,7 @@ app.post('/branch', function(req, res){
   // http://blog.api.mks.io/blog-posts
   // title:
   // content:
+
 
 app.use(browserChannel( function(client) {
   var stream = new Duplex({objectMode: true});
