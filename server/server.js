@@ -262,7 +262,7 @@ app.get('/api/deploy', function(req, res) {
       'Accept': 'application/vnd.heroku+json; version=3'
     },
     data: {
-      "source-blob": "https://gitub.com/" + user+ "/" + repo + "/tarball/master/"
+      "source-blob": "https://github.com/" + user+ "/" + repo + "/tarball/master/"
     }
   }),
     function (err, resp, body) {
