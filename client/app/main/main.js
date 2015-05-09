@@ -24,8 +24,12 @@ angular.module('codeColab.main', [])
   $scope.saveRepo = function(repo) {
     $scope.selected = repo.name;
     // FileStructDo.getTree(repo)
-    $scope.share && delete $scope.share && console.log('destroyed',$scope.share===undefined)
     FileStructDo.getTree($scope, repo)
+    
+    // if editor exists, get rid of it
+    document.getElementsByClassName('CodeMirror-merge')[0] && document.getElementById('area').removeChild(document.getElementsByClassName('CodeMirror-merge')[0])
+    // $scope.share && delete $scope.share && console.log('destroyed',$scope.share===undefined)
+    
     if(!$scope.ref) {
       $scope.createBranch()
     }

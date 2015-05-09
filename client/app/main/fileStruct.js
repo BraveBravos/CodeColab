@@ -2,11 +2,7 @@ angular.module('codeColab.fileStruct', [])
 
 .factory ('FileStructDo', function ($http){
   
-  var getTree = function ($scope, repoName) {
-
-    // if editor exists, get rid of it
-    document.getElementsByClassName('CodeMirror-merge')[0] && document.getElementById('area').removeChild(document.getElementsByClassName('CodeMirror-merge')[0])
-    
+  var getTree = function ($scope, repoName) {  
 
     var repo = repoName.name.split('/')
     return $http({
