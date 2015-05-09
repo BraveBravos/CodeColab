@@ -114,7 +114,7 @@ function(accessToken, refreshToken, profile, done) {
   console.log('accessToken', accessToken);
   console.log('profile', profile);
   // User.findOrCreate({ githubId: profile.id }, function (err, user) {
-  //   return done(err, user);
+    // return done(err, user);
   // });
 }));
 
@@ -170,6 +170,7 @@ app.post('/api/files', function (req, res) {
   },
     function (err, resp, body) {
       var fileSha=JSON.parse(body).sha
+      console.log("fileSha",fileSha);
       var file = atob(JSON.parse(body).content);
       docs.sendDoc(db, file, fileId, fileSha);
       // docs.setSjs(db, file, fileId);
@@ -187,6 +188,7 @@ app.post('/api/sjs', function (req, res) {
 var repo;
 
 app.post('/api/repos/commit', function(req, res){
+  // console.log('INSIDE COMMIT req.body: ', req.body)
 
   var path = req.body.path,
       message = req.body.message,
@@ -196,10 +198,11 @@ app.post('/api/repos/commit', function(req, res){
   var client = github.client(req.session.token);
   var ghrepo = client.repo(repo)
 
-  ghrepo.updateContents(path, message, content, sha, 
+  ghrepo.updateContents(path, message, content, sha,
   function(err, resp, body){
     if (err) console.log(err)
     else {
+      console.log('git commit sent!', body)
       res.sendStatus(200)
     }
   })
@@ -241,15 +244,32 @@ app.get('/auth/github/callback', passport.authenticate(
   'github', { successRedirect: '/#/main', failureRedirect: '/' }
 ));
 
+
 app.get('/auth/heroku', passport.authenticate('heroku'));
 
 app.get('/auth/heroku/callback',
   passport.authenticate('heroku', { failureRedirect: '/auth/heroku/fail' }),
   function(req, res) {
+    console.log('req', req)
+    console.log('res', res)
     // Successful authentication, redirect home.
+    res.header('Access-Control-Allow-Origin', "*")
+    res.status(200)
+    res.redirect('/auth/heroku/success')
     res.sendStatus(200);
   });
 
+app.get('/auth/heroku/success', function(req, res) {
+  console.log('success!')
+
+
+});
+
+app.get('/auth/heroku/fail', function(req, res) {
+  console.log('fail!')
+
+
+});
 
 app.get('/api/auth', function(req, res){
   res.status(200).json(req.isAuthenticated());
@@ -280,7 +300,7 @@ app.post('/branch', function(req, res){
     function (err, resp, body) {
       if (err) console.log(err);
 
-      console.log('INSIDE GIT BRANCH')
+      // console.log('INSIDE GIT BRANCH')
       var ref = JSON.parse(body).ref,
           sha = JSON.parse(body).object.sha;
 
@@ -297,8 +317,8 @@ app.post('/branch', function(req, res){
         body: send
       },
         function(err, resp, body){
-          if (resp.statusCode === 422) { //branch exists 
-            console.log('Entering existing CODECOLAB branch') 
+          if (resp.statusCode === 422) { //branch exists
+            console.log('Entering existing CODECOLAB branch')
             request.get({
               url: 'https://api.github.com/repos/' + repo +'/git/refs/heads/CODECOLAB?access_token='+ req.session.token,
               headers: {'User-Agent': owner}
