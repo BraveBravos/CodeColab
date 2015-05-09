@@ -114,7 +114,7 @@ function(accessToken, refreshToken, profile, done) {
   console.log('accessToken', accessToken);
   console.log('profile', profile);
   // User.findOrCreate({ githubId: profile.id }, function (err, user) {
-  //   return done(err, user);
+    // return done(err, user);
   // });
 }));
 
@@ -169,7 +169,6 @@ app.post('/api/files', function (req, res) {
     headers: {'User-Agent': req.session.passport.user[0].username}
   },
     function (err, resp, body) {
-      console.log('filebody', body)
       var fileSha=JSON.parse(body).sha
       var file = atob(JSON.parse(body).content);
       docs.sendDoc(db, file, fileId, fileSha);
@@ -191,7 +190,6 @@ app.post('/api/repos/commit', function(req, res){
   var path = req.body.path,
       message = req.body.message,
       sha=req.body.sha,
-      // encodedContent = req.body.encoded,
       content = req.body.content;
 
   var client = github.client(req.session.token);
@@ -202,6 +200,7 @@ app.post('/api/repos/commit', function(req, res){
   function(err, resp, body){
     if (err) console.log(err, resp, body)
     else {
+      console.log('git commit sent!', body)
       res.sendStatus(200)
     }
   })
@@ -243,6 +242,7 @@ app.get('/auth/github',
 app.get('/auth/github/callback', passport.authenticate(
   'github', { successRedirect: '/#/main', failureRedirect: '/' }
 ));
+
 
 app.get('/auth/heroku', passport.authenticate('heroku'));
 
