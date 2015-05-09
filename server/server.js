@@ -70,6 +70,7 @@ app.get('/auth/github/callback', function (req, res, next) {
   next();
 });
 
+
 app.listen(app.get('port'), function() {
   console.log('Node app running on port', app.get('port'));
 });
