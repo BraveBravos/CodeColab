@@ -248,12 +248,7 @@ app.get('/auth/github/callback', passport.authenticate(
 app.get('/auth/heroku', passport.authenticate('heroku'));
 
 app.get('/auth/heroku/callback',
-  passport.authenticate('heroku', { failureRedirect: '/auth/heroku/fail' }),
-  function(req, res) {
-    // Successful authentication, redirect home.
-    console.log("session",req.session)
-    res.redirect('/')
-    });
+  passport.authenticate('heroku', { successRedirect: '/', failureRedirect: '/auth/heroku/fail' }));
 
 app.get('/api/deploy', function(req, res) {
   var repo = "CodeColab";
@@ -273,12 +268,8 @@ app.get('/api/deploy', function(req, res) {
       }
   },
     function (err, resp, body) {
-      if (err) {
-        console.log('err', err)
-      } else {
         console.log('response', resp)
-      }
-  }
+  })
 
 });
 
