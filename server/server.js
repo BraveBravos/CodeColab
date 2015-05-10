@@ -110,10 +110,12 @@ passport.use(new GitHubStrategy({
 passport.use(new HerokuStrategy({
   clientID: process.env.HEROKU_CLIENT_ID || keys.herokuId,
   clientSecret: process.env.HEROKU_CLIENT_SECRET || keys.herokuSecret,
-  callbackURL: process.env.HEROKU_CALLBACK || keys.herokuCallback
+  callbackURL: process.env.HEROKU_CALLBACK || keys.herokuCallback,
+  passReqToCallback: true
 },
-function(accessToken, refreshToken, profile, done) {
-  // req.session.herokuToken = accessToken;
+function(req, accessToken, refreshToken, profile, done) {
+  req.session.herokuToken = accessToken;
+  console.log('heroku', accessToken)
   return done(null, profile);
 }));
 
@@ -246,34 +248,28 @@ app.get('/auth/github/callback', passport.authenticate(
 app.get('/auth/heroku', passport.authenticate('heroku'));
 
 app.get('/auth/heroku/callback',
-  passport.authenticate('heroku', { failureRedirect: '/auth/heroku/fail' }),
-  function(req, res) {
-    // Successful authentication, redirect home.
-    console.log("session",req.session)
-    res.redirect('/')
-    });
+  passport.authenticate('heroku', { successRedirect: '/', failureRedirect: '/auth/heroku/fail' }));
 
 app.get('/api/deploy', function(req, res) {
   var repo = "CodeColab";
   var user = "phillydorn";
-  request({
-    method: "POST",
+  var token = req.session.herokuToken
+  var apiToken = process.env.HEROKU_API_TOKEN || keys.herokuToken
+  console.log ("https://github.com/" + user+ "/" + repo + "/tarball/master?token="+apiToken)
+  request.post({
     url: "https://api.heroku.com/app-setups",
     headers: {
       'Content-Type': 'application/json',
-      'Accept': 'application/vnd.heroku+json; version=3'
+      'Accept': 'application/vnd.heroku+json; version=3',
+      'Authorization': 'Bearer '+ token
     },
-    data: {
-      "source-blob": "https://github.com/" + user+ "/" + repo + "/tarball/master/"
-    }
-  }),
-    function (err, resp, body) {
-      if (err) {
-        console.log('err', err)
-      } else {
-        console.log('response', resp)
+    "source_blob": {
+        "url": "https://github.com/" + user+ "/" + repo + "/tarball/master?token="+apiToken
       }
-  }
+  },
+    function (err, resp, body) {
+        console.log('response', resp)
+  })
 
 });
 
