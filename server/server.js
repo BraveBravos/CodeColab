@@ -210,7 +210,7 @@ app.post('/api/repos/commit', function(req, res){
 app.post ('/api/fileStruct/tree', function (req, res) {
   var owner = req.body.repo[0];
   var repo = req.body.repo[1];
-  req.session.repo = repo;
+  // req.session.repo = repo;
   request({
     url: 'https://api.github.com/repos/' +owner+ '/' +repo+ '/git/refs/heads/master?access_token='+ req.session.token,
     headers: {'User-Agent': req.session.passport.user[0].username}
@@ -254,8 +254,6 @@ app.post('/api/deploy', function(req, res) {
   var repo = req.body.repo;
   var token = req.session.herokuToken
   var apiToken = process.env.HEROKU_API_TOKEN || keys.herokuAPIToken
-  console.log('bearer token', req.session)
-  console.log ("https://github.com/" + repo + "/tarball/master?token="+apiToken)
   request.post({
     url: "https://api.heroku.com/app-setups",
     headers: {
