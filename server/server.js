@@ -254,7 +254,7 @@ app.post('/api/deploy', function(req, res) {
   var repo = req.body.repo;
   var token = req.session.herokuToken
   var apiToken = process.env.HEROKU_API_TOKEN || keys.herokuAPIToken
-  console.log('bearer token', token)
+  console.log('bearer token', req.session)
   console.log ("https://github.com/" + repo + "/tarball/master?token="+apiToken)
   request.post({
     url: "https://api.heroku.com/app-setups",
