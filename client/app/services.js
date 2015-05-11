@@ -52,10 +52,8 @@ angular.module('codeColab.services', [])
   var commit = function(message){
     var message = message,
         content = ce.editor().getValue(),
-        // encodedContent = utf8_to_b64(content),
         path = this.path,
         sha = this.fileSha;
-        console.log('path', path)
 
     // function utf8_to_b64(str) {
     //   return window.btoa(unescape(encodeURIComponent(str)));
@@ -65,11 +63,10 @@ angular.module('codeColab.services', [])
       method: 'POST',
       url: '/api/repos/commit',
       data: {
-        message: message, 
-        content: content, 
-        sha:sha, 
-        path:path,
-        // encoded:encodedContent
+        message: message,
+        content: content,
+        sha:sha,
+        path:path
       }
     })
     .then(function(response){
@@ -176,7 +173,6 @@ angular.module('codeColab.services', [])
 
     var loadFile = function ($scope, url, id, path) {
     this.path = path
-    console.log('path set', this.path)
     var that = this;
 
     return $http ({
@@ -191,16 +187,30 @@ angular.module('codeColab.services', [])
       that.fileSha = data.data.fileSha;
       loadShare($scope, id, data.data.file)
     });
-}
+  }
+  var deployApp = function(repo){
+    console.log('deploying')
+    return $http({
+      method: 'POST',
+      url: '/api/deploy',
+      data: {
+        repo: repo
+      }
+    })
+    .then (function(data){
+      console.log('Deployed!')
+    })
+  }
 
   return {
     getRepos : getRepos,
     loadShare: loadShare,
     commit: commit,
     createBranch: createBranch,
+   loadCM: loadCM,
+    resetCM: resetCM,
     loadFile: loadFile,
-    loadCM: loadCM,
-    resetCM: resetCM
+    deployApp: deployApp
   }
 })
 
