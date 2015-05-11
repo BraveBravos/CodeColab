@@ -254,6 +254,7 @@ app.get('/api/deploy', function(req, res) {
   var user = "phillydorn";
   var token = req.session.herokuToken
   var apiToken = process.env.HEROKU_API_TOKEN || keys.herokuToken
+  console.log('bearer token', token)
   console.log ("https://github.com/" + user+ "/" + repo + "/tarball/master?token="+apiToken)
   request.post({
     url: "https://api.heroku.com/app-setups",
@@ -262,12 +263,10 @@ app.get('/api/deploy', function(req, res) {
       'Accept': 'application/vnd.heroku+json; version=3',
       'Authorization': 'Bearer '+ token
     },
-    "source_blob": {
-        "url": "https://github.com/" + user+ "/" + repo + "/tarball/master?token="+apiToken
-      }
+    json: {source_blob : {"url" : "https://github.com/phillydorn/CodeColab/tarball/master?token=0665619a-694d-4f52-b015-99160cbe81b3"}}
   },
     function (err, resp, body) {
-        console.log('response', resp)
+        console.log('response', body)
   })
 
 });
