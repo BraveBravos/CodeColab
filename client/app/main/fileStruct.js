@@ -19,7 +19,7 @@ angular.module('codeColab.fileStruct', [])
     bigTree.forEach(function(item) {
 
       if (item.type === 'tree' || item.path.lastIndexOf('/')===-1) {
-        tree[item.path] = {top:true, label:item.path, id:item.sha, url:item.url, collapsed:true, children:[]}
+        tree[item.path] = {top:true, fullPath: item.path, label:item.path, id:item.sha, url:item.url, collapsed:true, children:[]}
       }
 
       var divider = item.path.lastIndexOf('/');
@@ -67,7 +67,7 @@ angular.module('codeColab.fileStruct', [])
   // console.log('final tree',results)
   $scope.tree = results;
   // return results;
-  
+
   }) // end of .then(function(bigTree))
 
 }  // end of getTree function

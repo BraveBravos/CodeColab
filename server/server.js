@@ -162,7 +162,6 @@ app.post('/api/files', function (req, res) {
       var fileSha=JSON.parse(body).sha
       var file = atob(JSON.parse(body).content);
       docs.sendDoc(db, file, fileId, fileSha);
-      // docs.setSjs(db, file, fileId);
       res.status(200).send({file:file, fileSha:fileSha});
     });
 })
