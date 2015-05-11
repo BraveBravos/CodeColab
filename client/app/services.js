@@ -54,24 +54,24 @@ angular.module('codeColab.services', [])
         content = ce.editor().getValue(),
         path = this.path,
         sha = this.fileSha;
+        console.log('path', path)
 
     // function utf8_to_b64(str) {
     //   return window.btoa(unescape(encodeURIComponent(str)));
     // }
 
-    return $http({      
+    return $http({
       method: 'POST',
       url: '/api/repos/commit',
       data: {
-        message: message, 
-        content: content, 
-        sha:sha, 
+        message: message,
+        content: content,
+        sha:sha,
         path:path
       }
     })
     .then(function(response){
       console.log('commiting successsss!')
-      alert('succesful commit!')
     })
   }
 
@@ -172,6 +172,7 @@ angular.module('codeColab.services', [])
 
     var loadFile = function ($scope, url, id, path) {
     this.path = path
+    console.log('path set', this.path)
     var that = this;
 
     return $http ({

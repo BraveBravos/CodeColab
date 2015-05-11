@@ -10,15 +10,15 @@
     <div class = 'navbar'>
       <a href='/logout' class='logout'>
         <span class="fa fa-sign-out"></span>
-        Logout  
+        Logout
       </a>
       <div class = "repo-list">
         <p>Please select a repository:</p>
         <select ng-options = "repo.name for repo in repos track by repo.id" ng-model = "selectRepo" ng-change="saveRepo(selectRepo)">
         </select>
-        <input ng-model='commitMSG' id='commitMessage' placeholder='Your Changes'></input>
-        <a href='/#/main' class='submit' ng-show='check()' ng-click='commit(commitMSG)'> 
-          Submit Changes 
+        <input ng-model='commitMSG' ng-show='check()' id='commitMessage' placeholder='Commit Message'></input>
+        <a href='/#/main' class='submit' ng-show='check()' ng-click='commit(commitMSG)'>
+          Submit Changes
         </a>
       </div>
     </div>

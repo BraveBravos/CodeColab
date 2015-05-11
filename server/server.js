@@ -158,6 +158,7 @@ app.post('/api/files', function (req, res) {
     headers: {'User-Agent': req.session.passport.user[0].username}
   },
     function (err, resp, body) {
+      console.log('filebody', body)
       var fileSha=JSON.parse(body).sha
       var file = atob(JSON.parse(body).content);
       docs.sendDoc(db, file, fileId, fileSha);
@@ -185,7 +186,7 @@ app.post('/api/repos/commit', function(req, res){
   var client = github.client(req.session.token);
   var ghrepo = client.repo(repo)
 
-  ghrepo.updateContents(path, message, content, sha, 
+  ghrepo.updateContents(path, message, content, sha,
   function(err, resp, body){
     if (err) console.log(err)
     else {
@@ -197,6 +198,7 @@ app.post('/api/repos/commit', function(req, res){
 app.post ('/api/fileStruct/tree', function (req, res) {
   var owner = req.body.repo[0];
   var repo = req.body.repo[1];
+  req.session.repo = repo;
   request({
     url: 'https://api.github.com/repos/' +owner+ '/' +repo+ '/git/refs/heads/master?access_token='+ req.session.token,
     headers: {'User-Agent': req.session.passport.user[0].username}
@@ -204,19 +206,19 @@ app.post ('/api/fileStruct/tree', function (req, res) {
   function (err, resp, body) {
     var data = JSON.parse(body);
     var sha = data.object.sha;
+    req.session.treeSha = sha;
     var base = 'https://api.github.com/repos'
     var more = '/git/trees/'
     var last = '?recursive=1&access_token='
     var concat = base + '/' +owner+ '/' + repo + more + sha + last + req.session.token
-    
+
     request({
       url: concat,
       headers: {'User-Agent': req.session.passport.user[0].username}
       },
       function (err, resp, body){
-        // console.log("BODY FOR TREE", body)
         var data = JSON.parse(body)
-        res.status(200).json(data.tree)
+        res.status(200).send(data.tree)
       }
     )   // this is a request inside of a request, so the ) may need to move
   });
@@ -276,8 +278,8 @@ app.post('/branch', function(req, res){
         body: send
       },
         function(err, resp, body){
-          if (resp.statusCode === 422) { //branch exists 
-            console.log('Entering existing CODECOLAB branch') 
+          if (resp.statusCode === 422) { //branch exists
+            console.log('Entering existing CODECOLAB branch')
             request.get({
               url: 'https://api.github.com/repos/' + repo +'/git/refs/heads/CODECOLAB?access_token='+ req.session.token,
               headers: {'User-Agent': owner}
