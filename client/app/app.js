@@ -23,6 +23,11 @@ angular.module('codeColab', [
       templateUrl : '/app/about/about.html',
       authenticate: false
     })
+    .when ('/logout', {
+      templateUrl : '/app/about/signin.html',
+      authenticate: false,
+      redirectTo: '/'
+    })
 		.otherwise({
 			redirectTo: '/'
 		})

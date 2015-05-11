@@ -195,7 +195,6 @@ p.copyright {
 }
 
 .containsAbout {
-    /*width: 95%;*/
     padding: 2%;
     margin: auto;
     margin-bottom: 10px;
@@ -214,7 +213,6 @@ p.copyright {
     text-align: center;
 }
 
-
 .description {
     width: 45%;
     margin-left:50%;
@@ -223,7 +221,9 @@ p.copyright {
 }
 
 
-
+.mainbody {
+    background-color: #607D8B;
+}
 
 
 
