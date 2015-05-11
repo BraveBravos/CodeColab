@@ -204,7 +204,7 @@ angular.module('codeColab.services', [])
     loadShare: loadShare,
     commit: commit,
     createBranch: createBranch,
-    loadCM: loadCM,
+   loadCM: loadCM,
     resetCM: resetCM,
     loadFile: loadFile,
     deployApp: deployApp
