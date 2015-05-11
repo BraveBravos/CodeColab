@@ -191,8 +191,11 @@ angular.module('codeColab.services', [])
   var deployApp = function(repo){
     console.log('deploying')
     return $http({
-      method: 'GET',
-      url: '/api/deploy'
+      method: 'POST',
+      url: '/api/deploy',
+      data: {
+        repo: repo
+      }
     })
     .then (function(data){
       console.log('Deployed!')

@@ -250,13 +250,12 @@ app.get('/auth/heroku', passport.authenticate('heroku'));
 app.get('/auth/heroku/callback',
   passport.authenticate('heroku', { successRedirect: '/', failureRedirect: '/auth/heroku/fail' }));
 
-app.get('/api/deploy', function(req, res) {
-  var repo = "CodeColab";
-  var user = "phillydorn";
+app.post('/api/deploy', function(req, res) {
+  var repo = req.body.repo;
   var token = req.session.herokuToken
-  var apiToken = process.env.HEROKU_API_TOKEN || keys.herokuToken
+  var apiToken = process.env.HEROKU_API_TOKEN || keys.herokuAPIToken
   console.log('bearer token', token)
-  console.log ("https://github.com/" + user+ "/" + repo + "/tarball/master?token="+apiToken)
+  console.log ("https://github.com/" + repo + "/tarball/master?token="+apiToken)
   request.post({
     url: "https://api.heroku.com/app-setups",
     headers: {
@@ -264,7 +263,7 @@ app.get('/api/deploy', function(req, res) {
       'Accept': 'application/vnd.heroku+json; version=3',
       'Authorization': 'Bearer '+ token
     },
-    json: {source_blob : {"url" : "https://github.com/phillydorn/CodeColab/tarball/master?token=0665619a-694d-4f52-b015-99160cbe81b3"}}
+    json: {source_blob : {"url" : "https://github.com/" + repo + "/tarball/master?token="+apiToken}}
   },
     function (err, resp, body) {
         console.log('response', body)
