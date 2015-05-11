@@ -233,6 +233,7 @@ new WebSocketServer({
 var CHANNELS = { };
 
 function onRequest(socket) {
+  console.log('ws onRequest');
     var origin = socket.origin + socket.resource;
 
     var websocket = socket.accept(null, origin);
@@ -249,6 +250,7 @@ function onRequest(socket) {
 }
 
 function onMessage(message, websocket) {
+  console.log('ws onMessage');
     if (message.checkPresence)
         checkPresence(message, websocket);
     else if (message.open)
@@ -258,6 +260,7 @@ function onMessage(message, websocket) {
 }
 
 function onOpen(message, websocket) {
+  console.log('ws onOpen');
     var channel = CHANNELS[message.channel];
 
     if (channel)
@@ -267,6 +270,7 @@ function onOpen(message, websocket) {
 }
 
 function sendMessage(message, websocket) {
+  console.log('ws sendMessage');
     message.data = JSON.stringify(message.data);
     var channel = CHANNELS[message.channel];
     if (!channel) {
@@ -285,12 +289,14 @@ function sendMessage(message, websocket) {
 }
 
 function checkPresence(message, websocket) {
+  console.log('ws checkPresence');
     websocket.sendUTF(JSON.stringify({
         isChannelPresent: !!CHANNELS[message.channel]
     }));
 }
 
 function swapArray(arr) {
+  console.log('ws swapArray');
     var swapped = [],
         length = arr.length;
     for (var i = 0; i < length; i++) {
@@ -301,6 +307,7 @@ function swapArray(arr) {
 }
 
 function truncateChannels(websocket) {
+  console.log('ws truncateChannels');
     for (var channel in CHANNELS) {
         var _channel = CHANNELS[channel];
         for (var i = 0; i < _channel.length; i++) {

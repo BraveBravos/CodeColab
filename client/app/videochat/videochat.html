@@ -9,7 +9,24 @@
 <script type='text/javascript' src='app/videochat/meeting.js'></script>
 <script type="text/javascript">
 
+// $(document).ready(function() {
+//                 $.post("https://api.xirsys.com/getIceServers", {
+//                     ident: "patdalberg",
+//                     secret: "6385a452-8fe7-4cac-9a79-3481c16408b3",
+//                     domain: "code-colab.herokuapp.com",
+//                     application: "default",
+//                     room: "default",
+//                     secure: 1
+//                 },
+//                 function(data, status) {
+//                     alert("Data: " + data + "nnStatus: " + status);
+//                     console.log("Data: " + data + "nnStatus: " + status);
+//                 });
+//             });
+
 var mrn = 'rtcmrn';
+
+var objJoin = {roomid : 'rtcmrn'};
 
 var meeting = new Meeting('codecolab');
 
@@ -58,7 +75,10 @@ meeting.openSignalingChannel = function(onmessage) {
             }));
           };
           websocket.onmessage = function(e) {
+            var msgData = JSON.parse(e.data);
+            console.log('websocket.onmessage e.data = ',e.data)
             onmessage(JSON.parse(e.data));
+            objJoin.userid = msgData.userid;
           };
           return websocket;
         };
@@ -92,7 +112,8 @@ document.getElementById('setup-new-meeting').onclick = function() {
 };
 
 document.getElementById('join-current-meeting').onclick = function(){
-  meeting.meet(mrn);
+   console.log('join-current-meeting objJoin = ,',objJoin)
+  meeting.meet(objJoin);
   //meeting.setup('meeting-room-name');
   this.className = 'hidden';
   document.getElementById('setup-new-meeting').className = 'hidden';

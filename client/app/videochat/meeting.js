@@ -9,6 +9,28 @@
 // __________
 // meeting.js
 
+var xirsysIce = [];
+
+$(document).ready(function() {
+                $.post("https://api.xirsys.com/getIceServers", {
+                    ident: "patdalberg",
+                    secret: "6385a452-8fe7-4cac-9a79-3481c16408b3",
+                    domain: "code-colab.herokuapp.com",
+                    application: "default",
+                    room: "default",
+                    secure: 1
+                },
+                function(data, status) {
+                    //alert("Data: " + data + "nnStatus: " + status);
+                    //console.log("Data: " + data + "nnStatus: " + status);
+                    data = JSON.parse(data);
+                    //console.log(data.d.iceServers);
+                    //if(status === 'success'){
+                        xirsysIce = data.d.iceServers;
+                    //}
+                });
+            });
+
 (function () {
 
     // a middle-agent between public API and the Signaler object
@@ -31,6 +53,7 @@
         }
 
         function captureUserMedia(callback) {
+            console.log('meeting.js captureUserMedia');
             var constraints = {
                 audio: true,
                 video: true
@@ -39,6 +62,7 @@
             navigator.getUserMedia(constraints, onstream, onerror);
 
             function onstream(stream) {
+                console.log('meeting.js onstream');
                 stream.onended = function () {
                     if (self.onuserleft) self.onuserleft('self');
                 };
@@ -71,6 +95,7 @@
 
         // setup new meeting room
         this.setup = function (roomid) {
+            console.log('meeting.js setup');
             captureUserMedia(function () {
                 !signaler && initSignaler();
                 signaler.broadcast({
@@ -81,6 +106,7 @@
 
         // join pre-created meeting room
         this.meet = function (room) {
+            console.log('meeting.js meet room',room);
             captureUserMedia(function () {
                 !signaler && initSignaler();
                 signaler.join({
@@ -97,6 +123,7 @@
     // it is a backbone object
 
     function Signaler(root) {
+        console.log('meeting.js Signaler root = ',root);
         // unique identifier for the current user
         var userid = root.userid || getToken();
 
@@ -111,19 +138,21 @@
 
         // it is called when your signaling implementation fires "onmessage"
         this.onmessage = function (message) {
+            console.log('meeting.js onmessage message = ',message);
             // if new room detected
-            if (message.roomid && message.broadcasting && !signaler.sentParticipationRequest)
+            if (message.roomid && message.broadcasting && !signaler.sentParticipationRequest){
+                console.log('meeting.js onmessage new room detected')
                 root.onmeeting(message);
 
-            else
+            }else{
             // for pretty logging
                 console.debug(JSON.stringify(message, function (key, value) {
                 if (value && value.sdp) {
                     console.log(value.sdp.type, '---', value.sdp.sdp);
                     return '';
                 } else return value;
-            }, '---'));
-
+              }, '---'));
+            }
             // if someone shared SDP
             if (message.sdp && message.to == userid) {
                 this.onsdp(message);
@@ -150,6 +179,7 @@
         };
 
         function participationRequest(_userid) {
+            console.log('meeting.js participationRequest _userid = ',_userid);
             // it is appeared that 10 or more users can send 
             // participation requests concurrently
             // onicecandidate fails in such case
@@ -180,6 +210,7 @@
         // reusable function to create new offer repeatedly
 
         function repeatedlyCreateOffer() {
+            console.log('meeting.js repeatedlyCreateOffer');
             var firstParticipant = signaler.participants[0];
             if (!firstParticipant) return;
 
@@ -232,12 +263,14 @@
         // it is passed over Offer/Answer objects for reusability
         var options = {
             onsdp: function (sdp, to) {
+                console.log('onsdp sdp, to',sdp,to);
                 signaler.signal({
                     sdp: sdp,
                     to: to
                 });
             },
             onicecandidate: function (candidate, to) {
+                console.log('onicecandidate candidate, to',candidate,to);
                 signaler.signal({
                     candidate: candidate,
                     to: to
@@ -408,29 +441,36 @@
 
     var iceServers = [];
 
-    iceServers.push({
-        url: 'stun:stun.services.mozilla.com'
-    });
+    // iceServers.push({
+    //     url: 'stun:stun.services.mozilla.com'
+    // });
 
-    iceServers.push({
-        url: 'stun:stun.l.google.com:19302'
-    });
+    // iceServers.push({
+    //     url: 'stun:stun.l.google.com:19302'
+    // });
 
-    iceServers.push({
-        url: 'stun:stun.anyfirewall.com:3478'
-    });
+    // iceServers.push({
+    //     url: 'stun:stun.anyfirewall.com:3478'
+    // });
 
-    iceServers.push({
-        url: 'turn:turn.bistri.com:80',
-        credential: 'homeo',
-        username: 'homeo'
-    });
+    // iceServers.push({
+    //     url: 'turn:turn.bistri.com:80',
+    //     credential: 'homeo',
+    //     username: 'homeo'
+    // });
 
-    iceServers.push({
-        url: 'turn:turn.anyfirewall.com:443?transport=tcp',
-        credential: 'webrtc',
-        username: 'webrtc'
-    });
+    // iceServers.push({
+    //     url: 'turn:turn.anyfirewall.com:443?transport=tcp',
+    //     credential: 'webrtc',
+    //     username: 'webrtc'
+    // });
+
+    iceServers = xirsysIce;
+
+    // for(var iceServer in xirsysIce.iceServers){
+    //     console.log('iceServer = ',iceServer); 
+    //     iceServers.push(iceServer)
+    // }
 
     var iceServersObject = {
         iceServers: iceServers
@@ -490,9 +530,9 @@
         console.error('sdp error:', JSON.stringify(e, null, '\t'));
     }
 
-    // var offer = Offer.createOffer(config);
-    // offer.setRemoteDescription(sdp);
-    // offer.addIceCandidate(candidate);
+     // var offer = Offer.createOffer(config);
+     // offer.setRemoteDescription(sdp);
+     // offer.addIceCandidate(candidate);
     var Offer = {
         createOffer: function (config) {
             console.log('createOffer config',config);
