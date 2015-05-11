@@ -75,7 +75,13 @@ angular.module('codeColab.services', [])
     })
   }
 
-
+  var resetCM = function($scope) {
+    // console.log('reset entered')
+    if($scope.share) {
+      $scope.share.doc.unsubscribe()
+      $scope.share.sjs.disconnect()
+      $scope.CM.editor().detachShareJsDoc()
+    }
 
   var loadShare = function ($scope, id, data) {
 
@@ -89,6 +95,8 @@ angular.module('codeColab.services', [])
     if($scope.share){
       $scope.share.doc.unsubscribe()
       $scope.share.sjs.disconnect()
+      $scope.CM.editor().detachShareJsDoc()
+      // cm.detachShareJsDoc
     }
 
     var socket = new BCSocket(null, {reconnect: true});
