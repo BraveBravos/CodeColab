@@ -44,6 +44,10 @@ angular.module('codeColab.main', [])
     input.value = ''
   }
 
+  $scope.deployApp = function(){
+    Share.deployApp($scope.selected);
+  }
+
   $scope.init();
 })
 

@@ -2,7 +2,6 @@ var express = require('express'),
     connect = require('connect'),
     bodyParser = require ('body-parser'),
     atob = require('atob'),
-    btoa = require('btoa'),
     app = express(),
     mongo = require('mongodb'),
     monk =require ('monk'),
@@ -15,6 +14,7 @@ var express = require('express'),
     path = require('path'),
     passport = require('passport'),
     GitHubStrategy = require('passport-github').Strategy,
+    HerokuStrategy = require('passport-heroku').Strategy,
     livedb = require( 'livedb' ),
     Duplex = require( 'stream' ).Duplex,
     browserChannel = require('browserchannel').server,
@@ -30,7 +30,6 @@ var express = require('express'),
       backend: backend
     }),
     request = require('request'),
-    // axios = require('axios'),
     github = require('octonode'),
     sess;
 
@@ -69,7 +68,8 @@ app.get('/auth/github/callback', function (req, res, next) {
     console.log('no session')
   }
   next();
-})
+});
+
 
 app.listen(app.get('port'), function() {
   console.log('Node app running on port', app.get('port'));
@@ -106,6 +106,17 @@ passport.use(new GitHubStrategy({
   }
 ));
 
+passport.use(new HerokuStrategy({
+  clientID: process.env.HEROKU_CLIENT_ID || keys.herokuId,
+  clientSecret: process.env.HEROKU_CLIENT_SECRET || keys.herokuSecret,
+  callbackURL: process.env.HEROKU_CALLBACK || keys.herokuCallback,
+  passReqToCallback: true
+},
+function(req, accessToken, refreshToken, profile, done) {
+  req.session.herokuToken = accessToken;
+  console.log('heroku', accessToken)
+  return done(null, profile);
+}));
 
 app.get('/api/repos', function (req, res) {
   request({
@@ -158,7 +169,6 @@ app.post('/api/files', function (req, res) {
     headers: {'User-Agent': req.session.passport.user[0].username}
   },
     function (err, resp, body) {
-      console.log('filebody', body)
       var fileSha=JSON.parse(body).sha
       var file = atob(JSON.parse(body).content);
       docs.sendDoc(db, file, fileId, fileSha);
@@ -180,7 +190,6 @@ app.post('/api/repos/commit', function(req, res){
   var path = req.body.path,
       message = req.body.message,
       sha=req.body.sha,
-      // encodedContent = req.body.encoded,
       content = req.body.content;
 
   var client = github.client(req.session.token);
@@ -189,8 +198,9 @@ app.post('/api/repos/commit', function(req, res){
   console.log("Sending", path, '::', message, '::', sha)
   ghrepo.updateContents(path, message, content, sha, 'CODECOLAB',
   function(err, resp, body){
-    if (err) console.log(err, resp, body)
+    if (err) console.log(err)
     else {
+      console.log('git commit sent!', body)
       res.sendStatus(200)
     }
   })
@@ -233,6 +243,40 @@ app.get('/auth/github/callback', passport.authenticate(
   'github', { successRedirect: '/#/main', failureRedirect: '/' }
 ));
 
+
+app.get('/auth/heroku', passport.authenticate('heroku'));
+
+app.get('/auth/heroku/callback',
+  passport.authenticate('heroku', { successRedirect: '/', failureRedirect: '/auth/heroku/fail' }));
+
+app.get('/api/deploy', function(req, res) {
+  var repo = "CodeColab";
+  var user = "phillydorn";
+  var token = req.session.herokuToken
+  var apiToken = process.env.HEROKU_API_TOKEN || keys.herokuToken
+  console.log('bearer token', token)
+  console.log ("https://github.com/" + user+ "/" + repo + "/tarball/master?token="+apiToken)
+  request.post({
+    url: "https://api.heroku.com/app-setups",
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/vnd.heroku+json; version=3',
+      'Authorization': 'Bearer '+ token
+    },
+    json: {source_blob : {"url" : "https://github.com/phillydorn/CodeColab/tarball/master?token=0665619a-694d-4f52-b015-99160cbe81b3"}}
+  },
+    function (err, resp, body) {
+        console.log('response', body)
+  })
+
+});
+
+app.get('/auth/heroku/fail', function(req, res) {
+  console.log('fail!')
+
+
+});
+
 app.get('/api/auth', function(req, res){
   res.status(200).json(req.isAuthenticated());
 })
@@ -247,13 +291,6 @@ app.post('/branch', function(req, res){
   var owner=req.session.username;
   repo = req.body.repo;
 
-  // console.log('/branch: ',repo)
-  // console.log('/branch owner: ', owner)
-
-  //get request to github for master commit SHA code
-  // axios.get('/repos/' + owner +'/'+repo +'/git/refs/master', {
-  //   headers: {'User-Agent': req.session.passport.user[0].username}
-  // })
 
   request({
     url: 'https://api.github.com/repos/' + repo +'/git/refs/heads/master?access_token='+ req.session.token,
@@ -262,7 +299,7 @@ app.post('/branch', function(req, res){
     function (err, resp, body) {
       if (err) console.log(err);
 
-      console.log('INSIDE GIT BRANCH')
+      // console.log('INSIDE GIT BRANCH')
       var ref = JSON.parse(body).ref,
           sha = JSON.parse(body).object.sha;
 
@@ -298,31 +335,12 @@ app.post('/branch', function(req, res){
   );
 
 
-  // .then(function(branch){
-  //   console.log('INSIDE GIT BRANCH-response: ',branch)
-
-  //   var sha = branch.something, //the sha code to create branch
-  //       ref = branch.something; //create/get branch name
-
-  //   //creating the new branch
-  //   axios.post('/repos/' + owner +'/' + repo + '/git/refs',
-  //     {
-  //       sha: sha,
-  //       ref: 'branch-name',
-  //       headers: {'User-Agent': req.session.passport.user[0].username}
-  //     }
-  //   ).then(function(body){
-  //     console.log('SUCCESS: ', body)
-  //     res.send(body) //send ref and sha back to client to use for commits
-  //   }).catch(function(err){
-  //     console.log('error:',err)
-  //   })
-  // })
 })
 
   // http://blog.api.mks.io/blog-posts
   // title:
   // content:
+
 
 app.use(browserChannel( function(client) {
   var stream = new Duplex({objectMode: true});
