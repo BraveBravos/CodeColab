@@ -85,6 +85,7 @@ angular.module('codeColab.services', [])
       $scope.share.sjs.disconnect()
       $scope.CM.editor().detachShareJsDoc()
     }
+  }
 
   var loadShare = function ($scope, id, data) {
 

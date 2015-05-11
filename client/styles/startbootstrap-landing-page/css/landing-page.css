@@ -217,7 +217,10 @@ p.copyright {
 
 
 .description {
-    
+    /*width: 80%;*/
+    padding: 5px;
+    text-align: justify;
+    font-size: 1em;
 }
 
 
