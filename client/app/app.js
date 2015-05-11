@@ -32,6 +32,7 @@ angular.module('codeColab', [
 			redirectTo: '/'
 		})
 }])
+
 .run(function($rootScope, $location, globalAuth){
   $rootScope.$on('$routeChangeStart', function(event, next){
     $rootScope.path = $location.path();

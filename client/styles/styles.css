@@ -73,12 +73,8 @@ html, body {
 .logout {
   text-align: center;
   text-decoration: none;
-  color: #D6D6D6;
-  font-size: 16px;
-  font-weight: 300;
-  float: right;
+  margin-top: 5px;
   margin-left: 10px;
-  font-family: 'Open Sans',Arial,Helvetica Neue,sans-serif;
 }
 
 .navbar {
@@ -119,20 +115,14 @@ html, body {
   background: transparent;
 }
 
-/*.navbar {
-  background: #03396c;
-  border: none;
-}*/
-
 .tree {
   margin-top: 20px;
 }
 
-.navbar-left {
-  padding-left: 10%;
+
+.herokulogin {
+  max-height: 30px;
 }
-
-
 
 
 

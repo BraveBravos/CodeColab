@@ -20,7 +20,7 @@
               
           <div class='navbar-left'>
 
-            <p class="navbar-text">Select a Repo</p>
+            <p class="navbar-text">Repos:</p>
          
             <select ng-options = "repo.name for repo in repos track by repo.id" ng-model = "selectRepo" class='navbar-text selectpicker' ng-change="saveRepo(selectRepo)">
             </select> 
@@ -31,12 +31,38 @@
             <div class="form-group">
               <input type="text" ng-model='commitMSG' id='commitMessage' placeholder='Your Changes' class="form-control">
             </div>
-            <button type="submit" class="btn btn-default" class='submit' ng-show='check()' ng-click='commit(commitMSG)'>Submit Changes</button>
+            <button type="submit" class="btn btn-default" class='submit' ng-show='check()' ng-click='commit(commitMSG)'>Submit</button>
           </form>
+
+         <!--  <div class='navbar-left'>
+
+            <a href="/auth/heroku">
+            <img class='herokulogin' src="../../styles/img/herokuicon.png" alt="Deploy">
+            Authorize Heroku
+            </a>
+       
+            <a href="#" ng-click='deployApp()'>
+            <img class='herokulogin' src="../../styles/img/herokuicon.png" alt="Deploy">Deploy
+            </a>
+
+          </div> -->
           
           <ul class="nav navbar-nav navbar-right">
 
             <li>
+              <a href="/auth/heroku">
+              <img class='herokulogin' src="../../styles/img/herokuicon.png" alt="Deploy">
+              Authorize Heroku
+              </a>
+            </li>
+            
+            <li>
+              <a href="#" ng-click='deployApp()'>
+              <img class='herokulogin' src="../../styles/img/herokuicon.png" alt="Deploy">Deploy
+             </a>
+            </li>
+
+            <li class='logout'>
                 <a href="/logout">
                 <span class="fa fa-sign-out"></span>Logout</a>
             </li>
