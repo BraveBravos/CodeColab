@@ -185,13 +185,11 @@ app.post('/api/repos/commit', function(req, res){
 
   var client = github.client(req.session.token);
   var ghrepo = client.repo(repo)
-  // var blob = repo.create_blob(encodedContent, 'b64', function(){
-  //   console.log('blob created:',blob)
-  // })
 
-  ghrepo.updateContents(path, message, content, sha,
+  console.log("Sending", path, '::', message, '::', sha)
+  ghrepo.updateContents(path, message, content, sha, 
   function(err, resp, body){
-    if (err) console.log(err)
+    if (err) console.log(err, resp, body)
     else {
       res.sendStatus(200)
     }

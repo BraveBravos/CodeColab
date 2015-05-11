@@ -83,12 +83,12 @@ html, body {
   height: 25px;
 }
 
-.repo-list > p, .submit {
+/*.repo-list > p, .submit {
   color: #D6D6D6;
   font-family: 'Open Sans',Arial,Helvetica Neue,sans-serif;
   font-size: 16px;
   font-weight: 300;
-}
+}*/
 
 .submit {
   margin-left: 5px;
@@ -107,6 +107,19 @@ html, body {
 
 .dev {
   border: 2px solid black;
+}
+
+#commitMessage {
+  /*width: 20%;*/
+}
+
+.nav > li > p {
+  color: #777;
+  text-align: center;
+}
+
+.tree {
+  margin-top: 20px;
 }
 
 
