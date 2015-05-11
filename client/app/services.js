@@ -144,7 +144,7 @@ angular.module('codeColab.services', [])
         // origDocs database but not in regular Docs database, this will copy the string into the editor immediately after
         // the subscription takes hold, which also copies it into the Docs database.
         if(doc.getSnapshot()==='') {
-          $scope.CM.editor().setValue(codeEditor.rightOriginal().getValue())
+          $scope.CM.editor().setValue($scope.CM.rightOriginal().getValue())
         }
         // console.log('after subscribed',doc.getSnapshot(),codeEditor.editor().getValue())
         ce = $scope.CM
