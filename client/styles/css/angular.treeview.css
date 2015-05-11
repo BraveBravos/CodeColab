@@ -7,8 +7,9 @@ div[data-angular-treeview] {
   user-select: none;
 
   /* default */
-  font-family: Tahoma;
-  font-size:13px;
+  font-family: "Lato","Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size:1em;
+  font-weight: 700;
   color: #FFFFFF;
   text-decoration: none;
 }
@@ -29,19 +30,19 @@ div[data-tree-model] li {
 
 div[data-tree-model] li .expanded {
   padding: 1px 10px;
-  background-image: url("../img/folder.png");
+  /*background-image: url("../img/folder.png");*/
   background-repeat: no-repeat;
 }
 
 div[data-tree-model] li .collapsed {
   padding: 1px 10px;
-  background-image: url("../img/folder-closed.png");
+  /*background-i mage: url("../img/folder-closed.png");*/
   background-repeat: no-repeat;
 }
 
 div[data-tree-model] li .normal {
   padding: 1px 10px;
-  background-image: url("../img/file.png");
+  /*background-image: url("../img/file.png");*/
   background-repeat: no-repeat;
 }
 
@@ -54,3 +55,8 @@ div[data-tree-model] li .selected {
   font-weight: bold;
   padding: 1px 5px;
 }
+
+
+
+
+

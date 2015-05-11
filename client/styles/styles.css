@@ -2,22 +2,23 @@
 html, body {
   overflow: hidden; 
 	height:100%;
-  background: linear-gradient(314deg, #227d66, #144496) no-repeat center center;
-  background-size: 100% 100%
-
+  background-size: 100% 100%;
+  background-color: #6497b1;
+  /*background: linear-gradient(314deg, #227d66, #144496) no-repeat center center;*/
+/*
   -webkit-animation: AnimationName 37s ease infinite;
   animation: AnimationName 37s ease infinite;
-
-  @-webkit-keyframes AnimationName {
+*/
+/*  @-webkit-keyframes AnimationName {
       0%{background-position:0% 50%}
       50%{background-position:100% 50%}
       100%{background-position:0% 50%}
-  }
-  @keyframes AnimationName {
+  }*/
+/*  @keyframes AnimationName {
       0%{background-position:0% 50%}
       50%{background-position:100% 50%}
       100%{background-position:0% 50%}
-  }
+  }*/
 }
 
 #files {
@@ -34,6 +35,8 @@ html, body {
   font-size: 16px;
   font-weight: 300;
   height: 390px;
+  /* 50px of padding so navbar doesn't overlap content! */
+  padding-top: 52px; 
 }
 
 #signin {
@@ -112,11 +115,14 @@ html, body {
 .nav > li > p {
   color: #777;
   text-align: center;
+  background: transparent;
 }
 
 .tree {
   margin-top: 20px;
 }
+
+
 
 
 
