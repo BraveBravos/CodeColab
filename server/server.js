@@ -180,14 +180,16 @@ app.post('/api/repos/commit', function(req, res){
   var path = req.body.path,
       message = req.body.message,
       sha=req.body.sha,
+      // encodedContent = req.body.encoded,
       content = req.body.content;
 
   var client = github.client(req.session.token);
   var ghrepo = client.repo(repo)
 
-  ghrepo.updateContents(path, message, content, sha,
+  console.log("Sending", path, '::', message, '::', sha)
+  ghrepo.updateContents(path, message, content, sha, 'CODECOLAB',
   function(err, resp, body){
-    if (err) console.log(err)
+    if (err) console.log(err, resp, body)
     else {
       res.sendStatus(200)
     }

@@ -3,15 +3,18 @@
 <ng-app="codeColab" ng-controller = "fileStructCtrl">
 <!-- <ng-app="codeColab" ng-controller = "codeCtrl"> -->
 
-<p ng-show = "check()" class='fa-inverse'>Repository File Structure:</p>
-
-<div
-    data-angular-treeview="true"
-    data-tree-id="ghTree"
-    data-tree-model="tree | orderBy: ['-type','label'] "
-    data-node-id="id"
-    data-node-label="label"
-    data-node-children="children"
-    data-node-type="type">
+<p class='fa-inverse'></p> 
+<br>
+<br>
+<br>
+<div class='tree'>
+  <div
+      data-angular-treeview="true"
+      data-tree-id="ghTree"
+      data-tree-model="tree | orderBy: ['-type','label'] "
+      data-node-id="id"
+      data-node-label="label"
+      data-node-children="children"
+      data-node-type="type">
+  </div>
 </div>
-
