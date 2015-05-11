@@ -28,7 +28,7 @@ angular.module('codeColab.main', [])
 
     // FileStructDo.getTree(repo)
     FileStructDo.getTree($scope, repo)
-    
+
     if(!$scope.ref) {
       $scope.createBranch()
     }
@@ -45,8 +45,10 @@ angular.module('codeColab.main', [])
   }
 
   $scope.deployApp = function(){
-    Share.deployApp($scope.selected);
+    var name = prompt("What would you like to name your app?")
+    Share.deployApp($scope, $scope.selected, name);
   }
+
 
   $scope.init();
 })
