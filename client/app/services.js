@@ -75,15 +75,37 @@ angular.module('codeColab.services', [])
     })
   }
 
+  var loadCM = function($scope) {
+    console.log('load entered')
+    //this is the element we have selected to "turn" into a CodeMirror
+    var target = document.getElementById('area')
 
+    $scope.CM = CodeMirror.MergeView(target, {
+      'origRight':'', //this will eventually contain the original code
+      'value':'Select a repository and a file to start editing.',      //this is the updated value with the users' changes
+      'theme':'erlang-dark',
+      lineNumbers: true
+    })
+    // console.log('loadCM',$scope.selected,$scope.CM.editor().getValue())
+  }
+
+  var resetCM = function($scope) {
+    // console.log('reset entered')
+    if($scope.share) {
+      $scope.share.doc.unsubscribe()
+      $scope.share.sjs.disconnect()
+    }
+
+    //just leave the "comparison" editor blank.
+    $scope.CM.rightOriginal().setValue('')
+    
+    //this displays the default text that also gives users directions.
+    var placeholderDoc = CodeMirror.Doc('Select a file to start editing.','javascript')
+    $scope.CM.editor().swapDoc(placeholderDoc)
+    // console.log('resetCM',$scope.CM.editor().getValue())
+  }
 
   var loadShare = function ($scope, id, data) {
-
-    //this variable just tracks whether a repo file is currently loaded or not.
-    var newRepo = !document.getElementById('area').getElementsByClassName('CodeMirror-merge').length
-    if(newRepo) {
-      delete $scope.share
-    }
 
     // this fires if we already have an existing doc and connection
     if($scope.share){
@@ -99,16 +121,6 @@ angular.module('codeColab.services', [])
     // console.log('doc',doc)
     doc.subscribe()
 
-    //this is the element we have selected to "turn" into a CodeMirror
-    var target = document.getElementById('area')
-
-    var codeEditor = !newRepo ? $scope.share.codeEditor : CodeMirror.MergeView(target, {
-        'origRight':'', //this will eventually contain the original code
-        'value':'',      //this is the updated value with the users' changes
-        'theme':'erlang-dark',
-        lineNumbers: true
-      })
-
     doc.whenReady(function() {
       if (!doc.type) {
         // console.log('created');
@@ -122,25 +134,20 @@ angular.module('codeColab.services', [])
         //this is the new doc - we need to use a doc for a swap
         var newEditor = doc.getSnapshot()==='' ? CodeMirror.Doc(data,'javascript') : CodeMirror.Doc(doc.getSnapshot(),'javascript')
 
-        if(!!$scope.share) {
-          $scope.share.codeEditor.editor().setValue(newEditor.getValue())
-          $scope.share.codeEditor.editor().swapDoc(newEditor)
-        } else {
-          codeEditor.editor().setValue(newEditor.getValue())
-          codeEditor.editor().swapDoc(newEditor)
-        }
+        $scope.CM.editor().setValue(newEditor.getValue())
+        $scope.CM.editor().swapDoc(newEditor)
 
-        codeEditor.rightOriginal().setValue(data);
-        doc.attachCodeMirror(codeEditor.editor())
+        $scope.CM.rightOriginal().setValue(data);
+        doc.attachCodeMirror($scope.CM.editor())
 
         // probably some more efficient way to do this, but it works for now - if doc exists in
         // origDocs database but not in regular Docs database, this will copy the string into the editor immediately after
         // the subscription takes hold, which also copies it into the Docs database.
         if(doc.getSnapshot()==='') {
-          codeEditor.editor().setValue(codeEditor.rightOriginal().getValue())
+          $scope.CM.editor().setValue($scope.CM.rightOriginal().getValue())
         }
         // console.log('after subscribed',doc.getSnapshot(),codeEditor.editor().getValue())
-        ce = codeEditor
+        ce = $scope.CM
       });
 
       // codeEditor.editor().on('change', function(change) {
@@ -163,10 +170,10 @@ angular.module('codeColab.services', [])
     // return connection and doc, so that we can disconnect from them later if needed
     // otherwise, the connection or doc subscription or both build up and make us unable to fetch other documents
     if($scope.share) {
-      $scope.share = {sjs:sjs,doc:doc,codeEditor:$scope.share.codeEditor}
+      $scope.share = {sjs:sjs,doc:doc}
     }
 
-    $scope.share = {sjs:sjs,doc:doc,codeEditor:codeEditor}
+    $scope.share = {sjs:sjs,doc:doc}
   }
 
 
@@ -193,7 +200,9 @@ angular.module('codeColab.services', [])
     loadShare: loadShare,
     commit: commit,
     createBranch: createBranch,
-    loadFile: loadFile
+    loadFile: loadFile,
+    loadCM: loadCM,
+    resetCM: resetCM
   }
 })
 
