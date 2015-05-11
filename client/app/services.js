@@ -96,7 +96,6 @@ angular.module('codeColab.services', [])
       $scope.share.doc.unsubscribe()
       $scope.share.sjs.disconnect()
       $scope.CM.editor().detachShareJsDoc()
-      // cm.detachShareJsDoc
     }
 
     var socket = new BCSocket(null, {reconnect: true});
