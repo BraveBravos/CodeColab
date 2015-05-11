@@ -30,7 +30,7 @@
     "request": "^2.55.0",
     "serve-static": "^1.9.2",
     "share": "~0.7.3",
-    "share-codemirror": "~0.0.5",
+    "share-codemirror": "~0.1.0",
     "ws": "~0.4.32"
   },
   "devDependencies": {
