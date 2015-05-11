@@ -187,7 +187,7 @@ app.post('/api/repos/commit', function(req, res){
   var ghrepo = client.repo(repo)
 
   console.log("Sending", path, '::', message, '::', sha)
-  ghrepo.updateContents(path, message, content, sha, 
+  ghrepo.updateContents(path, message, content, sha, 'CODECOLAB',
   function(err, resp, body){
     if (err) console.log(err, resp, body)
     else {
