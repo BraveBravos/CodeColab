@@ -199,7 +199,7 @@ angular.module('codeColab.services', [])
     commit: commit,
     createBranch: createBranch,
    loadCM: loadCM,
-    resetCM: resetCM
+    resetCM: resetCM,
     loadFile: loadFile,
     deployApp: deployApp
   }
