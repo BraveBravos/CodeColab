@@ -96,6 +96,12 @@ angular.module('codeColab.services', [])
       $scope.share.sjs.disconnect()
       $scope.CM.editor().detachShareJsDoc()
     }
+
+    $scope.CM.rightOriginal().setValue('')
+
+    var placeholderDoc = CodeMirror.Doc('Select a file to start editing.','javascript')
+    $scope.CM.editor().swapDoc(placeholderDoc)
+
   }
 
   var loadShare = function ($scope, id, data) {
