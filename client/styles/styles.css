@@ -80,15 +80,7 @@ html, body {
 .navbar {
   margin-bottom: 5px;
   height: 25px;
-  /*background-color: #03396c;*/
 }
-
-/*.repo-list > p, .submit {
-  color: #D6D6D6;
-  font-family: 'Open Sans',Arial,Helvetica Neue,sans-serif;
-  font-size: 16px;
-  font-weight: 300;
-}*/
 
 .submit {
   margin-left: 5px;
