@@ -134,7 +134,7 @@ angular.module('codeColab.services', [])
         //this is the new doc - we need to use a doc for a swap
         var newEditor = doc.getSnapshot()==='' ? CodeMirror.Doc(data,'javascript') : CodeMirror.Doc(doc.getSnapshot(),'javascript')
 
-        $scope.CM.editor().setValue(newEditor.getValue())
+        // $scope.CM.editor().setValue(newEditor.getValue())
         $scope.CM.editor().swapDoc(newEditor)
 
         $scope.CM.rightOriginal().setValue(data);
