@@ -205,7 +205,9 @@ angular.module('codeColab.services', [])
         $scope.deployApp()
       }
       var appURL ='https://'+name+'.herokuapp.com';
-      $window.open(appURL)
+      if (name!== 'taken') {
+        $window.open(appURL)
+      }
     })
   }
 
