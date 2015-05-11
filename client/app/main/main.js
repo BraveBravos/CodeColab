@@ -48,14 +48,6 @@ angular.module('codeColab.main', [])
     Share.deployApp($scope.selected);
   }
 
-  $scope.deployApp = function(){
-    Share.deployApp($scope.selected);
-  }
-
-  $scope.deployApp = function(){
-    Share.deployApp($scope.selected);
-  }
-
   $scope.init();
 })
 
