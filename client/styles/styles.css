@@ -109,10 +109,6 @@ html, body {
   border: 2px solid black;
 }
 
-#commitMessage {
-  /*width: 20%;*/
-}
-
 .nav > li > p {
   color: #777;
   text-align: center;
