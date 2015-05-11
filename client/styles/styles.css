@@ -84,6 +84,7 @@ html, body {
 .navbar {
   margin-bottom: 5px;
   height: 25px;
+  /*background-color: #03396c;*/
 }
 
 /*.repo-list > p, .submit {
@@ -118,10 +119,18 @@ html, body {
   background: transparent;
 }
 
+/*.navbar {
+  background: #03396c;
+  border: none;
+}*/
+
 .tree {
   margin-top: 20px;
 }
 
+.navbar-left {
+  padding-left: 10%;
+}
 
 
 
