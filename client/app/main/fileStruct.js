@@ -1,8 +1,8 @@
 angular.module('codeColab.fileStruct', [])
 
 .factory ('FileStructDo', function ($http){
-  
-  var getTree = function ($scope, repoName) {  
+
+  var getTree = function ($scope, repoName) {
 
     var repo = repoName.name.split('/')
     return $http({
@@ -19,7 +19,7 @@ angular.module('codeColab.fileStruct', [])
     bigTree.forEach(function(item) {
 
       if (item.type === 'tree' || item.path.lastIndexOf('/')===-1) {
-        tree[item.path] = {top:true, label:item.path, id:item.sha, url:item.url, collapsed:true, children:[]}
+        tree[item.path] = {top:true, fullPath: item.path, label:item.path, id:item.sha, url:item.url, collapsed:true, children:[]}
       }
 
       var divider = item.path.lastIndexOf('/');
@@ -27,22 +27,22 @@ angular.module('codeColab.fileStruct', [])
       if(divider<0){return}
 
       var path = item.path.slice(0,divider)
-      
+
       if (item.type === 'tree') {
-        // console.log('tree[item.path]', tree[item.path])
         tree[path].children.push(tree[item.path])
         tree[item.path].top=false
       } else {
+
+        var fullPath = item.path
         item.path=item.path.slice(divider+1)
-        tree[path].children.push({label:item.path, url:item.url, id:item.sha, children:[]})
+        tree[path].children.push({label:item.path, fullPath: fullPath, url:item.url, id:item.sha, children:[]})
       }
     })
 
   var results = []
 
-  // parses tree.path into a node label when node is not a "top" 
+  // parses tree.path into a node label when node is not a "top"
   for (var q in tree) {
-	tree[q].filepath = tree[q].label
     if (!tree[q].top) {
       tree[q].label = tree[q].label.slice(tree[q].label.lastIndexOf('/')+1)
     }
@@ -67,7 +67,7 @@ angular.module('codeColab.fileStruct', [])
   // console.log('final tree',results)
   $scope.tree = results;
   // return results;
-  
+
   }) // end of .then(function(bigTree))
 
 }  // end of getTree function
@@ -78,8 +78,8 @@ angular.module('codeColab.fileStruct', [])
 })  // end of FileStructDo factory
 
 .controller('fileStructCtrl', function ($http, $scope, Share){
- 
+
   $scope.loadFile = function(file){
-    Share.loadFile($scope.$parent,file.url, file.id, file.filepath);
+    Share.loadFile($scope.$parent,file.url, file.id, file.fullPath);
   }
 })
