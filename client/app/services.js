@@ -52,7 +52,7 @@ angular.module('codeColab.services', [])
   var commit = function(message){
     var message = message,
         content = ce.editor().getValue(),
-        encodedContent = utf8_to_b64(content),
+        // encodedContent = utf8_to_b64(content),
         path = this.path,
         sha = this.fileSha;
         console.log('path', path)
@@ -69,7 +69,7 @@ angular.module('codeColab.services', [])
         content: content, 
         sha:sha, 
         path:path,
-        encoded:encodedContent
+        // encoded:encodedContent
       }
     })
     .then(function(response){
