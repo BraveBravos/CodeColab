@@ -81,15 +81,19 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 							scope[treeId].currentNode.selected = undefined;
 						}
 
-						//set highlight to selected node
-						selectedNode.selected = 'selected';
+							//set highlight to selected node
+							selectedNode.selected = 'selected';
+							console.log('selected: ',selectedNode)
+							//set currentNode
+							scope[treeId].currentNode = selectedNode;
+							if (scope[treeId].currentNode.type !== 'folder') {
+								scope.loadFile(scope[treeId].currentNode)
+							}
+						};
+					}
 
-						//set currentNode
-						scope[treeId].currentNode = selectedNode;
-						if (scope[treeId].currentNode.type !== 'folder') {
-							scope.loadFile(scope[treeId].currentNode)
-						}
-					};
+					//Rendering template.
+					element.html('').append( $compile( template )( scope ) );
 				}
 
 				//Rendering template.

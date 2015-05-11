@@ -28,7 +28,9 @@ angular.module('codeColab.main', [])
 
     // FileStructDo.getTree(repo)
     FileStructDo.getTree($scope, repo)
-
+    setTimeout(function() {
+      console.log('tree: ',$scope.tree)
+      },1500)
     if(!$scope.ref) {
       $scope.createBranch()
     }

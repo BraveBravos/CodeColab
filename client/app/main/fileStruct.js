@@ -49,6 +49,7 @@ angular.module('codeColab.fileStruct', [])
   }
 
   // indicate node is either folder or file for sorting in the template
+  // what if the folder is empty?  -AG
   for (var q in tree){
     if (tree[q].children.length === 0){
       tree[q].type = 'file'
