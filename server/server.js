@@ -249,9 +249,9 @@ app.get('/auth/github/callback', passport.authenticate(
 app.get('/auth/heroku', passport.authenticate('heroku'));
 
 app.get('/auth/heroku/callback',
-  passport.authenticate('heroku', { failureRedirect: '/auth/heroku/fail' }), 
+  passport.authenticate('heroku', { failureRedirect: '/auth/heroku/fail' }),
   function(req, res){
-    deployApp() //access and call this from client side?? 
+    deployApp() //access and call this from client side??
   });
 
 app.post('/api/deploy', function(req, res) {
@@ -355,10 +355,14 @@ app.post('/api/branch', function(req, res){
 app.post('/api/merge', function (req, res) {
   var repo = req.body.repo,
       title = req.body.title,
-      comments = req.body.comments;
+      comments = req.body.comments,
+      user = req.session.username;
   request.post ({
     url: 'https://api.github.com/repos/' + repo + '/pulls?access_token='+ req.session.token,
-    body: {
+    headers : {
+      'User-Agent' : user
+    },
+    json: {
       title: title,
       head: "CODECOLAB",
       base: "master",
@@ -366,7 +370,11 @@ app.post('/api/merge', function (req, res) {
     }
   },
   function (err, resp, body) {
-    console.log(body)
+    if (err) {
+      console.log('merge err', err)
+    } else {
+      console.log(body)
+    }
   }
   )
 })

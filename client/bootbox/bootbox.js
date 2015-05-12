@@ -1,5 +1,5 @@
 /**
- * bootbox.js [v4.4.0]
+ * bootbox.js [master branch]
  *
  * http://bootboxjs.com/license.txt
  */
@@ -43,9 +43,15 @@
     footer:
       "<div class='modal-footer'></div>",
     closeButton:
-      "<button type='button' class='bootbox-close-button close' data-dismiss='modal' aria-hidden='true'>&times;</button>",
+      "<button type='button' class='bootbox-close-button close'>&times;</button>",
     form:
       "<form class='bootbox-form'></form>",
+    group:
+      "<div class='form-group'></div>",
+    label:
+      "<label class='col-sm-4 control-label'></label>",
+    inputWrapper:
+      "<div class='col-sm-8'></div>",
     inputs: {
       text:
         "<input class='bootbox-input bootbox-input-text form-control' autocomplete=off type=text />",
@@ -57,12 +63,6 @@
         "<select class='bootbox-input bootbox-input-select form-control'></select>",
       checkbox:
         "<div class='checkbox'><label><input class='bootbox-input bootbox-input-checkbox' type='checkbox' /></label></div>",
-      date:
-        "<input class='bootbox-input bootbox-input-date form-control' autocomplete=off type='date' />",
-      time:
-        "<input class='bootbox-input bootbox-input-time form-control' autocomplete=off type='time' />",
-      number:
-        "<input class='bootbox-input bootbox-input-number form-control' autocomplete=off type='number' />",
       password:
         "<input class='bootbox-input bootbox-input-password form-control' autocomplete='off' type='password' />"
     }
@@ -71,8 +71,8 @@
   var defaults = {
     // default language
     locale: "en",
-    // show backdrop or not. Default to static so user has to interact with dialog
-    backdrop: "static",
+    // show backdrop or not
+    backdrop: true,
     // animate the modal in/out
     animate: true,
     // additional class string applied to the top level dialog
@@ -97,7 +97,6 @@
   }
 
   function processCallback(e, dialog, callback) {
-    e.stopPropagation();
     e.preventDefault();
 
     // by default we assume a callback will get rid of the dialog,
@@ -105,7 +104,7 @@
 
     // so, if the callback can be invoked and it *explicitly returns false*
     // then we'll set a flag to keep the dialog active...
-    var preserveDialog = $.isFunction(callback) && callback.call(dialog, e) === false;
+    var preserveDialog = $.isFunction(callback) && callback(e) === false;
 
     // ... otherwise we'll bin it
     if (!preserveDialog) {
@@ -147,6 +146,11 @@
     if (!options.buttons) {
       options.buttons = {};
     }
+
+    // we only support Bootstrap's "static" and false backdrop args
+    // supporting true would mean you could dismiss the dialog without
+    // explicitly interacting with it
+    options.backdrop = options.backdrop ? "static" : false;
 
     buttons = options.buttons;
 
@@ -307,7 +311,7 @@
      */
     options.buttons.ok.callback = options.onEscape = function() {
       if ($.isFunction(options.callback)) {
-        return options.callback.call(this);
+        return options.callback();
       }
       return true;
     };
@@ -324,11 +328,11 @@
      * overrides; undo anything the user tried to set they shouldn't have
      */
     options.buttons.cancel.callback = options.onEscape = function() {
-      return options.callback.call(this, false);
+      return options.callback(false);
     };
 
     options.buttons.confirm.callback = function() {
-      return options.callback.call(this, true);
+      return options.callback(true);
     };
 
     // confirm specific validation
@@ -382,7 +386,7 @@
     options.message = form;
 
     options.buttons.cancel.callback = options.onEscape = function() {
-      return options.callback.call(this, null);
+      return options.callback(null);
     };
 
     options.buttons.confirm.callback = function() {
@@ -393,9 +397,6 @@
         case "textarea":
         case "email":
         case "select":
-        case "date":
-        case "time":
-        case "number":
         case "password":
           value = input.val();
           break;
@@ -413,7 +414,7 @@
           break;
       }
 
-      return options.callback.call(this, value);
+      return options.callback(value);
     };
 
     options.show = false;
@@ -438,9 +439,6 @@
       case "text":
       case "textarea":
       case "email":
-      case "date":
-      case "time":
-      case "number":
       case "password":
         input.val(options.value);
         break;
@@ -448,10 +446,6 @@
       case "select":
         var groups = {};
         inputOptions = options.inputOptions || [];
-
-        if (!$.isArray(inputOptions)) {
-          throw new Error("Please pass an array of input options");
-        }
 
         if (!inputOptions.length) {
           throw new Error("prompt with select requires options");
@@ -465,6 +459,7 @@
           if (option.value === undefined || option.text === undefined) {
             throw new Error("given options in wrong format");
           }
+
 
           // ... but override that element if this option sits in a group
 
@@ -523,18 +518,8 @@
         break;
     }
 
-    // @TODO provide an attributes option instead
-    // and simply map that as keys: vals
     if (options.placeholder) {
       input.attr("placeholder", options.placeholder);
-    }
-
-    if (options.pattern) {
-      input.attr("pattern", options.pattern);
-    }
-
-    if (options.maxlength) {
-      input.attr("maxlength", options.maxlength);
     }
 
     // now place it in our form
@@ -542,8 +527,6 @@
 
     form.on("submit", function(e) {
       e.preventDefault();
-      // Fix for SammyJS (or similar JS routing library) hijacking the form post.
-      e.stopPropagation();
       // @TODO can we actually click *the* button object instead?
       // e.g. buttons.confirm.click() or similar
       dialog.find(".btn-primary").click();
@@ -556,10 +539,210 @@
 
     // ...and replace it with one focusing our input, if possible
     dialog.on("shown.bs.modal", function() {
-      // need the closure here since input isn't
-      // an object otherwise
       input.focus();
     });
+
+    if (shouldShow === true) {
+      dialog.modal("show");
+    }
+
+    return dialog;
+  };
+
+  exports.form = function() {
+    var options;
+    var defaults;
+    var dialog;
+    var form;
+    var inputs;
+    var shouldShow;
+
+    form = $(templates.form);
+
+    defaults = {
+      className: "bootbox-prompt",
+      buttons: createLabels("cancel", "confirm"),
+      fields: {},
+    };
+
+    options = validateButtons(
+      mergeArguments(defaults, arguments, ["title", "callback"]),
+      ["cancel", "confirm"]
+    );
+
+    // capture the user's show value; we always set this to false before
+    // spawning the dialog to give us a chance to attach some handlers to
+    // it, but we need to make sure we respect a preference not to show it
+    shouldShow = (options.show === undefined) ? true : options.show;
+
+    /**
+     * overrides; undo anything the user tried to set they shouldn't have
+     */
+    options.message = form;
+    form.addClass('form-horizontal');
+    options.buttons.cancel.callback = options.onEscape = function() {
+      return options.callback(null);
+    };
+
+    options.buttons.confirm.callback = function() {
+      var values = {};
+
+      each(options.fields, function(field,opts) {
+        switch (opts.type) {
+          case "text":
+          case "textarea":
+          case "email":
+          case "select":
+          case "password":
+            values[field] = inputs[field].val();
+            break;
+
+          case "checkbox":
+            if (options.fields[field].options) {
+              var checkedItems = inputs[field].find("input:checked");
+              values[field] = [];
+              each(checkedItems, function(_, item) {
+                values[field].push($(item).val());
+              });
+            } else {
+              values[field] = inputs[field].find("input").is(":checked");
+            }
+            break;
+        }
+      });
+
+      return options.callback(values);
+    };
+
+    options.show = false;
+
+    // prompt specific validation
+    if (!options.title) {
+      throw new Error("prompt requires a title");
+    }
+
+    if (!$.isFunction(options.callback)) {
+      throw new Error("prompt requires a callback");
+    }
+
+    inputs = {};
+
+    each(options.fields,function(field, opts) {
+      
+      if (!templates.inputs[opts.type]) {
+        throw new Error("invalid prompt type: " + opts.type);
+      }
+
+      inputs[field] = $(templates.inputs[opts.type]);
+
+      switch (opts.type) {
+        case "text":
+        case "textarea":
+        case "email":
+        case "password":
+          inputs[field].val(opts.value);
+          break;
+
+        case "select":
+          var groups = {};
+          var inputOptions = opts.options || [];
+
+          if (!inputOptions.length) {
+            throw new Error("select field requires options");
+          }
+
+          each(inputOptions, function(_, option) {
+
+            // assume the element to attach to is the input...
+            var elem = inputs[field];
+
+            if (option.value === undefined || option.text === undefined) {
+              throw new Error("given options in wrong format");
+            }
+
+
+            // ... but override that element if this option sits in a group
+
+            if (option.group) {
+              // initialise group if necessary
+              if (!groups[option.group]) {
+                groups[option.group] = $("<optgroup/>").attr("label", option.group);
+              }
+
+              elem = groups[option.group];
+            }
+
+            elem.append("<option value='" + option.value + "'>" + option.text + "</option>");
+          });
+
+          each(groups, function(_, group) {
+            inputs[field].append(group);
+          });
+
+          // safe to set a select's value as per a normal input
+          inputs[field].val(options.value);
+          break;
+
+        case "checkbox":
+          var vls   = $.isArray(opts.value) ? opts.value : [opts.value];
+          inputOptions = opts.options || [{value: true, text: ' '}];
+
+          if (!inputOptions.length) {
+            throw new Error("checkbox field requires options");
+          }
+
+          if (!inputOptions[0].value || !inputOptions[0].text) {
+            throw new Error("checkbox options given in wrong format");
+          }
+
+          inputs[field] = $("<div/>");
+
+          each(inputOptions, function(_, option) {
+            var checkbox = $(templates.inputs[opts.type]);
+
+            checkbox.find("input").attr("value", option.value);
+            checkbox.find("label").append(option.text);
+
+            // we've ensured values is an array so we can always iterate over it
+            each(vls, function(_, value) {
+              if (value === option.value) {
+                checkbox.find("input").prop("checked", true);
+              }
+            });
+
+            inputs[field].append(checkbox);
+          });
+          break;
+      }
+      
+      if (opts.placeholder) {
+        inputs[field].attr("placeholder", options.placeholder);
+      }
+    });
+
+    // now place it in our form
+    each(inputs, function(name, input) {
+      var group = $(templates.group);
+      var label = $(templates.label);
+      var wrapper = $(templates.inputWrapper);
+      label.html(options.fields[name].label)
+      wrapper.append(input);
+      group.append(label);
+      group.append(wrapper);
+      form.append(group);
+    });
+
+    form.on("submit", function(e) {
+      e.preventDefault();
+      // @TODO can we actually click *the* button object instead?
+      // e.g. buttons.confirm.click() or similar
+      dialog.find(".btn-primary").click();
+    });
+
+    dialog = exports.dialog(options);
+
+    // clear the existing handler focusing the submit button...
+    dialog.off("shown.bs.modal");
 
     if (shouldShow === true) {
       dialog.modal("show");
@@ -572,21 +755,12 @@
     options = sanitize(options);
 
     var dialog = $(templates.dialog);
-    var innerDialog = dialog.find(".modal-dialog");
     var body = dialog.find(".modal-body");
     var buttons = options.buttons;
     var buttonStr = "";
     var callbacks = {
       onEscape: options.onEscape
     };
-
-    if ($.fn.modal === undefined) {
-      throw new Error(
-        "$.fn.modal is not defined; please double check you have included " +
-        "the Bootstrap JavaScript library. See http://getbootstrap.com/javascript/ " +
-        "for more details."
-      );
-    }
 
     each(buttons, function(key, button) {
 
@@ -605,12 +779,6 @@
 
     if (options.className) {
       dialog.addClass(options.className);
-    }
-
-    if (options.size === "large") {
-      innerDialog.addClass("modal-lg");
-    } else if (options.size === "small") {
-      innerDialog.addClass("modal-sm");
     }
 
     if (options.title) {
@@ -673,30 +841,6 @@
      * respective triggers
      */
 
-    if (options.backdrop !== "static") {
-      // A boolean true/false according to the Bootstrap docs
-      // should show a dialog the user can dismiss by clicking on
-      // the background.
-      // We always only ever pass static/false to the actual
-      // $.modal function because with `true` we can't trap
-      // this event (the .modal-backdrop swallows it)
-      // However, we still want to sort of respect true
-      // and invoke the escape mechanism instead
-      dialog.on("click.dismiss.bs.modal", function(e) {
-        // @NOTE: the target varies in >= 3.3.x releases since the modal backdrop
-        // moved *inside* the outer dialog rather than *alongside* it
-        if (dialog.children(".modal-backdrop").length) {
-          e.currentTarget = dialog.children(".modal-backdrop").get(0);
-        }
-
-        if (e.target !== e.currentTarget) {
-          return;
-        }
-
-        dialog.trigger("escape.close.bb");
-      });
-    }
-
     dialog.on("escape.close.bb", function(e) {
       if (callbacks.onEscape) {
         processCallback(e, dialog, callbacks.onEscape);
@@ -712,6 +856,7 @@
       var callbackKey = $(this).data("bb-handler");
 
       processCallback(e, dialog, callbacks[callbackKey]);
+
     });
 
     dialog.on("click", ".bootbox-close-button", function(e) {
@@ -735,7 +880,7 @@
     $(options.container).append(dialog);
 
     dialog.modal({
-      backdrop: options.backdrop ? "static": false,
+      backdrop: options.backdrop,
       keyboard: false,
       show: false
     });
@@ -784,8 +929,6 @@
 
   exports.hideAll = function() {
     $(".bootbox").modal("hide");
-
-    return exports;
   };
 
 
@@ -794,20 +937,10 @@
    * unlikely to be required. If this gets too large it can be split out into separate JS files.
    */
   var locales = {
-    bg_BG : {
-      OK      : "Ок",
-      CANCEL  : "Отказ",
-      CONFIRM : "Потвърждавам"
-    },
     br : {
       OK      : "OK",
       CANCEL  : "Cancelar",
       CONFIRM : "Sim"
-    },
-    cs : {
-      OK      : "OK",
-      CANCEL  : "Zrušit",
-      CONFIRM : "Potvrdit"
     },
     da : {
       OK      : "OK",
@@ -819,11 +952,6 @@
       CANCEL  : "Abbrechen",
       CONFIRM : "Akzeptieren"
     },
-    el : {
-      OK      : "Εντάξει",
-      CANCEL  : "Ακύρωση",
-      CONFIRM : "Επιβεβαίωση"
-    },
     en : {
       OK      : "OK",
       CANCEL  : "Cancel",
@@ -833,16 +961,6 @@
       OK      : "OK",
       CANCEL  : "Cancelar",
       CONFIRM : "Aceptar"
-    },
-    et : {
-      OK      : "OK",
-      CANCEL  : "Katkesta",
-      CONFIRM : "OK"
-    },
-    fa : {
-      OK      : "قبول",
-      CANCEL  : "لغو",
-      CONFIRM : "تایید"
     },
     fi : {
       OK      : "OK",
@@ -854,43 +972,13 @@
       CANCEL  : "Annuler",
       CONFIRM : "D'accord"
     },
-    he : {
-      OK      : "אישור",
-      CANCEL  : "ביטול",
-      CONFIRM : "אישור"
-    },
-    hu : {
-      OK      : "OK",
-      CANCEL  : "Mégsem",
-      CONFIRM : "Megerősít"
-    },
-    hr : {
-      OK      : "OK",
-      CANCEL  : "Odustani",
-      CONFIRM : "Potvrdi"
-    },
-    id : {
-      OK      : "OK",
-      CANCEL  : "Batal",
-      CONFIRM : "OK"
-    },
     it : {
       OK      : "OK",
       CANCEL  : "Annulla",
       CONFIRM : "Conferma"
     },
-    ja : {
-      OK      : "OK",
-      CANCEL  : "キャンセル",
-      CONFIRM : "確認"
-    },
-    lt : {
-      OK      : "Gerai",
-      CANCEL  : "Atšaukti",
-      CONFIRM : "Patvirtinti"
-    },
     lv : {
-      OK      : "Labi",
+      OK      : "OK",
       CANCEL  : "Atcelt",
       CONFIRM : "Apstiprināt"
     },
@@ -909,35 +997,15 @@
       CANCEL  : "Anuluj",
       CONFIRM : "Potwierdź"
     },
-    pt : {
-      OK      : "OK",
-      CANCEL  : "Cancelar",
-      CONFIRM : "Confirmar"
-    },
     ru : {
       OK      : "OK",
       CANCEL  : "Отмена",
       CONFIRM : "Применить"
     },
-    sq : {
-      OK : "OK",
-      CANCEL : "Anulo",
-      CONFIRM : "Prano"
-    },
     sv : {
       OK      : "OK",
       CANCEL  : "Avbryt",
       CONFIRM : "OK"
-    },
-    th : {
-      OK      : "ตกลง",
-      CANCEL  : "ยกเลิก",
-      CONFIRM : "ยืนยัน"
-    },
-    tr : {
-      OK      : "Tamam",
-      CANCEL  : "İptal",
-      CONFIRM : "Onayla"
     },
     zh_CN : {
       OK      : "OK",
@@ -949,32 +1017,6 @@
       CANCEL  : "取消",
       CONFIRM : "確認"
     }
-  };
-
-  exports.addLocale = function(name, values) {
-    $.each(["OK", "CANCEL", "CONFIRM"], function(_, v) {
-      if (!values[v]) {
-        throw new Error("Please supply a translation for '" + v + "'");
-      }
-    });
-
-    locales[name] = {
-      OK: values.OK,
-      CANCEL: values.CANCEL,
-      CONFIRM: values.CONFIRM
-    };
-
-    return exports;
-  };
-
-  exports.removeLocale = function(name) {
-    delete locales[name];
-
-    return exports;
-  };
-
-  exports.setLocale = function(name) {
-    return exports.setDefaults("locale", name);
   };
 
   exports.init = function(_$) {
