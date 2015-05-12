@@ -373,8 +373,23 @@ app.post('/api/merge', function (req, res) {
     if (err) {
       console.log('merge err', err)
     } else {
-      console.log(body)
-      res.sendStatus(200);
+     var sha = body.head.sha;
+     var num = body.number;
+      console.log('pull request is ...',body)
+      request({
+        method: 'PUT',
+        url: 'https://api.github.com/repos/' + repo + '/pulls/' + num + '/merge?access_token='+ req.session.token,
+        headers : {
+          'User-Agent' : user
+        },
+        json: {
+          message: "Merged CodeColab Branch to master",
+          sha: sha
+        }
+      },
+      function (err, resp, body) {
+       res.sendStatus(200);
+      })
     }
   }
   )
