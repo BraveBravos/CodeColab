@@ -45,6 +45,14 @@ html, body {
   color: #D6D6D6;
 }
 
+div#video{
+ position:absolute;
+ bottom:0;
+ left:0;
+ width:100%;
+ height:<length>;
+}
+
 .sign-in {
   text-align: center;
   font-weight: bold;

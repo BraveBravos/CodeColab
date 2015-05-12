@@ -62,8 +62,9 @@
   </div>
 
   <div id="area">
-
-  <ng-include src="videochat.url"></ng-include>
+    <div id="video" style='position:absolute; bottom:0; left:0; height:50%; width:100px; overflow:auto;'>
+      <ng-include src="videochat.url"></ng-include>
+    </div>
 
   <div class = 'navbar'>
     <!-- <a href='/logout' class='logout'>

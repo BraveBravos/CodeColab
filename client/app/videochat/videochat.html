@@ -6,48 +6,136 @@
       </div>
   </div>
    
-<script src="//cdn.webrtc-experiment.com/firebase.js"> </script>
 <script type="text/javascript" src="app/videochat/meeting.js"></script>
 <script type="text/javascript">
-var isJoin = false;
 
-var meeting = new Meeting('webrtc-code-colab-id');
+var connection = new RTCMultiConnection();
 
-var remoteMediaStreams = document.getElementById('video-chats');
-var localMediaStream = document.getElementById('local-media-stream');
-
-// on getting local or remote streams
-meeting.onaddstream = function(e) {
-    if (e.type == 'remote' && isJoin) remoteMediaStreams.insertBefore(e.video, remoteMediaStreams.firstChild);
-    e.video.className = 'their-video';
+// easiest way to customize what you need!
+connection.session = {
+    audio: true,
+    video: true
 };
 
-// check pre-created meeting rooms
-// it is useful to auto-join
-// or search pre-created sessions
-// TODO set roomname to repo
-meeting.check('meeting room name');
-
-meeting.firebase = 'webrtc-codecolab';
-
-meeting.onuserleft = function(userid) {
-        var video = document.getElementById(userid);
-        if (video) video.parentNode.removeChild(video);
+// on getting local or remote media stream
+connection.onstream = function(e) {
+    document.body.appendChild(e.mediaElement);
 };
 
-document.getElementById('setup-new-meeting').onclick = function() {
-    meeting.setup('meeting room name');
-    isJoin = true;
-    this.className = 'hidden';
-    document.getElementById('leave-current-meeting').className = 'shown';
+// setup signaling channel
+connection.connect();
+
+// open new session
+document.querySelector('#openNewSessionButton').onclick = function() {
+    connection.open();
 };
 
-document.getElementById('leave-current-meeting').onclick = function(){
-  isJoin = false;
-  meeting.leave();
-  this.className = 'hidden';
-  document.getElementById('setup-new-meeting').className = 'shown';
-};
+// // COMMON CODE
+// var MODERATOR_CHANNEL_ID = 'ABCDEF'; // channel-id
+// var MODERATOR_SESSION_ID = 'XYZ';    // room-id
+// var MODERATOR_ID         = 'JKL';    // user-id
+// var MODERATOR_SESSION    = {         // media-type
+//     audio: true,
+//     video: true
+// };
+// var MODERATOR_EXTRA      = {};       // empty extra-data
+
+// // Code for moderator
+// var moderator     = new RTCMultiConnection(MODERATOR_CHANNEL_ID);
+// moderator.session = MODERATOR_SESSION;
+// moderator.userid  = MODERATOR_ID;
+// moderator.extra   = MODERATOR_EXTRA;
+// moderator.open({
+//     dontTransmit: true,
+//     sessionid:    MODERATOR_SESSION_ID
+// });
+
+// // Code for participant
+// var participants = new RTCMultiConnection(MODERATOR_CHANNEL_ID);
+// participants.join({
+//     sessionid: MODERATOR_SESSION_ID,
+//     userid:    MODERATOR_ID,
+//     extra:     MODERATOR_EXTRA,
+//     session:   MODERATOR_SESSION
+// });
+
+// // var connection = new RTCMultiConnection('code-colab');   
+
+// var connection = new RTCMultiConnection('code-colab').connect();   // CHANGE CHANNEL-ID TO REPO SELECTED LATER
+// document.querySelector('#setup-new-meeting').onclick = function() {
+//     connection.open();
+// };
+
+
+// // http://www.rtcmulticonnection.org/docs/session/
+// connection.session = {
+//      audio:     true, // by default, it is true
+//      video:     true, // by default, it is true
+//      screen:    false,
+     
+//      data:      false,
+     
+//      oneway:    false,
+//      broadcast: false,
+     
+//      inactive: true  // added since v2.0.*
+// };
+
+
+// if(you_are_initiator) {   // check based on 'open' or 'join' room button selection
+//     var sessionDescription = connection.open({
+//         dontTransmit: false,    // optional --- disable default room-forwarding behaviour!
+//         sessionid: 'code-colab-room', // optional
+//         transmitRoomOnce: false // optional
+//     });
+// }
+
+// if(you_are_participant) {    // check based on 'open' or 'join' room button selection
+//     connection.join( sessionDescription );
+// }
+
+
+
+
+// var isJoin = false;
+
+// var meeting = new Meeting('webrtc-code-colab-id');
+
+// var remoteMediaStreams = document.getElementById('video-chats');
+// var localMediaStream = document.getElementById('local-media-stream');
+
+// // on getting local or remote streams
+// meeting.onaddstream = function(e) {
+//     if (e.type == 'remote' && isJoin) remoteMediaStreams.insertBefore(e.video, remoteMediaStreams.firstChild);
+//     e.video.className = 'their-video';
+// };
+
+// // check pre-created meeting rooms
+// // it is useful to auto-join
+// // or search pre-created sessions
+// // TODO set roomname to repo
+// meeting.check('meeting room name');
+
+// meeting.firebase = 'webrtc-codecolab';
+
+// meeting.onuserleft = function(userid) {
+//         var video = document.getElementById(userid);
+//         if (video) video.parentNode.removeChild(video);
+// };
+
+// document.getElementById('setup-new-meeting').onclick = function() {
+//     meeting.setup('meeting room name');
+//     isJoin = true;
+//     this.className = 'hidden';
+//     document.getElementById('leave-current-meeting').className = 'shown';
+// };
+
+// document.getElementById('leave-current-meeting').onclick = function(){
+//   isJoin = false;
+//   meeting.leave();
+//   this.className = 'hidden';
+//   document.getElementById('setup-new-meeting').className = 'shown';
+// };
 </script>
-<div id='setup-new-meeting'>Join Video Chat</div>
+<div id='openNewSessionButton'>Get A Video Chat</div>
       <div id='leave-current-meeting' class='hidden'>Leave Video Chat</div>
