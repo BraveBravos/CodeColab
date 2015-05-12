@@ -211,8 +211,9 @@ app.post ('/api/fileStruct/tree', function (req, res) {
   var owner = req.body.repo[0];
   var repo = req.body.repo[1];
   // req.session.repo = repo;
+  console.log("Making request:", 'https://api.github.com/repos/' +owner+ '/' +repo+ '/git/refs/heads/master?access_token='+ req.session.token)
   request({
-    url: 'https://api.github.com/repos/' +owner+ '/' +repo+ '/git/refs/heads/master?access_token='+ req.session.token,
+    url: 'https://api.github.com/repos/' +owner+ '/' +repo+ '/git/refs/heads/CODECOLAB?access_token='+ req.session.token,
     headers: {'User-Agent': req.session.passport.user[0].username}
   },
   function (err, resp, body) {
