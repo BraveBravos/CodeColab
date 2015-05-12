@@ -303,7 +303,7 @@ app.get('/logout', function (req, res){
   res.redirect('/');
 })
 
-app.post('/branch', function(req, res){
+app.post('/api/branch', function(req, res){
   var owner=req.session.username;
   var repo = req.body.repo;
 

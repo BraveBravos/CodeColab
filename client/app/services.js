@@ -38,7 +38,7 @@ angular.module('codeColab.services', [])
     // console.log('REPO',repo);
     return $http({
       method: 'POST',
-      url: '/branch',
+      url: '/api/branch',
       data: {
         repo: repo
       }
