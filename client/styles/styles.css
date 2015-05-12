@@ -2,22 +2,23 @@
 html, body {
   overflow: hidden; 
 	height:100%;
-  background: linear-gradient(314deg, #227d66, #144496) no-repeat center center;
-  background-size: 100% 100%
-
+  background-size: 100% 100%;
+  background-color: #6497b1;
+  /*background: linear-gradient(314deg, #227d66, #144496) no-repeat center center;*/
+/*
   -webkit-animation: AnimationName 37s ease infinite;
   animation: AnimationName 37s ease infinite;
-
-  @-webkit-keyframes AnimationName {
+*/
+/*  @-webkit-keyframes AnimationName {
       0%{background-position:0% 50%}
       50%{background-position:100% 50%}
       100%{background-position:0% 50%}
-  }
-  @keyframes AnimationName {
+  }*/
+/*  @keyframes AnimationName {
       0%{background-position:0% 50%}
       50%{background-position:100% 50%}
       100%{background-position:0% 50%}
-  }
+  }*/
 }
 
 #files {
@@ -34,6 +35,8 @@ html, body {
   font-size: 16px;
   font-weight: 300;
   height: 390px;
+  /* 50px of padding so navbar doesn't overlap content! */
+  padding-top: 52px; 
 }
 
 #signin {
@@ -70,25 +73,14 @@ html, body {
 .logout {
   text-align: center;
   text-decoration: none;
-  color: #D6D6D6;
-  font-size: 16px;
-  font-weight: 300;
-  float: right;
+  margin-top: 5px;
   margin-left: 10px;
-  font-family: 'Open Sans',Arial,Helvetica Neue,sans-serif;
 }
 
 .navbar {
   margin-bottom: 5px;
   height: 25px;
 }
-
-/*.repo-list > p, .submit {
-  color: #D6D6D6;
-  font-family: 'Open Sans',Arial,Helvetica Neue,sans-serif;
-  font-size: 16px;
-  font-weight: 300;
-}*/
 
 .submit {
   margin-left: 5px;
@@ -109,13 +101,10 @@ html, body {
   border: 2px solid black;
 }
 
-#commitMessage {
-  /*width: 20%;*/
-}
-
 .nav > li > p {
   color: #777;
   text-align: center;
+  background: transparent;
 }
 
 .tree {
@@ -123,7 +112,9 @@ html, body {
 }
 
 
-
+.herokulogin {
+  max-height: 30px;
+}
 
 
 

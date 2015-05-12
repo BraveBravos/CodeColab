@@ -23,10 +23,16 @@ angular.module('codeColab', [
       templateUrl : '/app/about/about.html',
       authenticate: false
     })
+    /*.when ('/logout', {
+      templateUrl : '/app/about/signin.html',
+      authenticate: false,
+      redirectTo: '/'
+    })*/
 		.otherwise({
 			redirectTo: '/'
 		})
 }])
+
 .run(function($rootScope, $location, globalAuth){
   $rootScope.$on('$routeChangeStart', function(event, next){
     $rootScope.path = $location.path();
