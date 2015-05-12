@@ -44,15 +44,15 @@ angular.module('codeColab.services', [])
       }
     })
     .then(function(branchInfo){
-      // console.log('New branch created!')
       return branchInfo  //return ref and sha
     })
   }
 
-  var commit = function(message){
+  var commit = function(message, repo){
     var message = message,
         content = ce.editor().getValue(),
         path = this.path,
+        repo = repo,
         sha = this.fileSha;
 
     // function utf8_to_b64(str) {
@@ -66,7 +66,8 @@ angular.module('codeColab.services', [])
         message: message,
         content: content,
         sha:sha,
-        path:path
+        path:path,
+        repo:repo
       }
     })
     .then(function(response){
@@ -170,7 +171,6 @@ angular.module('codeColab.services', [])
     $scope.share = {sjs:sjs,doc:doc}
   }
 
-
     var loadFile = function ($scope, url, id, path) {
     this.path = path
     var that = this;
@@ -188,6 +188,7 @@ angular.module('codeColab.services', [])
       loadShare($scope, id, data.data.file)
     });
   }
+
   var deployApp = function($scope, repo, name){
     console.log('deploying', name)
     return $http({
@@ -221,7 +222,7 @@ angular.module('codeColab.services', [])
     loadShare: loadShare,
     commit: commit,
     createBranch: createBranch,
-   loadCM: loadCM,
+    loadCM: loadCM,
     resetCM: resetCM,
     loadFile: loadFile,
     deployApp: deployApp,

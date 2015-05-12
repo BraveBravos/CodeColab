@@ -39,7 +39,7 @@ angular.module('codeColab.main', [])
   }
 
   $scope.commit = function(message){
-    Share.commit(message)
+    Share.commit(message, $scope.selected)
     var input = document.getElementById('commitMessage');
     input.value = ''
   }
