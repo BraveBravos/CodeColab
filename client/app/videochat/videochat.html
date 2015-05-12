@@ -80,11 +80,11 @@ function afterEach(setTimeoutInteval, numberOfTimes, callback, startedTimes) {
 }
 
 connection.onspeaking = function(e){
-  connection.streams[e.streamid].unmute();
+  e.mediaElement.volume = 0.7;
 }
 
 connection.onsilence = function(e){
-  connection.streams[e.streamid].mute();
+  e.mediaElement.volume = 0.01;
 }
 
 connection.onunmute = function(event) {
