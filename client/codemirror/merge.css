@@ -2,6 +2,7 @@
   position: relative;
   /*border: 1px solid #ddd;*/
   white-space: pre;
+  z-index: -10;
 }
 
 .CodeMirror-merge, .CodeMirror-merge .CodeMirror {

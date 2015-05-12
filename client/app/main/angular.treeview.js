@@ -41,65 +41,91 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 			//node label
 			var nodeLabel = attrs.nodeLabel || 'label';
 
-			//children
-			var nodeChildren = attrs.nodeChildren || 'children';
+				//children
+				var nodeChildren = attrs.nodeChildren || 'children';
+				var menuStartDiv = "<div context-menu class=\"position-fixed\" data-target=\"{{node."+nodeId+"}}-menu\" ng-class=\"{ 'highlight': highlight, 'expanded' : expanded }\">"
+				var testDiv = '<div>{{node.'+nodeId+'}}</div>'
+				var menuEndDiv0 = '<div class="dropdown position-fixed" id="{{node.'+nodeId+'}}-menu">'+
+				  '<ul class="dropdown-menu" role="menu">'+
+				    '<li>'+
+				    	'test'+
+				    '</li>'+
+				    '<li>'+
+				    	'test0'+
+				    '</li>'+
+				    '<li>'+
+				    	'test1'+
+				    '</li>'+
+				    '<li>'+
+				      'test2'+
+				    '</li>'+
+				    '<li>'+
+				    	'test3'+
+				    '</li>'+
+				    '<li>'+
+				      'test4'+
+				    '</li>'+
+				  '</ul>'+
+				'</div>'
+
+				var menuEndDiv = '<div class="dropdown position-fixed" id="{{node.'+nodeId+'}}-menu" style="position:fixed">'+
+				  '<ul class="dropdown-menu" role="menu">'+
+				    '<li>'+
+				    	'<a class="pointer" role="menuitem" tabindex="1"'+
+				    		'ng-click="panel.highlight = true">'+
+				    			'Add file in this folder'+
+				    	'</a>'+
+				    '</li>'+
+				    '<li>'+
+				    	'<a class="pointer" role="menuitem" tabindex="2"'+
+				    		'ng-click="panel.highlight = false">'+
+				    			'Add subfolder in this folder'+
+				    	'</a>'+
+				    '</li>'+
+				    '<li>'+
+				    	'<a class="pointer" role="menuitem" tabindex="3" '+
+				         'ng-click="panel.expanded = true">' +
+				         'Add file in root folder' +
+				      '</a>' +
+				    '</li>'+
+				    '<li>'+
+				      '<a class="pointer" role="menuitem" tabindex="4" '+
+				         'ng-click="panel.expanded = false"> '+
+				        'Add folder in root folder'+
+				      '</a>' +
+				    '</li>'+
+				    // '<li>'+
+				    //   '<a class="pointer" role="menuitem" tabindex="5"'+
+				    //     'ng-click="addPanel()">'+
+				    //     'Add a panel'+
+				    //   '</a>'+
+				    // '</li>'+
+				    '<li>'+
+				      '<a href="https://github.com/ianwalter/ng-context-menu"'+
+				        'role="menuitem"'+
+				        'tabindex="-1">'+
+				        'ng-context-menu on GitHub'+
+				      '</a>'+
+				    '</li>'+
+				  '</ul>'+
+				'</div>'
 
 				//need separate templates for files and folders, I think -AG
 				//tree template
 				var template =
 				//need to move menu into repeating thing
-				"<div context-menu class=\"panel panel-default position-fixed\" data-target=\"menu-{{ $index }}\" ng-class=\"{ 'highlight': highlight, 'expanded' : expanded }\">" +
 					'<ul>' +
-						'<li data-ng-repeat="node in ' + treeModel + '">' +
+						'<li data-ng-repeat="node in ' + treeModel + '">' + menuStartDiv + 
 							'<i class="collapsed" data-ng-show="node.' + nodeChildren + '.length && node.collapsed" data-ng-click="' + treeId + '.selectNodeHead(node)"></i>' +
 							'<i class="expanded" data-ng-show="node.' + nodeChildren + '.length && !node.collapsed" data-ng-click="' + treeId + '.selectNodeHead(node)"></i>' +
 							'<i class="normal" data-ng-hide="node.' + nodeChildren + '.length"></i> ' +
 							'<span data-ng-class="node.selected" data-ng-click="' + treeId + '.selectNodeLabel(node)">{{node.' + nodeLabel + '}}</span>' +
 							'<div data-ng-hide="node.collapsed" data-tree-id="' + treeId + '" data-tree-model="node.' + nodeChildren + '" data-node-id=' + nodeId + ' data-node-label=' + nodeLabel + ' data-node-children=' + nodeChildren + '></div>' +
+							"</div>"+
+							menuEndDiv +
 						'</li>' +
-					'</ul>' +
-				"</div>" +
-				"<div class=\"dropdown position-fixed\" id=\"menu-{{ $index }}\">"+
-				  "<ul class=\"dropdown-menu\" role=\"menu\">"+
-				    "<li>"+
-				    	"<a class=\"pointer\" role=\"menuitem\" tabindex=\"1\""+
-				    		"ng-click=\"panel.highlight = true\">"+
-				    			"Select Panel {{ $index + 1 }}"+
-				    	"</a>"+
-				    "</li>"+
-				    "<li>"+
-				    	"<a class=\"pointer\" role=\"menuitem\" tabindex=\"2\""+
-				    		"ng-click=\"panel.highlight = false\">"+
-				    			"Deselect Panel  {{ $index + 1 }}"+
-				    	"</a>"+
-				    "</li>"+
-				    "<li>"+
-				    	"<a class=\"pointer\" role=\"menuitem\" tabindex=\"3\" "+
-				         "ng-click=\"panel.expanded = true\">" +
-				         "Expand Panel {{ $index + 1 }}" +
-				      "</a>" +
-				    "</li>"+
-				    "<li>"+
-				      "<a class=\"pointer\" role=\"menuitem\" tabindex=\"4\" "+
-				         "ng-click=\"panel.expanded = false\"> "+
-				        "Contract Panel {{ $index + 1 }}"+
-				      "</a>" +
-				    "</li>"+
-				    "<li>"+
-				      "<a class=\"pointer\" role=\"menuitem\" tabindex=\"5\""+
-				        "ng-click=\"addPanel()\">"+
-				        "Add a panel"+
-				      "</a>"+
-				    "</li>"+
-				    "<li>"+
-				      "<a href=\"https://github.com/ianwalter/ng-context-menu\""+
-				        "role=\"menuitem\""+
-				        "tabindex=\"-1\">"+
-				        "ng-context-menu on GitHub"+
-				      "</a>"+
-				    "</li>"+
-				  "</ul>"+
-				"</div>"
+					'</ul>'
+				
 
 
 			//check tree id, tree model
