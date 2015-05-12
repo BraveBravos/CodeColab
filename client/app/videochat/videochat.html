@@ -86,7 +86,7 @@ document.getElementById('setup-new-meeting').onclick = function(){
     var sessionDescription = data.val();
 
     // checking for room; if not available "open" otherwise "join"
-    if (sessionDescription == null) {
+    if (sessionDescription === null) {
         connection.open({
             sessionid: connection.sessionid,
             captureUserMediaOnDemand: false,
