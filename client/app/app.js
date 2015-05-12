@@ -5,7 +5,8 @@ angular.module('codeColab', [
   'codeColab.fileStruct',
   'ngRoute',
   'angularTreeview',
-	'codeColab.services'
+	'codeColab.services',
+  'ng-context-menu'
 	])
 
 .config(['$routeProvider', function ($routeProvider) {

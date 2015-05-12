@@ -44,17 +44,61 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 			//children
 			var nodeChildren = attrs.nodeChildren || 'children';
 
-			//tree template
-			var template =
-				'<ul>' +
-					'<li data-ng-repeat="node in ' + treeModel + '">' +
-						'<i class="collapsed fa fa-folder" data-ng-show="node.' + nodeChildren + '.length && node.collapsed" data-ng-click="' + treeId + '.selectNodeHead(node)"></i>' +
-						'<i class="expanded fa fa-folder-open" data-ng-show="node.' + nodeChildren + '.length && !node.collapsed" data-ng-click="' + treeId + '.selectNodeHead(node)"></i>' +
-						'<i class="normal fa fa-file-o" data-ng-hide="node.' + nodeChildren + '.length"></i> ' +
-						'<span data-ng-class="node.selected" data-ng-click="' + treeId + '.selectNodeLabel(node)">{{node.' + nodeLabel + '}}</span>' +
-						'<div data-ng-hide="node.collapsed" data-tree-id="' + treeId + '" data-tree-model="node.' + nodeChildren + '" data-node-id=' + nodeId + ' data-node-label=' + nodeLabel + ' data-node-children=' + nodeChildren + '></div>' +
-					'</li>' +
-				'</ul>';
+				//need separate templates for files and folders, I think -AG
+				//tree template
+				var template =
+				"<div context-menu class=\"panel panel-default position-fixed\" data-target=\"menu-{{ $index }}\" ng-class=\"{ 'highlight': highlight, 'expanded' : expanded }\">" +
+					'<ul>' +
+						'<li data-ng-repeat="node in ' + treeModel + '">' +
+							'<i class="collapsed" data-ng-show="node.' + nodeChildren + '.length && node.collapsed" data-ng-click="' + treeId + '.selectNodeHead(node)"></i>' +
+							'<i class="expanded" data-ng-show="node.' + nodeChildren + '.length && !node.collapsed" data-ng-click="' + treeId + '.selectNodeHead(node)"></i>' +
+							'<i class="normal" data-ng-hide="node.' + nodeChildren + '.length"></i> ' +
+							'<span data-ng-class="node.selected" data-ng-click="' + treeId + '.selectNodeLabel(node)">{{node.' + nodeLabel + '}}</span>' +
+							'<div data-ng-hide="node.collapsed" data-tree-id="' + treeId + '" data-tree-model="node.' + nodeChildren + '" data-node-id=' + nodeId + ' data-node-label=' + nodeLabel + ' data-node-children=' + nodeChildren + '></div>' +
+						'</li>' +
+					'</ul>' +
+				"</div>" +
+				"<div class=\"dropdown position-fixed\" id=\"menu-{{ $index }}\" > \
+				  <ul class=\"dropdown-menu\" role=\"menu\"> \
+				    <li> \
+				      <a class=\"pointer\" role=\"menuitem\" tabindex=\"1\" \
+				         ng-click=\"panel.highlight = true\"> \
+				         Select Panel {{ $index + 1 }} \
+				      </a> \
+				    </li> \
+				    <li> \
+				      <a class=\"pointer\" role=\"menuitem\" tabindex=\"2\" \
+				         ng-click=\"panel.highlight = false\"> \
+				         Deselect Panel  {{ $index + 1 }} \
+				      </a> \
+				    </li> \
+				    <li> \
+				      <a class=\"pointer\" role=\"menuitem\" tabindex=\"3\"
+				         ng-click=\"panel.expanded = true\">
+				         Expand Panel {{ $index + 1 }}
+				      </a>
+				    </li>
+				    <li>
+				      <a class=\"pointer\" role=\"menuitem\" tabindex=\"4\"
+				         ng-click=\"panel.expanded = false\">
+				         Contract Panel {{ $index + 1 }}
+				      </a>
+				    </li>
+				    <li>
+				      <a class=\"pointer\" role=\"menuitem\" tabindex=\"5\"
+				         ng-click=\"addPanel()\">
+				         Add a panel
+				      </a>
+				    </li>
+				    <li>
+				      <a href=\"https://github.com/ianwalter/ng-context-menu\"
+				         role=\"menuitem\"
+				         tabindex=\"-1\">
+				         ng-context-menu on GitHub
+				      </a>
+				    </li>
+				  </ul>
+				</div>"
 
 
 			//check tree id, tree model
@@ -84,12 +128,35 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 							//set highlight to selected node
 							selectedNode.selected = 'selected';
 							console.log('selected: ',selectedNode)
+							// console.log('treeID thing: ',scope[treeId], treeId, scope)
+							// console.log('treeID thing: ',scope[treeId], treeId, scope)
+							console.log('treeModel: ',treeModel)
 							//set currentNode
 							scope[treeId].currentNode = selectedNode;
 							if (scope[treeId].currentNode.type !== 'folder') {
 								scope.loadFile(scope[treeId].currentNode)
 							}
 						};
+					}
+
+					scope[treeId].addFile = scope[treeId].addFile || function(selectedNode) {
+						var fileName = prompt('Enter the name of your new file.')
+
+						//if argument is passed, we use that folder (and only folder) and add to its children
+						if(selectedNode) {
+							var newFile = {
+								children: [],
+								fullPath: selectedNode.fullPath+'/'+fileName,
+								label:fileName,
+								//probably need to update url and id after GitHub API call
+								url:'',
+								id:''
+							}
+							selectedNode.children.push(newFile)
+							//also need to call something in $scope that calls the GitHub api and adds the file to the directory.
+						} else {
+							//add to the root directory
+						}
 					}
 
 					//Rendering template.

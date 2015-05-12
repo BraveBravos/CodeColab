@@ -21,5 +21,6 @@
     "jquery": "~2.1.4",
     "axios": "~0.5.4",
     "bootstrap": "~3.3.4"
+    "ng-context-menu":"~1.0.1"
   }
 }
