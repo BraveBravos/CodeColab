@@ -374,6 +374,7 @@ app.post('/api/merge', function (req, res) {
       console.log('merge err', err)
     } else {
       console.log(body)
+      res.sendStatus(200);
     }
   }
   )
