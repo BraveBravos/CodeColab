@@ -48,9 +48,9 @@ connection.onstream = function(e) {
        e.mediaElement.className = 'my-video';
     }else if(e.type === 'remote'){
       remoteMediaStreams.insertBefore(e.mediaElement, remoteMediaStreams.firstChild);
-      e.video.className = 'their-video';
+      e.mediaElement.className = 'their-video';
     }
-    //document.body.appendChild(e.mediaElement);
+    
 };
 
 connection.openSignalingChannel = function (config) {
@@ -96,7 +96,7 @@ document.getElementById('setup-new-meeting').onclick = function(){
                 roomFirebase.set(connection.sessionDescription);
                 
                 // if room owner leaves; remove room from the server
-                //roomFirebase.onDisconnect().remove();
+                roomFirebase.onDisconnect().remove();
             }
         });
     } else {
