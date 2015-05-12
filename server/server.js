@@ -184,13 +184,13 @@ app.post('/api/sjs', function (req, res) {
     res.sendStatus(200);
 });
 
-var repo;
 
 app.post('/api/repos/commit', function(req, res){
 
   var path = req.body.path,
       message = req.body.message,
       sha=req.body.sha,
+      repo=req.body.repo,
       content = req.body.content;
 
   var client = github.client(req.session.token);
@@ -248,7 +248,10 @@ app.get('/auth/github/callback', passport.authenticate(
 app.get('/auth/heroku', passport.authenticate('heroku'));
 
 app.get('/auth/heroku/callback',
-  passport.authenticate('heroku', { successRedirect: '/', failureRedirect: '/auth/heroku/fail' }));
+  passport.authenticate('heroku', { failureRedirect: '/auth/heroku/fail' }), 
+  function(req, res){
+    deployApp() //access and call this from client side?? 
+  });
 
 app.post('/api/deploy', function(req, res) {
   var repo = req.body.repo;
@@ -302,7 +305,7 @@ app.get('/logout', function (req, res){
 
 app.post('/branch', function(req, res){
   var owner=req.session.username;
-  repo = req.body.repo;
+  var repo = req.body.repo;
 
 
   request({
@@ -321,8 +324,6 @@ app.post('/branch', function(req, res){
         sha: sha
       });
 
-      //creating the new branch
-      // console.log("Sending:", send)
       request.post({
         url: 'https://api.github.com/repos/' + repo + '/git/refs?access_token='+ req.session.token,
         headers: {'User-Agent': owner, 'Content-Type': 'application/json'},
@@ -346,7 +347,6 @@ app.post('/branch', function(req, res){
       )
     }
   );
-
 
 })
 
