@@ -79,6 +79,14 @@ function afterEach(setTimeoutInteval, numberOfTimes, callback, startedTimes) {
     }, setTimeoutInteval);
 }
 
+connection.onspeaking = function(e){
+  connection.streams[e.streamid].unmute();
+}
+
+connection.onsilence = function(e){
+  connection.streams[e.streamid].mute();
+}
+
 connection.onunmute = function(event) {
     // event.isAudio == audio-only-stream
     // event.audio == has audio tracks
