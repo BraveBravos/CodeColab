@@ -252,6 +252,7 @@ app.get('/auth/heroku/callback',
 
 app.post('/api/deploy', function(req, res) {
   var repo = req.body.repo;
+  var name = req.body.name;
   var token = req.session.herokuToken
   var apiToken = process.env.HEROKU_API_TOKEN || keys.herokuAPIToken
   request.post({
@@ -261,10 +262,24 @@ app.post('/api/deploy', function(req, res) {
       'Accept': 'application/vnd.heroku+json; version=3',
       'Authorization': 'Bearer '+ token
     },
-    json: {source_blob : {"url" : "https://github.com/" + repo + "/tarball/master?token="+apiToken}}
+
+    json: {
+      app: {name: name},
+      source_blob : {"url" : "https://github.com/" + repo + "/tarball/master?token="+apiToken}
+    }
   },
     function (err, resp, body) {
+      if (err) {
+        console.log('err', err)
+      } else {
         console.log('response', body)
+        if (body.message === "Name is already taken") {
+          res.status(200).send({name: 'taken'})
+        } else {
+          var name = body.app.name;
+          res.status(200).send({name: name})
+        }
+      }
   })
 
 });

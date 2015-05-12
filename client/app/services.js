@@ -1,7 +1,7 @@
 angular.module('codeColab.services', [])
 
 
-.factory('Share', function ($http) {
+.factory('Share', function ($http, $window) {
   var path;
   var ce;
   var fileSha;
@@ -188,18 +188,32 @@ angular.module('codeColab.services', [])
       loadShare($scope, id, data.data.file)
     });
   }
-  var deployApp = function(repo){
-    console.log('deploying')
+  var deployApp = function($scope, repo, name){
+    console.log('deploying', name)
     return $http({
       method: 'POST',
       url: '/api/deploy',
       data: {
-        repo: repo
+        repo: repo,
+        name: name
       }
     })
-    .then (function(data){
-      console.log('Deployed!')
+    .then (function(response){
+      var name = response.data.name;
+      if (name === 'taken') {
+        alert("That name is already taken.")
+        $scope.deployApp()
+      }
+      var appURL ='https://'+name+'.herokuapp.com';
+      if (name!== 'taken') {
+        $window.open(appURL)
+      }
     })
+  }
+
+  var checkName = function (name) {
+    var re = /^[a-z](?:[a-z]|\d|-)*/;
+    return re.test(name);
   }
 
   return {
@@ -210,7 +224,8 @@ angular.module('codeColab.services', [])
    loadCM: loadCM,
     resetCM: resetCM,
     loadFile: loadFile,
-    deployApp: deployApp
+    deployApp: deployApp,
+    checkName: checkName
   }
 })
 
