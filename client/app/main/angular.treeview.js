@@ -43,6 +43,8 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 
 				//children
 				var nodeChildren = attrs.nodeChildren || 'children';
+
+				//need to mess with z-indices
 				var menuStartDiv = "<div context-menu class=\"position-fixed\" data-target=\"{{node."+nodeId+"}}-menu\" ng-class=\"{ 'highlight': highlight, 'expanded' : expanded }\">"
 				var testDiv = '<div>{{node.'+nodeId+'}}</div>'
 				var menuEndDiv0 = '<div class="dropdown position-fixed" id="{{node.'+nodeId+'}}-menu">'+
@@ -72,7 +74,7 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 				  '<ul class="dropdown-menu" role="menu">'+
 				    '<li>'+
 				    	'<a class="pointer" role="menuitem" tabindex="1"'+
-				    		'ng-click="panel.highlight = true">'+
+				    		'ng-click="'+treeId+'.test(node)">'+
 				    			'Add file in this folder'+
 				    	'</a>'+
 				    '</li>'+
@@ -113,9 +115,9 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 				//need separate templates for files and folders, I think -AG
 				//tree template
 				var template =
-				//need to move menu into repeating thing
 					'<ul>' +
-						'<li data-ng-repeat="node in ' + treeModel + '">' + menuStartDiv + 
+						'<li data-ng-repeat="node in ' + treeModel + '">' + 
+							menuStartDiv + 
 							'<i class="collapsed" data-ng-show="node.' + nodeChildren + '.length && node.collapsed" data-ng-click="' + treeId + '.selectNodeHead(node)"></i>' +
 							'<i class="expanded" data-ng-show="node.' + nodeChildren + '.length && !node.collapsed" data-ng-click="' + treeId + '.selectNodeHead(node)"></i>' +
 							'<i class="normal" data-ng-hide="node.' + nodeChildren + '.length"></i> ' +
@@ -155,7 +157,7 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 							//set highlight to selected node
 							selectedNode.selected = 'selected';
 							console.log('selected: ',selectedNode)
-							// console.log('treeID thing: ',scope[treeId], treeId, scope)
+							console.log('tree: ',scope[treeId], scope)
 							// console.log('treeID thing: ',scope[treeId], treeId, scope)
 							console.log('treeModel: ',treeModel)
 							//set currentNode
@@ -164,6 +166,33 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 								scope.loadFile(scope[treeId].currentNode)
 							}
 						};
+					}
+
+					scope[treeId].test = scope[treeId].test || function(node) {
+						var fileName = prompt('Enter the name of your new file.')
+						if(node) {
+							var newFile = {
+								children: [],
+								fullPath: node.fullPath+'/'+fileName,
+								label:fileName,
+								//probably need to update url and id after GitHub API call
+								url:'',
+								id:''
+							}
+
+							node.children.push(newFile)
+						} else {
+							var newFile = {
+								children: [],
+								fullPath: fileName,
+								label:fileName,
+								//probably need to update url and id after GitHub API call
+								url:'',
+								id:''
+							}
+
+							// node.children.push(newFile)							
+						}
 					}
 
 					scope[treeId].addFile = scope[treeId].addFile || function(selectedNode) {
