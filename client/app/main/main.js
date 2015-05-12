@@ -44,6 +44,27 @@ angular.module('codeColab.main', [])
     input.value = ''
   }
 
+  $scope.mergeModal = function(){
+    bootbox.form({
+      title: "Please enter your pull request info",
+      fields: {
+        pullTitle: {
+          label: 'Title:',
+          value: '',
+          type: 'text'
+        },
+        comments: {
+          label: 'Comments:',
+          value: '',
+          type: 'textarea'
+        }
+      },
+      callback: function(values) {
+        Share.mergeBranch($scope.selected, values.pullTitle, values.comments)
+      }
+    });
+  }
+
   $scope.deployApp = function(){
     var validName = false;
     var first = true;

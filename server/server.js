@@ -350,11 +350,26 @@ app.post('/api/branch', function(req, res){
   );
 
 })
+    //three calls - create pull request, merge pull request, reload the repo
 
-  // http://blog.api.mks.io/blog-posts
-  // title:
-  // content:
-
+app.post('/api/merge', function (req, res) {
+  var repo = req.body.repo,
+      title = req.body.title,
+      comments = req.body.comments;
+  request.post ({
+    url: 'https://api.github.com/repos/' + repo + '/pulls?access_token='+ req.session.token,
+    body: {
+      title: title,
+      head: "CODECOLAB",
+      base: "master",
+      body: comments
+    }
+  },
+  function (err, resp, body) {
+    console.log(body)
+  }
+  )
+})
 
 app.use(browserChannel( function(client) {
   var stream = new Duplex({objectMode: true});

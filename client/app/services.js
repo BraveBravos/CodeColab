@@ -212,6 +212,19 @@ angular.module('codeColab.services', [])
     })
   }
 
+  var mergeBranch = function(repo, title, comments) {
+    //three calls - create pull request, merge pull request, reload the repo
+    return $http({
+      method: 'POST',
+      url: '/api/merge',
+      data: {
+        repo: repo,
+        title: title,
+        comments: comments
+      }
+    })
+  }
+
   var checkName = function (name) {
     var re = /^[a-z](?:[a-z]|\d|-)*/;
     return re.test(name);
@@ -226,7 +239,8 @@ angular.module('codeColab.services', [])
     resetCM: resetCM,
     loadFile: loadFile,
     deployApp: deployApp,
-    checkName: checkName
+    checkName: checkName,
+    mergeBranch: mergeBranch
   }
 })
 

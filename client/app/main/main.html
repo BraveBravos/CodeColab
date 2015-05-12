@@ -11,20 +11,20 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-         
+
         </div> -->
         <!-- Collect the nav links, forms, and other content for toggling -->
 
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-              
+
           <div class='navbar-left'>
 
             <!-- <p class="navbar-text">Repos:</p> -->
-         
+
             <select ng-options = "repo.name for repo in repos track by repo.id" ng-model = "selectRepo" class='navbar-text selectpicker' ng-change="saveRepo(selectRepo)">
-            </select> 
-            
+            </select>
+
           </div>
 
           <form class="navbar-form navbar-left" role="search">
@@ -34,22 +34,9 @@
             <button type="submit" class="btn btn-default" class='submit' ng-show='check()' ng-click='commit(commitMSG)'>Submit</button>
           </form>
 
-         <!--  <div class='navbar-left'>
-
-            <a href="/auth/heroku">
-            <img class='herokulogin' src="../../styles/img/herokuicon.png" alt="Deploy">
-            Authorize Heroku
-            </a>
-
-            <a href="#" ng-click='deployApp()'>
-            <img class='herokulogin' src="../../styles/img/herokuicon.png" alt="Deploy">Deploy
-            </a>
-
-          </div> -->
-
           <ul class="nav navbar-nav navbar-right">
             <li>
-              <button ng-click = "mergeBranch()">Merge Branch</button>
+              <button ng-click = "mergeModal()">Merge Branch</button>
             </li>
 
             <li>
@@ -58,7 +45,7 @@
               Authorize Heroku
               </a>
             </li>
-            
+
             <li>
               <a href="#" ng-click='deployApp()'>
               <img class='herokulogin' src="../../styles/img/herokuicon.png" alt="Deploy">Deploy
@@ -83,8 +70,8 @@
     <!-- /.container -->
 </nav>
 
-<div class = 'CodeMirror-fullscreen' >
-  
+<div class = 'CodeMirror-fullscreen'>
+
   <div id="files" style='height:50%; overflow:auto;'>
     <ng-include src="fileStruct.url"></ng-include>
   </div>
