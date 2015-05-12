@@ -211,6 +211,11 @@ angular.module('codeColab.services', [])
     })
   }
 
+  var checkName = function (name) {
+    var re = /^[a-z](?:[a-z]|\d|-)*/;
+    return re.test(name);
+  }
+
   return {
     getRepos : getRepos,
     loadShare: loadShare,
@@ -219,7 +224,8 @@ angular.module('codeColab.services', [])
    loadCM: loadCM,
     resetCM: resetCM,
     loadFile: loadFile,
-    deployApp: deployApp
+    deployApp: deployApp,
+    checkName: checkName
   }
 })
 
