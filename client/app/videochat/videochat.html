@@ -11,7 +11,7 @@
 <!-- <button id="openNewSessionButton">Open New Room</button> -->
 <script>
 
-var CHANNEL_ID = 'chat-codecolab' + window.RMCDefaultChannel; 
+var CHANNEL_ID = 'chat-codecolab';// + window.RMCDefaultChannel; 
 
 var SESSION_ID = 'vidchat';    // room-id
 var USER_ID         = 'initiator';    // user-id
@@ -53,6 +53,24 @@ connection.onstream = function(e) {
     //document.body.appendChild(e.mediaElement);
 };
 
+connection.openSignalingChannel = function (config) {
+    config.channel = config.channel || this.channel;
+    
+    var socket = new Firebase(firebaseURL + config.channel);
+    socket.channel = config.channel;
+    
+    socket.on('child_added', function (data) {
+        config.onmessage(data.val());
+    });
+    
+    socket.send = function(data) {
+        this.push(data);
+    };
+    
+    config.onopen && setTimeout(config.onopen, 1);
+    socket.onDisconnect().remove();
+    return socket;
+};
 
 
 // open new session
@@ -61,8 +79,10 @@ connection.onstream = function(e) {
 // };
 document.getElementById('setup-new-meeting').onclick = function(){
   // setup signaling channel
+  //console.log('firebaseURL connection.channel',firebaseURL,connection.channel)
   var roomFirebase = new Firebase(firebaseURL + connection.channel + '-session');
   roomFirebase.once('value', function (data) {
+    console.log('roomFirebase data.val',data.val);
     var sessionDescription = data.val();
 
     // checking for room; if not available "open" otherwise "join"
