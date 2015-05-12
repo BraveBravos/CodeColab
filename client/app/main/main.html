@@ -33,8 +33,24 @@
             </div>
             <button type="submit" class="btn btn-default" class='submit' ng-show='check()' ng-click='commit(commitMSG)'>Submit</button>
           </form>
-          
+
+         <!--  <div class='navbar-left'>
+
+            <a href="/auth/heroku">
+            <img class='herokulogin' src="../../styles/img/herokuicon.png" alt="Deploy">
+            Authorize Heroku
+            </a>
+
+            <a href="#" ng-click='deployApp()'>
+            <img class='herokulogin' src="../../styles/img/herokuicon.png" alt="Deploy">Deploy
+            </a>
+
+          </div> -->
+
           <ul class="nav navbar-nav navbar-right">
+            <li>
+              <button ng-click = "mergeBranch()">Merge Branch</button>
+            </li>
 
             <li>
               <a href="/auth/heroku">
