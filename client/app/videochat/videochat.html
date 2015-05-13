@@ -8,10 +8,9 @@
   <div id='setup-new-meeting'>Join Video Chat</div>
 <div id='leave-current-meeting' class='hidden'>Leave Video Chat</div> 
 
-<!-- <button id="openNewSessionButton">Open New Room</button> -->
 <script>
 
-var CHANNEL_ID = 'chat-codecolab';// + window.RMCDefaultChannel; 
+var CHANNEL_ID = 'chat-codecolab';
 
 var SESSION_ID = 'vidchat';    // room-id
 var USER_ID         = 'initiator';    // user-id
@@ -34,13 +33,11 @@ var localMediaStream = document.getElementById('local-media-stream');
 var ctrlJoin = document.getElementById('setup-new-meeting');
 var ctrlLeave = document.getElementById('leave-current-meeting');
 
-// easiest way to customize what you need!
 connection.session = {
     audio: true,
     video: true
 };
 
-// on getting local or remote media stream
 connection.onstream = function(e) {
     console.log('connection.onstream e = ',e);
     if(e.type === 'local'){
@@ -72,11 +69,40 @@ connection.openSignalingChannel = function (config) {
     return socket;
 };
 
+function afterEach(setTimeoutInteval, numberOfTimes, callback, startedTimes) {
+    startedTimes = (startedTimes || 0) + 1;
+    if (startedTimes >= numberOfTimes) return;
 
-// open new session
-// document.querySelector('#openNewSessionButton').onclick = function() {
-//     connection.open();
-// };
+    setTimeout(function() {
+        callback();
+        afterEach(setTimeoutInteval, numberOfTimes, callback, startedTimes);
+    }, setTimeoutInteval);
+}
+
+connection.onspeaking = function(e){
+  e.mediaElement.volume = 0.7;
+}
+
+connection.onsilence = function(e){
+  e.mediaElement.volume = 0.01;
+}
+
+connection.onunmute = function(event) {
+    // event.isAudio == audio-only-stream
+    // event.audio == has audio tracks
+
+    if (event.isAudio || event.session.audio) {
+        // set volume=0
+        event.mediaElement.volume = 0;
+
+        // steadily increase volume
+        afterEach(200, 5, function() {
+            event.mediaElement.volume += .20;
+        });
+    }
+};
+
+
 document.getElementById('setup-new-meeting').onclick = function(){
   // setup signaling channel
   //console.log('firebaseURL connection.channel',firebaseURL,connection.channel)
