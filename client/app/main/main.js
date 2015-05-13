@@ -38,12 +38,6 @@ angular.module('codeColab.main', [])
     return !!($scope.selected)
   }
 
-  $scope.commit = function(message){
-    Share.commit(message, $scope.selected)
-    var input = document.getElementById('commitMessage');
-    input.value = ''
-  }
-
   $scope.mergeModal = function(){
     bootbox.form({
       title: "Please enter your pull request info",
@@ -63,6 +57,12 @@ angular.module('codeColab.main', [])
         Share.mergeBranch($scope.selected, values.pullTitle, values.comments)
       }
     });
+  }
+
+  $scope.commitModal = function() {
+    bootbox.prompt("Please enter your commit message:", function (result) {
+      Share.commit(result, $scope.selected, $scope);
+    })
   }
 
   $scope.deployApp = function(){

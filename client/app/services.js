@@ -48,7 +48,7 @@ angular.module('codeColab.services', [])
     })
   }
 
-  var commit = function(message, repo){
+  var commit = function(message, repo, $scope){
     var message = message,
         content = ce.editor().getValue(),
         path = this.path,
@@ -71,8 +71,9 @@ angular.module('codeColab.services', [])
       }
     })
     .then(function(response){
-      console.log('commiting successsss!')
-      alert('succesful commit!')
+      if (response.status === 200) {
+        bootbox.alert("Commit Successful")
+      }
     })
   }
 
@@ -213,7 +214,6 @@ angular.module('codeColab.services', [])
   }
 
   var mergeBranch = function(repo, title, comments) {
-    //three calls - create pull request, merge pull request, reload the repo
     return $http({
       method: 'POST',
       url: '/api/merge',
@@ -222,6 +222,9 @@ angular.module('codeColab.services', [])
         title: title,
         comments: comments
       }
+    })
+    .then (function(reponse) {
+
     })
   }
 
