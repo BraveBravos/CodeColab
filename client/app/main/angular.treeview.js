@@ -74,7 +74,7 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 				  '<ul class="dropdown-menu" role="menu">'+
 				    '<li>'+
 				    	'<a class="pointer" role="menuitem" tabindex="1"'+
-				    		'ng-click="'+treeId+'.test(node)">'+
+				    		'ng-click="'+treeId+'.newFile(node)">'+
 				    			'Add file in this folder'+
 				    	'</a>'+
 				    '</li>'+
@@ -86,7 +86,7 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 				    '</li>'+
 				    '<li>'+
 				    	'<a class="pointer" role="menuitem" tabindex="3" '+
-				         'ng-click="panel.expanded = true">' +
+				         'ng-click="'+treeId+'.newFile()">' +
 				         'Add file in root folder' +
 				      '</a>' +
 				    '</li>'+
@@ -168,8 +168,8 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 						};
 					}
 
-					scope[treeId].test = scope[treeId].test || function(node) {
-						var fileName = prompt('Enter the name of your new file.')
+					scope[treeId].newFile = scope[treeId].newFile || function(node) {
+						var fileName = prompt('Enter the name of your new file (including the file extension, such as .js or .html).')
 						if(node) {
 							var newFile = {
 								children: [],
@@ -177,7 +177,7 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 								label:fileName,
 								//probably need to update url and id after GitHub API call
 								url:'',
-								id:''
+								id:'',
 							}
 
 							node.children.push(newFile)
@@ -188,11 +188,17 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 								label:fileName,
 								//probably need to update url and id after GitHub API call
 								url:'',
-								id:''
+								id:'',
+								top:true,
+								type:'file'
 							}
 
+							scope.tree.push(newFile)
 							// node.children.push(newFile)							
 						}
+						//call service to create file in GH
+						scope.addFile(newFile)
+
 					}
 
 					scope[treeId].addFile = scope[treeId].addFile || function(selectedNode) {

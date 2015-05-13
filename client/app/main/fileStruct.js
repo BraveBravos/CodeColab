@@ -65,7 +65,7 @@ angular.module('codeColab.fileStruct', [])
     }
   }
 
-  // console.log('final tree',results)
+  console.log('final tree',results)
   $scope.tree = results;
   // return results;
 
@@ -81,18 +81,31 @@ angular.module('codeColab.fileStruct', [])
 .controller('fileStructCtrl', function ($http, $scope, Share){
 
   $scope.loadFile = function(file){
+    console.log('loadFile: ',file)
     Share.loadFile($scope.$parent,file.url, file.id, file.fullPath);
   }
 
   $scope.addFile = function(file){
+    // file.testing=5
+    // console.log('addFile tree: ',$scope.tree)
+    // console.log('selected repo: ',$scope.selected, $scope.selected.slice($scope.selected.lastIndexOf('/')+1), $scope.selected.slice(0,$scope.selected.lastIndexOf('/')))
     return $http({
       method: 'POST',
       url: '/api/files/newFile',
       data: {
-        repo: 'chatitude',
-        fullPath : 'index.html'
+        repo: $scope.selected.slice($scope.selected.lastIndexOf('/')+1),
+        owner: $scope.selected.slice(0,$scope.selected.lastIndexOf('/')),
+        fullPath : file.fullPath
       }
     })
+    // .then(function(data) {
+
+      //server will make a PUT request to create new file in CODECOLAB branch, and the response will contain the new file's id, url, and sha
+    //   set id and url here
+    //  file.id = ''
+    //  file.url = ''
+    // })
   }
-  $scope.addFile()
+  // setTimeout(function() {$scope.addFile()},5000)
+  // $scope.addFile()
 })

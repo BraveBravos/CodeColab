@@ -352,7 +352,7 @@ app.post('/api/branch', function(req, res){
 
 app.post('/api/files/newFile', function(req, res) {
   console.log(req.session.username,req.body.repo,req.body.fullPath,req.session.token)
-  res.status(200)
+  res.sendStatus(200)
   // request.put({
   //   url: 'https://api.github.com/repos/' + req.session.username + '/' + req.body.repo + '/contents/' + req.body.fullPath + '?access_token=' + req.session.token,
   //   headers: {'User-Agent': req.session.username},
@@ -364,34 +364,12 @@ app.post('/api/files/newFile', function(req, res) {
   //   }
   // }, 
   //  function(err, resp, body) {
+  //    //will use response to get url and id of newly created file, and return it to our client-side function
   //    res.send(JSON.parse(body))
   // })
 })
 
-
-  // .then(function(branch){
-  //   console.log('INSIDE GIT BRANCH-response: ',branch)
-
-  //   var sha = branch.something, //the sha code to create branch
-  //       ref = branch.something; //create/get branch name
-
-  //   //creating the new branch
-  //   axios.post('/repos/' + owner +'/' + repo + '/git/refs',
-  //     {
-  //       sha: sha,
-  //       ref: 'branch-name',
-  //       headers: {'User-Agent': req.session.passport.user[0].username}
-  //     }
-  //   ).then(function(body){
-  //     console.log('SUCCESS: ', body)
-  //     res.send(body) //send ref and sha back to client to use for commits
-  //   }).catch(function(err){
-  //     console.log('error:',err)
-  //   })
-  // })
-})
-    //three calls - create pull request, merge pull request, reload the repo
-
+//three calls - create pull request, merge pull request, reload the repo
 app.post('/api/merge', function (req, res) {
   var repo = req.body.repo,
       title = req.body.title,
@@ -431,8 +409,7 @@ app.post('/api/merge', function (req, res) {
        res.sendStatus(200);
       })
     }
-  }
-  )
+  })
 })
 
 app.use(browserChannel( function(client) {
@@ -466,6 +443,7 @@ app.use(browserChannel( function(client) {
   return share.listen(stream);
 
 }));
+
 
 
 
