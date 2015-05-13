@@ -217,7 +217,8 @@ p.copyright {
     width: 45%;
     margin-left:50%;
     text-align: justify;
-    font-size: 1em;
+    font-family: "Lato","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 1.1em;
 }
 
 
