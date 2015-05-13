@@ -6,6 +6,8 @@ angular.module('codeColab.videochat',[])
 
 .controller('videochatCtrl',function($scope){
 
+  //console.log('repo name',$scope.repo.name)
+
 
 var CHANNEL_ID = 'chat-codecolab';
 
