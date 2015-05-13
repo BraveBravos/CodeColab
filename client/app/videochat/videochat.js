@@ -2,7 +2,7 @@
 
 //'use strict';
 
-angular.module('codeColab.videochat',['codeColab.main'])
+angular.module('codeColab.videochat',[])
 
 .controller('videochatCtrl',function($scope){
 
