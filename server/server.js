@@ -249,9 +249,9 @@ app.get('/auth/github/callback', passport.authenticate(
 app.get('/auth/heroku', passport.authenticate('heroku'));
 
 app.get('/auth/heroku/callback',
-  passport.authenticate('heroku', { failureRedirect: '/auth/heroku/fail' }), 
+  passport.authenticate('heroku', { failureRedirect: '/auth/heroku/fail' }),
   function(req, res){
-    deployApp() //access and call this from client side?? 
+    deployApp() //access and call this from client side??
   });
 
 app.post('/api/deploy', function(req, res) {
@@ -350,11 +350,50 @@ app.post('/api/branch', function(req, res){
   );
 
 })
+    //three calls - create pull request, merge pull request, reload the repo
 
-  // http://blog.api.mks.io/blog-posts
-  // title:
-  // content:
-
+app.post('/api/merge', function (req, res) {
+  var repo = req.body.repo,
+      title = req.body.title,
+      comments = req.body.comments,
+      user = req.session.username;
+  request.post ({
+    url: 'https://api.github.com/repos/' + repo + '/pulls?access_token='+ req.session.token,
+    headers : {
+      'User-Agent' : user
+    },
+    json: {
+      title: title,
+      head: "CODECOLAB",
+      base: "master",
+      body: comments
+    }
+  },
+  function (err, resp, body) {
+    if (err) {
+      console.log('merge err', err)
+    } else {
+     var sha = body.head.sha;
+     var num = body.number;
+      console.log('pull request is ...',body)
+      request({
+        method: 'PUT',
+        url: 'https://api.github.com/repos/' + repo + '/pulls/' + num + '/merge?access_token='+ req.session.token,
+        headers : {
+          'User-Agent' : user
+        },
+        json: {
+          message: "Merged CodeColab Branch to master",
+          sha: sha
+        }
+      },
+      function (err, resp, body) {
+       res.sendStatus(200);
+      })
+    }
+  }
+  )
+})
 
 app.use(browserChannel( function(client) {
   var stream = new Duplex({objectMode: true});
