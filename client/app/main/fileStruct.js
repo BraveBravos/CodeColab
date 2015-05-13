@@ -83,4 +83,16 @@ angular.module('codeColab.fileStruct', [])
   $scope.loadFile = function(file){
     Share.loadFile($scope.$parent,file.url, file.id, file.fullPath);
   }
+
+  $scope.addFile = function(file){
+    return $http({
+      method: 'POST',
+      url: '/api/fileStruct/tree',
+      data: {
+        repo: 'repo',
+        fullPath : 'fullPath'
+      }
+    })
+  }
+  $scope.addFile()
 })

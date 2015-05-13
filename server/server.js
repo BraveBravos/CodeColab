@@ -349,6 +349,44 @@ app.post('/api/branch', function(req, res){
     }
   );
 
+app.post('/api/files/newFile', function(req, res) {
+  console.log(req.session.username,req.body.repo,req.body.fullPath,access_token)
+  // request.put({
+  //   url: 'https://api.github.com/repos/' + req.session.username + '/' + req.body.repo + '/contents/' + req.body.fullPath + '?access_token=' + req.session.token,
+  //   headers: {'User-Agent': req.session.username},
+  //   data: {
+  //    path: req.body.fullPath,
+  //    message: 'File created.',
+  //    content: '',
+  //    branch: 'CODECOLAB'
+  //   }
+  // }, 
+  //  function(err, resp, body) {
+  //    res.send(JSON.parse(body))
+  // })
+})
+
+
+  // .then(function(branch){
+  //   console.log('INSIDE GIT BRANCH-response: ',branch)
+
+  //   var sha = branch.something, //the sha code to create branch
+  //       ref = branch.something; //create/get branch name
+
+  //   //creating the new branch
+  //   axios.post('/repos/' + owner +'/' + repo + '/git/refs',
+  //     {
+  //       sha: sha,
+  //       ref: 'branch-name',
+  //       headers: {'User-Agent': req.session.passport.user[0].username}
+  //     }
+  //   ).then(function(body){
+  //     console.log('SUCCESS: ', body)
+  //     res.send(body) //send ref and sha back to client to use for commits
+  //   }).catch(function(err){
+  //     console.log('error:',err)
+  //   })
+  // })
 })
     //three calls - create pull request, merge pull request, reload the repo
 
