@@ -87,10 +87,10 @@ angular.module('codeColab.fileStruct', [])
   $scope.addFile = function(file){
     return $http({
       method: 'POST',
-      url: '/api/fileStruct/tree',
+      url: '/api/files/newFile',
       data: {
-        repo: 'repo',
-        fullPath : 'fullPath'
+        repo: 'chatitude',
+        fullPath : 'index.html'
       }
     })
   }

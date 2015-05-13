@@ -219,11 +219,11 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 					element.html('').append( $compile( template )( scope ) );
 				}
 
-				//Rendering template.
-				element.html('').append( $compile( template )( scope ) );
-			}
+			// 	//Rendering template.
+			// 	element.html('').append( $compile( template )( scope ) );
+			// }
 		}
-	};
+	}
 }]);
 
 

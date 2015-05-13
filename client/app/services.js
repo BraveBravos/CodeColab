@@ -172,7 +172,7 @@ angular.module('codeColab.services', [])
     $scope.share = {sjs:sjs,doc:doc}
   }
 
-    var loadFile = function ($scope, url, id, path) {
+  var loadFile = function ($scope, url, id, path) {
     this.path = path
     var that = this;
 

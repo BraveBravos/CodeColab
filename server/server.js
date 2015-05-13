@@ -348,9 +348,11 @@ app.post('/api/branch', function(req, res){
       )
     }
   );
+})
 
 app.post('/api/files/newFile', function(req, res) {
-  console.log(req.session.username,req.body.repo,req.body.fullPath,access_token)
+  console.log(req.session.username,req.body.repo,req.body.fullPath,req.session.token)
+  res.status(200)
   // request.put({
   //   url: 'https://api.github.com/repos/' + req.session.username + '/' + req.body.repo + '/contents/' + req.body.fullPath + '?access_token=' + req.session.token,
   //   headers: {'User-Agent': req.session.username},
