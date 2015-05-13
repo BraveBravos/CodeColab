@@ -2,13 +2,16 @@ angular.module('codeColab.fileStruct', [])
 
 .factory ('FileStructDo', function ($http){
 
-  var getTree = function ($scope, repoName) {
+  var getTree = function ($scope, repoName, branch) {
 
     var repo = repoName.name.split('/')
     return $http({
       method: 'POST',
       url: '/api/fileStruct/tree',
-      data: {repo: repo}
+      data: {
+        repo: repo,
+        branch: branch
+      }
     })
     .then(function (data) {
     // console.log("BIG TREE BODY FROM SERVER ", data.data)

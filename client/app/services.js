@@ -5,6 +5,7 @@ angular.module('codeColab.services', [])
   var path;
   var ce;
   var fileSha;
+  var fileUrl,fileId,filePath;
 
   var getRepos = function ($scope) {
     return $http({
@@ -173,6 +174,9 @@ angular.module('codeColab.services', [])
   }
 
     var loadFile = function ($scope, url, id, path) {
+    this.fileUrl = url;
+    this.fileId = id;
+    this.filePath = path;
     this.path = path
     var that = this;
 
@@ -213,7 +217,8 @@ angular.module('codeColab.services', [])
     })
   }
 
-  var mergeBranch = function(repo, title, comments) {
+  var mergeBranch = function(repo, title, comments, $scope) {
+    var that = this;
     return $http({
       method: 'POST',
       url: '/api/merge',
@@ -223,8 +228,9 @@ angular.module('codeColab.services', [])
         comments: comments
       }
     })
-    .then (function(reponse) {
-
+    .then (function(response) {
+      $scope.saveRepo({name: $scope.selected})
+      that.loadFile($scope, this.fileUrl, this.fileId , this.filePath)
     })
   }
 

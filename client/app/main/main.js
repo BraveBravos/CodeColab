@@ -25,9 +25,13 @@ angular.module('codeColab.main', [])
   $scope.saveRepo = function(repo) {
     $scope.selected = repo.name;
     Share.resetCM($scope)
-
     // FileStructDo.getTree(repo)
-    FileStructDo.getTree($scope, repo)
+    if (!$scope.ref) {
+      var branch = 'master'
+    } else {
+      var branch = 'CODECOLAB'
+    }
+    FileStructDo.getTree($scope, repo, branch)
 
     if(!$scope.ref) {
       $scope.createBranch()
@@ -54,7 +58,7 @@ angular.module('codeColab.main', [])
         }
       },
       callback: function(values) {
-        Share.mergeBranch($scope.selected, values.pullTitle, values.comments)
+        Share.mergeBranch($scope.selected, values.pullTitle, values.comments, $scope)
       }
     });
   }

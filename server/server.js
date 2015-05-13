@@ -210,14 +210,16 @@ app.post('/api/repos/commit', function(req, res){
 app.post ('/api/fileStruct/tree', function (req, res) {
   var owner = req.body.repo[0];
   var repo = req.body.repo[1];
+  var branch = req.body.branch;
   // req.session.repo = repo;
   console.log("Making request:", 'https://api.github.com/repos/' +owner+ '/' +repo+ '/git/refs/heads/master?access_token='+ req.session.token)
   request({
-    url: 'https://api.github.com/repos/' +owner+ '/' +repo+ '/git/refs/heads/CODECOLAB?access_token='+ req.session.token,
+    url: 'https://api.github.com/repos/' +owner+ '/' +repo+ '/git/refs/heads/' + branch+'?access_token='+ req.session.token,
     headers: {'User-Agent': req.session.passport.user[0].username}
   },
   function (err, resp, body) {
     var data = JSON.parse(body);
+    console.log('tree response', data)
     var sha = data.object.sha;
     req.session.treeSha = sha;
     var base = 'https://api.github.com/repos'
@@ -373,9 +375,9 @@ app.post('/api/merge', function (req, res) {
     if (err) {
       console.log('merge err', err)
     } else {
+      console.log('pull request is ...',body)
      var sha = body.head.sha;
      var num = body.number;
-      console.log('pull request is ...',body)
       request({
         method: 'PUT',
         url: 'https://api.github.com/repos/' + repo + '/pulls/' + num + '/merge?access_token='+ req.session.token,
@@ -388,11 +390,17 @@ app.post('/api/merge', function (req, res) {
         }
       },
       function (err, resp, body) {
-       res.sendStatus(200);
+        request({
+          method: "GET",
+          url: "https://api.github.com/repos/" + repo + "/pulls/" + num + "/files?access_token=" + req.session.token,
+          headers: { 'User-Agent': user}
+        }, function (err, resp, body) {
+          console.log('files changed', JSON.parse(body))
+          res.sendStatus(200);
+        })
       })
     }
-  }
-  )
+  })
 })
 
 app.use(browserChannel( function(client) {
