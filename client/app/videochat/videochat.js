@@ -9,11 +9,6 @@ angular.module('codeColab.videochat',[])
 var CHANNEL_ID = 'chat-codecolab';
 var SESSION_ID = 'vidchat';    // room-id
 
-$scope.$watch('selectRepo', function(){
-  //console.log('selectRepo watch',$scope.selectRepo.name);
-  SESSION_ID = $scope.selectRepo.name;
-});
-
 var USER_ID         = 'initiator';    // user-id
 var SESSION    = {         // media-type
     audio: true,
@@ -22,7 +17,14 @@ var SESSION    = {         // media-type
 var EXTRA      = {};       // empty extra-data
 
 var connection = new RTCMultiConnection(CHANNEL_ID);
-connection.sessionid = SESSION_ID;
+
+$scope.$watch('selectRepo', function(){
+  //console.log('selectRepo watch',$scope.selectRepo.name);
+  //SESSION_ID = $scope.selectRepo.name;
+  connection.sessionid = $scope.selectRepo.name;
+});
+
+
 //connection.userid = USER_ID;
 connection.extra = EXTRA;
 
@@ -106,6 +108,7 @@ connection.onunmute = function(event) {
 document.getElementById('setup-new-meeting').onclick = function(){
   // setup signaling channel
   //console.log('firebaseURL connection.channel',firebaseURL,connection.channel)
+  console.log('connection.sessionid',connection.sessionid);
   var roomFirebase = new Firebase(firebaseURL + connection.channel + '-session');
   roomFirebase.once('value', function (data) {
     console.log('roomFirebase data.val',data.val);
