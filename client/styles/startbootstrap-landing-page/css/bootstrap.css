@@ -4106,6 +4106,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
     height: auto !important;
     padding-bottom: 0;
     overflow: visible !important;
+    /*border: 2px solid black;*/
   }
   .navbar-collapse.in {
     overflow-y: visible;
@@ -4157,7 +4158,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   position: fixed;
   right: 0;
   left: 0;
-  z-index: 1030;
+  z-index: 1000;
 }
 @media (min-width: 768px) {
   .navbar-fixed-top,
@@ -4196,11 +4197,12 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 }
 .navbar-toggle {
   position: relative;
-  float: right;
-  padding: 9px 10px;
+  /*float: right;*/
+  /*padding: 9px 10px;*/
+  /*padding-top: 10px;*/
   margin-top: 8px;
-  margin-right: 15px;
-  margin-bottom: 8px;
+  /*margin-right: 15px;*/
+  margin-bottom: 5px;
   background-color: transparent;
   background-image: none;
   border: 1px solid transparent;
@@ -4228,7 +4230,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 }
 .navbar-nav > li > a {
   padding-top: 10px;
-  padding-bottom: 10px;
+  /*padding-bottom: 10px;*/
   line-height: 20px;
 }
 @media (max-width: 767px) {
@@ -4268,7 +4270,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   }
 }
 .navbar-form {
-  padding: 10px 15px;
+  /*padding: 10px 15px;*/
   margin-top: 8px;
   margin-right: -15px;
   margin-bottom: 8px;
