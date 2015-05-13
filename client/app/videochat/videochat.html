@@ -145,6 +145,8 @@ document.getElementById('setup-new-meeting').onclick = function(){
 
 document.getElementById('leave-current-meeting').onclick = function(){
   connection.leave();
+  connection.close();
+  connection.disconnect();
   ctrlJoin.className = 'shown';
   ctrlLeave.className = 'hidden';
 }
