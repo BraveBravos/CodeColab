@@ -2,23 +2,24 @@
 
 //'use strict';
 
-angular.module('codeColab.videochat',[])
+angular.module('codeColab.videochat',['codeColab.main'])
 
 .controller('videochatCtrl',function($scope){
 
-  //console.log('repo name',$scope.repo.name)
-
-
 var CHANNEL_ID = 'chat-codecolab';
-
 var SESSION_ID = 'vidchat';    // room-id
+
+$scope.$watch('selectRepo', function(){
+  //console.log('selectRepo watch',$scope.selectRepo.name);
+  SESSION_ID = $scope.selectRepo.name;
+});
+
 var USER_ID         = 'initiator';    // user-id
 var SESSION    = {         // media-type
     audio: true,
     video: true
 };
 var EXTRA      = {};       // empty extra-data
-
 
 var connection = new RTCMultiConnection(CHANNEL_ID);
 connection.sessionid = SESSION_ID;
