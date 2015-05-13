@@ -21,9 +21,11 @@ var connection = new RTCMultiConnection(CHANNEL_ID);
 $scope.$watch('selectRepo', function(){
   //console.log('selectRepo watch',$scope.selectRepo.name);
   //SESSION_ID = $scope.selectRepo.name;
-  connection.sessionid = $scope.selectRepo.name;
+  CHANNEL_ID = $scope.selectRepo.name;
+  connection = new RTCMultiConnection(CHANNEL_ID);
 });
 
+connection.sessionid = SESSION_ID;
 
 //connection.userid = USER_ID;
 connection.extra = EXTRA;
