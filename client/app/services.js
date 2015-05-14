@@ -86,7 +86,7 @@ angular.module('codeColab.services', [])
 
     $scope.CM = CodeMirror.MergeView(target, {
       'origRight':'This side is the original version of your file.',
-      'value':'Select a repository and a file to start editing.',
+      'value':'Select a repository and a file to start editing.  This side is your working document, where you will make your changes.',
       'theme':'erlang-dark',
       lineNumbers:true,
       'readOnly':true
@@ -172,7 +172,7 @@ angular.module('codeColab.services', [])
 
     $scope.CM.rightOriginal().setValue('')
 
-    var placeholderDoc = CodeMirror.Doc('Select a file to start editing.','javascript')
+    var placeholderDoc = CodeMirror.Doc('Select a file to start editing.  You will make your changes in this editor.','javascript')
     $scope.CM.editor().swapDoc(placeholderDoc)
     $scope.CM.editor().setOption('readOnly', true)
 
