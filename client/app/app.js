@@ -7,7 +7,8 @@ angular.module('codeColab', [
   'angularTreeview',
   'codeColab.videochat',
   'codeColab.deploy',
-	'codeColab.services'
+	'codeColab.services',
+  'ng-context-menu'
 	])
 
 .config(['$routeProvider', function ($routeProvider) {
