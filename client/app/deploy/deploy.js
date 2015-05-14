@@ -9,14 +9,17 @@ angular.module('codeColab.deploy', [])
   $scope.deployApp = function(){
     var validName = false;
     var name;
+
       if ($scope.first) {
         bootbox.prompt("What would you like to name your app?", function (enterName) {
           name = enterName
           $scope.first = false;
           validName = Share.checkName(name)
           if (validName) {
-            Share.deployApp($scope, $scope.selected, name);
+            console.log('validName')
+            Share.deployApp($scope, name);
           } else {
+            console.log('invalidName')
             $scope.deployApp();
           }
        })
@@ -26,7 +29,7 @@ angular.module('codeColab.deploy', [])
           name = enterName;
           validName = Share.checkName(name)
           if (validName) {
-            Share.deployApp($scope, $scope.selected, name);
+            Share.deployApp($scope, name);
           } else {
             $scope.deployApp();
           }
