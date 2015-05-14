@@ -93,6 +93,7 @@ angular.module('codeColab.services', [])
   }
 
   var resetRightOrig = function($scope, id, data) {
+    console.log('right: ',id)
     if($scope.right) {
       $scope.right.rDoc.unsubscribe()
       $scope.right.rSjs.disconnect()
@@ -176,7 +177,7 @@ angular.module('codeColab.services', [])
   }
 
   var loadShare = function ($scope, id, data) {
-
+    console.log('loadShare: ',id)
     // this fires if we already have an existing doc and connection
     if($scope.share){
       $scope.share.doc.unsubscribe()
