@@ -4,21 +4,6 @@ html, body {
 	height:100%;
   background-size: 100% 100%;
   background-color: #6497b1;
-  /*background: linear-gradient(314deg, #227d66, #144496) no-repeat center center;*/
-/*
-  -webkit-animation: AnimationName 37s ease infinite;
-  animation: AnimationName 37s ease infinite;
-*/
-/*  @-webkit-keyframes AnimationName {
-      0%{background-position:0% 50%}
-      50%{background-position:100% 50%}
-      100%{background-position:0% 50%}
-  }*/
-/*  @keyframes AnimationName {
-      0%{background-position:0% 50%}
-      50%{background-position:100% 50%}
-      100%{background-position:0% 50%}
-  }*/
 }
 
 #files {
@@ -74,14 +59,13 @@ html, body {
 .logout {
   text-align: center;
   text-decoration: none;
-  margin-top: 5px;
+  /*margin-top: 5px;*/
   margin-left: 10px;
 }
 
-.navbar {
-  /*margin-bottom: 5px;*/
+/*.navbar {
   height: 25px;
-}
+}*/
 
 .submit {
   margin-left: 5px;
@@ -110,17 +94,34 @@ html, body {
 
 .tree {
   margin-top: 20px;
+  color: white;
 }
 
+.tree > p {
+  padding-left: 20px;
+}
 
-.herokulogin, .fa-code-fork {
-  max-height: 30px;
+.herokulogin, .logoutIMG, .mergeButton {
+  height: 25px;
+  vertical-align: text-bottom;
 }
 
 .spinner {
   text-align: center;
   color: white;
 }
+
+.nav {
+  cursor: pointer;
+}
+
+
+
+
+
+
+
+
 
 
 

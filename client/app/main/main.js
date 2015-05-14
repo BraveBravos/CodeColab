@@ -8,6 +8,15 @@ angular.module('codeColab.main', [])
   $scope.repos = [{name:'Select a Repository'}];
   $scope.selectRepo = "";
   $scope.spinner = false;
+  $scope.textSpinner = false;
+
+  $scope.editorWillLoad = function () {
+    $scope.textSpinner = true
+  }
+
+  $scope.editorHasLoaded = function () {
+    $scope.textSpinner = false
+  }
 
   $scope.init = function () {
     Share.getRepos($scope);
@@ -72,9 +81,20 @@ angular.module('codeColab.main', [])
     })
   }
 
+  // $scope.toggleTextSpinner = function(){
+  //   // $scope.textSpinner = FileStructDo.toggleSpinner($scope.textSpinner)
+  //   $scope.textSpinner = ! $scope.textSpinner
+  // }
 
   $scope.init();
 })
+
+
+
+
+
+
+
 
 
 

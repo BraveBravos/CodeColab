@@ -1,7 +1,6 @@
 <!-- fileStruct template partial containing the file structure -->
 
 <ng-app="codeColab" ng-controller = "fileStructCtrl">
-<!-- <ng-app="codeColab" ng-controller = "codeCtrl"> -->
 
 <p class='fa-inverse'></p> 
 <br>
@@ -10,6 +9,7 @@
 <div class='tree'>
 
   <div class='spinner' ng-show='spinner'>
+    <p>Files Loading</p>
     <i class="fa fa-spinner fa-pulse fa-5x"></i>
   </div>
 
@@ -22,4 +22,5 @@
       data-node-children="children"
       data-node-type="type">
   </div>
+
 </div>
