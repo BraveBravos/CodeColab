@@ -218,11 +218,13 @@ p.copyright {
 }
 
 .description {
-    width: 45%;
-    margin-left:50%;
+    width: 40%;
+    margin-left:53%;
     text-align: justify;
     font-family: "Lato","Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 1.1em;
+    font-weight: 500;
+    line-height: 25px;
 }
 
 .mainbody {

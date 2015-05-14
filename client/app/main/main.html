@@ -18,6 +18,7 @@
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
+          <!-- the repo dropdown on left of navbar -->
           <div class='navbar-left'>
 
             <select ng-options = "repo.name for repo in repos track by repo.id" ng-model = "selectRepo" class='navbar-text selectpicker' ng-change="saveRepo(selectRepo)">
@@ -25,9 +26,15 @@
 
           </div>
 
+
+          <!-- the commit text input box/button -->
+
           <form class="navbar-form navbar-left" role="search">
           <button class="btn btn-default" ng-show='fileLoaded' ng-click="commitModal()" >Make Commit</button>
           </form>
+
+
+          <!-- the merge / heroku / logout on right in navbar -->
 
           <ul class="nav navbar-nav navbar-right">
             <li ng-show = "commitMade">
@@ -64,10 +71,14 @@
 
   <ng-include src="videochat.url"></ng-include>
 
-  <div id="area">
+  <!-- #area : where the text editor will go -->
+  <div id="area"> 
+
+    <!-- spinner while file is loading into editor-->
     <div class='spinner' ng-show='textSpinner'>
       <i class="fa fa-spinner fa-pulse fa-5x"></i>
     </div>
+    
   </div>
 
 </div>

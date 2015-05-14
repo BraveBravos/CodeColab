@@ -2,12 +2,14 @@ angular.module('codeColab.fileStruct', [])
 
 .factory ('FileStructDo', function ($http){
 
+  //toggles the spinner while repo files are loading 
   var toggleSpinner = function(spinner){
     if (spinner === false) spinner = true
     else { spinner = false };
     return spinner;
   }
 
+  //gets file/folder names from GitHub for the selected repository
   var getTree = function ($scope, repoName, branch) {
     $scope.spinner = this.toggleSpinner($scope.spinner)
     var that = this;
@@ -94,6 +96,7 @@ angular.module('codeColab.fileStruct', [])
 
 .controller('fileStructCtrl', function ($http, $scope, Share){
 
+  //load file to editor
   $scope.loadFile = function(file){
     $scope.$parent.editorWillLoad()
     Share.loadFile($scope.$parent,file.url, file.id, file.fullPath);

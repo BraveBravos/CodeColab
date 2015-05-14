@@ -12,10 +12,12 @@ angular.module('codeColab.main', [])
   $scope.commitMade = false;
   $scope.fileLoaded = false;
 
+  //shows spinner for text editor when file loading
   $scope.editorWillLoad = function () {
     $scope.textSpinner = true
   }
 
+  //hides spinner for text editor when file loading
   $scope.editorHasLoaded = function () {
     $scope.textSpinner = false
   }
@@ -64,16 +66,12 @@ angular.module('codeColab.main', [])
     });
   }
 
+  //modal for committing changes to GitHub
   $scope.commitModal = function() {
     bootbox.prompt("Please enter your commit message:", function (result) {
       Share.commit(result, $scope.selected, $scope);
     })
   }
-
-  // $scope.toggleTextSpinner = function(){
-  //   // $scope.textSpinner = FileStructDo.toggleSpinner($scope.textSpinner)
-  //   $scope.textSpinner = ! $scope.textSpinner
-  // }
 
   $scope.init();
 })
