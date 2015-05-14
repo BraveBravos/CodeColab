@@ -4,15 +4,11 @@ module.exports = function(config){
     // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath : './',
 
-    // frameworks to use
-    // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine'],
-
     // list of files / patterns to load in the browser
     files: [
       // angular source
-      'client/bower_components/angular/angular.min.js',
-      'client/bower_components/angular-route/angular-route.min.js',
+      'client/bower_components/angular/angular.js',
+      'client/bower_components/angular-route/angular-route.js',
       'client/bower_components/angular-mocks/angular-mocks.js',
       'client/bower_components/jquery/dist/jquery.min.js',
 
@@ -54,25 +50,30 @@ module.exports = function(config){
     // enable / disable watching file and executing tests whenever any file changes
     autoWatch : false,
 
+    // frameworks to use
+    // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
+    frameworks: ['jasmine'],
+
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
     browsers : ['Chrome'],
     // browsers : ['PhantomJS'],
 
-    singleRun : true
+    singleRun : true,
 
-    // junitReporter : {
-    //   outputFile: 'test_out/unit.xml',
-    //   suite: 'unit'
-    // }
+    plugins : [
+            // 'karma-phantomjs-launcher',
+            'karma-chrome-launcher',
+            'karma-jasmine',
+            'karma-junit-reporter',
+            'karma-nyan-reporter',
+            'karma-unicorn-reporter'
+            ],
 
-    // plugins : [
-    //         'karma-chrome-launcher',
-    //         'karma-firefox-launcher',
-    //         'karma-jasmine',
-    //         'karma-junit-reporter',
-    //         'karma-phantomjs-launcher'
-    //         ],
+    junitReporter : {
+      outputFile: 'test_out/unit.xml',
+      suite: 'unit'
+    }
             
   });
 };
