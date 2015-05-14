@@ -61,6 +61,7 @@ angular.module('codeColab.fileStruct', [])
 
   // indicate node is either folder or file for sorting in the template
   for (var q in tree){
+    //what if it's an empty folder?
     if (tree[q].children.length === 0){
       tree[q].type = 'file'
     } else {
@@ -98,6 +99,23 @@ angular.module('codeColab.fileStruct', [])
     $scope.$parent.editorWillLoad()
     Share.loadFile($scope.$parent,file.url, file.id, file.fullPath);
   }
+
+  $scope.addFile = function(file){
+  // file.testing=5
+  // console.log('addFile tree: ',$scope.tree)
+  // console.log('selected repo: ',$scope.selected, $scope.selected.slice($scope.selected.lastIndexOf('/')+1), $scope.selected.slice(0,$scope.selected.lastIndexOf('/')))
+  return $http({
+    method: 'POST',
+    url: '/api/files/newFile',
+    data: {
+      repo: $scope.selected.slice($scope.selected.lastIndexOf('/')+1),
+      owner: $scope.selected.slice(0,$scope.selected.lastIndexOf('/')),
+      fullPath : file.fullPath
+    }
+  })
+  .then(function(data) {
+    //set file.id and file.url here
+  })
 
 })
 
