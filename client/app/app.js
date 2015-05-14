@@ -5,8 +5,9 @@ angular.module('codeColab', [
   'codeColab.fileStruct',
   'ngRoute',
   'angularTreeview',
-	'codeColab.services',
-  'codeColab.videochat'
+  'codeColab.videochat',
+  'codeColab.deploy',
+	'codeColab.services'
 	])
 
 .config(['$routeProvider', function ($routeProvider) {
@@ -19,10 +20,15 @@ angular.module('codeColab', [
       templateUrl : '/app/main/main.html',
       controller: 'codeCtrl',
       authenticate: true
-    })  
+    })
     .when ('/about', {
       templateUrl : '/app/about/about.html',
       authenticate: false
+    })
+    .when ('/deploy', {
+      templateUrl: '/app/deploy/deploy.html',
+      controller: 'deployCtrl',
+      authenticate: true
     })
     /*.when ('/logout', {
       templateUrl : '/app/about/signin.html',

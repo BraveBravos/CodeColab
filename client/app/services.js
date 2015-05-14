@@ -1,7 +1,7 @@
 angular.module('codeColab.services', [])
 
 
-.factory('Share', function ($http, $window) {
+.factory('Share', function ($http, $window, $location) {
   var path;
   var ce;
   var fileSha;
@@ -207,11 +207,14 @@ angular.module('codeColab.services', [])
     .then (function(response){
       var name = response.data.name;
       if (name === 'taken') {
-        alert("That name is already taken.")
-        $scope.deployApp()
+        bootbox.alert("That name is already taken.", function () {
+          $scope.first = true;
+          $scope.deployApp()
+        })
       }
       var appURL ='https://'+name+'.herokuapp.com';
       if (name!== 'taken') {
+        $location.path('/');
         $window.open(appURL)
       }
     })

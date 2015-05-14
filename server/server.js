@@ -116,6 +116,7 @@ passport.use(new HerokuStrategy({
 function(req, accessToken, refreshToken, profile, done) {
   req.session.herokuToken = accessToken;
   console.log('heroku', accessToken)
+
   return done(null, profile);
 }));
 
@@ -251,10 +252,8 @@ app.get('/auth/github/callback', passport.authenticate(
 app.get('/auth/heroku', passport.authenticate('heroku'));
 
 app.get('/auth/heroku/callback',
-  passport.authenticate('heroku', { failureRedirect: '/auth/heroku/fail' }),
-  function(req, res){
-    deployApp() //access and call this from client side??
-  });
+  passport.authenticate('heroku', {successRedirect: '/#/deploy', failureRedirect: '/auth/heroku/fail' })
+  );
 
 app.post('/api/deploy', function(req, res) {
   var repo = req.body.repo;

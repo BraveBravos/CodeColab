@@ -70,22 +70,6 @@ angular.module('codeColab.main', [])
     })
   }
 
-  $scope.deployApp = function(){
-    var validName = false;
-    var first = true;
-    while (!validName) {
-      if (first) {
-        var name = prompt("What would you like to name your app?")
-        first = false;
-      } else {
-        var name = prompt("Valid Heroku app names must start with a letter and can only contain lowercase letters, numbers,\
-         and dashes. Please enter a valid name.")
-      }
-      validName = Share.checkName(name);
-    }
-      Share.deployApp($scope, $scope.selected, name);
-  }
-
 
   $scope.init();
 })
