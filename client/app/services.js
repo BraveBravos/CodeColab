@@ -85,14 +85,16 @@ angular.module('codeColab.services', [])
     var target = document.getElementById('area')
 
     $scope.CM = CodeMirror.MergeView(target, {
-      'origRight':'',
+      'origRight':'This side is the original version of your file.',
       'value':'Select a repository and a file to start editing.',
       'theme':'erlang-dark',
-      lineNumbers:true
+      lineNumbers:true,
+      'readOnly':true
     })
   }
 
   var resetRightOrig = function($scope, id, data) {
+    console.log('right: ',id)
     if($scope.right) {
       $scope.right.rDoc.unsubscribe()
       $scope.right.rSjs.disconnect()
@@ -172,11 +174,12 @@ angular.module('codeColab.services', [])
 
     var placeholderDoc = CodeMirror.Doc('Select a file to start editing.','javascript')
     $scope.CM.editor().swapDoc(placeholderDoc)
+    $scope.CM.editor().setOption('readOnly', true)
 
   }
 
   var loadShare = function ($scope, id, data) {
-
+    console.log('loadShare: ',id)
     // this fires if we already have an existing doc and connection
     if($scope.share){
       $scope.share.doc.unsubscribe()
@@ -216,6 +219,8 @@ angular.module('codeColab.services', [])
         if(doc.getSnapshot()==='') {
           $scope.CM.editor().setValue($scope.CM.rightOriginal().getValue())
         }
+
+        $scope.CM.editor().setOption('readOnly',false)
         // console.log('after subscribed',doc.getSnapshot(),codeEditor.editor().getValue())
         ce = $scope.CM
 
