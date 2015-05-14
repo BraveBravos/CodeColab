@@ -105,21 +105,22 @@ angular.module('codeColab.fileStruct', [])
   }
 
   $scope.addFile = function(file){
-  // file.testing=5
-  // console.log('addFile tree: ',$scope.tree)
-  // console.log('selected repo: ',$scope.selected, $scope.selected.slice($scope.selected.lastIndexOf('/')+1), $scope.selected.slice(0,$scope.selected.lastIndexOf('/')))
-  return $http({
-    method: 'POST',
-    url: '/api/files/newFile',
-    data: {
-      repo: $scope.selected.slice($scope.selected.lastIndexOf('/')+1),
-      owner: $scope.selected.slice(0,$scope.selected.lastIndexOf('/')),
-      fullPath : file.fullPath
-    }
-  })
-  .then(function(data) {
-    //set file.id and file.url here
-  })
+    // file.testing=5
+    // console.log('addFile tree: ',$scope.tree)
+    // console.log('selected repo: ',$scope.selected, $scope.selected.slice($scope.selected.lastIndexOf('/')+1), $scope.selected.slice(0,$scope.selected.lastIndexOf('/')))
+    return $http({
+      method: 'POST',
+      url: '/api/files/newFile',
+      data: {
+        repo: $scope.selected.slice($scope.selected.lastIndexOf('/')+1),
+        owner: $scope.selected.slice(0,$scope.selected.lastIndexOf('/')),
+        fullPath : file.fullPath
+      }
+    })
+    .then(function(data) {
+      //set file.id and file.url here
+    })
+  }
 
 })
 
