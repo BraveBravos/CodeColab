@@ -17,9 +17,8 @@ angular.module('codeColab.main', [])
   $scope.createBranch = function(){
     //save ref and sha to use in commit
     Share.createBranch($scope.selected).then(function(branch) {
-      // console.log("Got branch info:", branch)
-      $scope.ref = branch.ref;
-      $scope.sha = branch.sha;
+      $scope.ref = branch.data.ref;
+      $scope.sha = branch.data.sha;
     })
   }
 
@@ -68,22 +67,6 @@ angular.module('codeColab.main', [])
     bootbox.prompt("Please enter your commit message:", function (result) {
       Share.commit(result, $scope.selected, $scope);
     })
-  }
-
-  $scope.deployApp = function(){
-    var validName = false;
-    var first = true;
-    while (!validName) {
-      if (first) {
-        var name = prompt("What would you like to name your app?")
-        first = false;
-      } else {
-        var name = prompt("Valid Heroku app names must start with a letter and can only contain lowercase letters, numbers,\
-         and dashes. Please enter a valid name.")
-      }
-      validName = Share.checkName(name);
-    }
-      Share.deployApp($scope, $scope.selected, name);
   }
 
 
