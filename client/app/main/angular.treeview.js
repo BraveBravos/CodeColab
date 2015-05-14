@@ -118,9 +118,9 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 				'<ul>' +
 					'<li data-ng-repeat="node in ' + treeModel + '">' + 
 						menuStartDiv + 
-						'<i class="collapsed" data-ng-show="node.' + nodeChildren + '.length && node.collapsed" data-ng-click="' + treeId + '.selectNodeHead(node)"></i>' +
-						'<i class="expanded" data-ng-show="node.' + nodeChildren + '.length && !node.collapsed" data-ng-click="' + treeId + '.selectNodeHead(node)"></i>' +
-						'<i class="normal" data-ng-hide="node.' + nodeChildren + '.length"></i> ' +
+						'<i class="collapsed fa fa-folder" data-ng-show="node.' + nodeChildren + '.length && node.collapsed" data-ng-click="' + treeId + '.selectNodeHead(node)"></i>' +
+						'<i class="expanded fa fa-folder-open" data-ng-show="node.' + nodeChildren + '.length && !node.collapsed" data-ng-click="' + treeId + '.selectNodeHead(node)"></i>' +
+						'<i class="normal fa fa-file-o" data-ng-hide="node.' + nodeChildren + '.length"></i> ' +
 						'<span data-ng-class="node.selected" data-ng-click="' + treeId + '.selectNodeLabel(node)">{{node.' + nodeLabel + '}}</span>' +
 						'<div data-ng-hide="node.collapsed" data-tree-id="' + treeId + '" data-tree-model="node.' + nodeChildren + '" data-node-id=' + nodeId + ' data-node-label=' + nodeLabel + ' data-node-children=' + nodeChildren + '></div>' +
 						"</div>"+
@@ -164,31 +164,31 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 
 					//newFile function
 					scope[treeId].newFile = scope[treeId].newFile || function(node) {
-+						var fileName = prompt('Enter the name of your new file (including the file extension, such as .js or .html).')
-+						if(node) {
-+							var newFile = {
-+								children: [],
-+								fullPath: node.fullPath+'/'+fileName,
-+								label:fileName,
-+								//probably need to update url and id after GitHub API call
-+								url:'',
-+								id:'',
-+							}
-+
-+							node.children.push(newFile)
-+						} else {
-+							var newFile = {
-+								children: [],
-+								fullPath: fileName,
-+								label:fileName,
-+								//probably need to update url and id after GitHub API call
-+								url:'',
-+								id:'',
-+								top:true,
-+								type:'file'
-+							}
-+
-+							scope.tree.push(newFile)
+						var fileName = prompt('Enter the name of your new file (including the file extension, such as .js or .html).')
+						if(node) {
+							var newFile = {
+								children: [],
+								fullPath: node.fullPath+'/'+fileName,
+								label:fileName,
+								//probably need to update url and id after GitHub API call
+								url:'',
+								id:'',
+							}
+
+							node.children.push(newFile)
+						} else {
+							var newFile = {
+								children: [],
+								fullPath: fileName,
+								label:fileName,
+								//probably need to update url and id after GitHub API call
+								url:'',
+								id:'',
+								top:true,
+								type:'file'
+							}
+
+							scope.tree.push(newFile)
 
 						}
 					}
