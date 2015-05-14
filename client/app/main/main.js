@@ -10,6 +10,7 @@ angular.module('codeColab.main', [])
   $scope.spinner = false;
   $scope.textSpinner = false;
   $scope.commitMade = false;
+  $scope.fileLoaded = false;
 
   $scope.editorWillLoad = function () {
     $scope.textSpinner = true
@@ -33,6 +34,7 @@ angular.module('codeColab.main', [])
   }
 
   $scope.saveRepo = function(repo) {
+    $scope.fileLoaded = false;
     Share.resetCM($scope)
     $scope.selected = repo.name;
     localStorage.repo = repo.name

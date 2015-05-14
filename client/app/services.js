@@ -286,6 +286,7 @@ angular.module('codeColab.services', [])
       }
     })
     .then (function (data) {
+      $scope.$parent.fileLoaded = true;
       that.fileSha = data.data.fileSha;
       resetRightOrig($scope, id, data.data.file)
       // loadShare($scope, id, data.data.file)
