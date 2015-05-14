@@ -3886,7 +3886,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .nav > li > a {
   position: relative;
   display: block;
-  padding: 10px 15px;
+  padding: 10px 10px;
 }
 .nav > li > a:hover,
 .nav > li > a:focus {
@@ -3911,7 +3911,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 }
 .nav .nav-divider {
   height: 1px;
-  margin: 9px 0;
+  margin: 5px 0;
   overflow: hidden;
   background-color: #e5e5e5;
 }
@@ -4069,7 +4069,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .navbar {
   position: relative;
   min-height: 50px;
-  margin-bottom: 20px;
+  /*margin-bottom: 20px;*/
   border: 1px solid transparent;
 }
 @media (min-width: 768px) {
@@ -4228,11 +4228,19 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .navbar-nav {
   margin: 7.5px -15px;
 }
+
 .navbar-nav > li > a {
-  padding-top: 10px;
   /*padding-bottom: 10px;*/
+  vertical-align: text-bottom;
+  text-align: center;
   line-height: 20px;
 }
+
+/*.navbar-nav > li > .mergebutton {
+  vertical-align: text-bottom;
+  padding-top: 10px;
+}*/
+
 @media (max-width: 767px) {
   .navbar-nav .open .dropdown-menu {
     position: static;
@@ -4266,7 +4274,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   }
   .navbar-nav > li > a {
     /*padding-top: 5px;*/
-    padding-bottom: 15px;
+    /*padding-bottom: 15px;*/
   }
 }
 .navbar-form {

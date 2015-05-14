@@ -2,8 +2,15 @@ angular.module('codeColab.fileStruct', [])
 
 .factory ('FileStructDo', function ($http){
 
-  var getTree = function ($scope, repoName, branch) {
+  var toggleSpinner = function(spinner){
+    if (spinner === false) spinner = true
+    else { spinner = false };
+    return spinner;
+  }
 
+  var getTree = function ($scope, repoName, branch) {
+    $scope.spinner = this.toggleSpinner($scope.spinner)
+    var that = this;
     var repo = repoName.name.split('/')
     return $http({
       method: 'POST',
@@ -14,12 +21,13 @@ angular.module('codeColab.fileStruct', [])
       }
     })
     .then(function (data) {
-    // console.log("BIG TREE BODY FROM SERVER ", data.data)
-    var bigTree = data.data;
-    var tree = {};
 
-    // operate on each of the objects in the data.data array
-    bigTree.forEach(function(item) {
+      // console.log("BIG TREE BODY FROM SERVER ", data.data)
+      var bigTree = data.data;
+      var tree = {};
+
+      // operate on each of the objects in the data.data array
+      bigTree.forEach(function(item) {
 
       if (item.type === 'tree' || item.path.lastIndexOf('/')===-1) {
         tree[item.path] = {top:true, fullPath: item.path, label:item.path, id:item.sha, url:item.url, collapsed:true, children:[]}
@@ -35,13 +43,14 @@ angular.module('codeColab.fileStruct', [])
         tree[path].children.push(tree[item.path])
         tree[item.path].top=false
       } else {
-
         var fullPath = item.path
         item.path=item.path.slice(divider+1)
         tree[path].children.push({label:item.path, fullPath: fullPath, url:item.url, id:item.sha, children:[]})
       }
+
     })
 
+  // fileStructCtrl.toggleSpinner()
   var results = []
 
   // parses tree.path into a node label when node is not a "top"
@@ -67,6 +76,8 @@ angular.module('codeColab.fileStruct', [])
     }
   }
 
+  $scope.spinner = that.toggleSpinner($scope.spinner)
+
   // console.log('final tree',results)
   $scope.tree = results;
   // return results;
@@ -75,14 +86,31 @@ angular.module('codeColab.fileStruct', [])
 
 }  // end of getTree function
 
-
-  return { getTree : getTree}
+  return { getTree : getTree,
+            toggleSpinner: toggleSpinner
+          }
 
 })  // end of FileStructDo factory
 
+
 .controller('fileStructCtrl', function ($http, $scope, Share){
+  // $scope.spinner = $scope.$parent.spinner
 
   $scope.loadFile = function(file){
     Share.loadFile($scope.$parent,file.url, file.id, file.fullPath);
   }
+
+  // $scope.toggleSpinner = function(){
+  //   $scope.spinner = FileStructDo.toggleSpinner($scope.spinner)
+  // }
+
 })
+
+
+
+
+
+
+
+
+
