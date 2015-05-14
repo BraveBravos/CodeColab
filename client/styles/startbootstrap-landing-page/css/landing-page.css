@@ -170,6 +170,8 @@ p.copyright {
     width: 10em;
     height: 10em;
     margin: 9%;
+    border: 2px solid white;
+    border-radius: 50%;
 }
 
 .teamSection {
