@@ -105,7 +105,8 @@ connection.onunmute = function(event) {
     }
 };
 
-document.getElementById('setup-new-meeting').onclick = function(){
+//document.getElementById('setup-new-meeting').onclick = function(){
+$scope.joinChat = function(){  
   // setup signaling channel
   var roomFirebase = new Firebase(firebaseURL + connection.channel + '-session');
   roomFirebase.once('value', function (data) {
@@ -142,7 +143,8 @@ document.getElementById('setup-new-meeting').onclick = function(){
   ctrlLeave.className = 'shown';
 }
 
-document.getElementById('leave-current-meeting').onclick = function(){
+//document.getElementById('leave-current-meeting').onclick = function(){
+$scope.leaveChat = function(){  
   connection.leave();
   connection.close();
   connection.disconnect();
