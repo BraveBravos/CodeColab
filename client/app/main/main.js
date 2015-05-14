@@ -58,6 +58,9 @@ angular.module('codeColab.main', [])
         }
       },
       callback: function(values) {
+        if (values === null) {
+          return;
+        }
         Share.mergeBranch($scope.selected, values.pullTitle, values.comments, $scope)
       }
     });
