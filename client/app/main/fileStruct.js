@@ -97,6 +97,7 @@ angular.module('codeColab.fileStruct', [])
   // $scope.spinner = $scope.$parent.spinner
 
   $scope.loadFile = function(file){
+    // $scope.currentFile = file
     Share.loadFile($scope.$parent,file.url, file.id, file.fullPath);
   }
 
