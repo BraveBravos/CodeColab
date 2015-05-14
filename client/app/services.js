@@ -333,12 +333,18 @@ angular.module('codeColab.services', [])
     })
     .then (function(response) {
       if (response.status === 200) {
-        bootbox.alert("Merge Successful")
+        if (response.data === "No commits between master and CODECOLAB") {
+          bootbox.alert("You have not committed anything to this branch.");
+        } else if (response.data === "A pull request already exists for BraveBravos:CODECOLAB.") {
+          bootbox.alert("You have an outstanding pull request on this branch. Please resolve on GitHub.")
+        }else {
+          bootbox.alert("Merge Successful")
+          // $scope.saveRepo({name: $scope.selected})
+          // that.loadFile($scope, this.fileUrl, this.fileId , this.filePath)
+          console.log('merge: ',globalUrl, globalId)
+          updateRightOrigValue($scope, globalUrl, globalId)
+        }
       }
-      // $scope.saveRepo({name: $scope.selected})
-      // that.loadFile($scope, this.fileUrl, this.fileId , this.filePath)
-      console.log('merge: ',globalUrl, globalId)
-      updateRightOrigValue($scope, globalUrl, globalId)
     })
   }
 
