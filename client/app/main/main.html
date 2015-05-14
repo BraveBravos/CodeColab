@@ -20,7 +20,7 @@
 
           <div class='navbar-left'>
 
-            <select class = 'repodropdown' ng-options = "repo.name for repo in repos track by repo.id" ng-model = "selectRepo" class='navbar-text selectpicker' ng-change="saveRepo(selectRepo)">
+            <select ng-options = "repo.name for repo in repos track by repo.id" ng-model = "selectRepo" class='navbar-text selectpicker' ng-change="saveRepo(selectRepo)">
             </select>
 
           </div>
