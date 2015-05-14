@@ -16,23 +16,23 @@ var SESSION    = {         // media-type
 };
 var EXTRA      = {};       // empty extra-data
 
-var connection = new RTCMultiConnection(CHANNEL_ID);
-
-$scope.$watch('selectRepo', function(){
-  //console.log('selectRepo watch',$scope.selectRepo.name);
-  //SESSION_ID = $scope.selectRepo.name;
-  CHANNEL_ID = $scope.selectRepo.name;
-  connection = new RTCMultiConnection(CHANNEL_ID);
-});
-
+var connection = new RTCMultiConnection();
 connection.sessionid = SESSION_ID;
 
-//connection.userid = USER_ID;
+$scope.$watch('selectRepo', function(){
+  if(typeof $scope.selectRepo.name != 'undefined'){
+    connection.disconnect();
+    CHANNEL_ID = $scope.selectRepo.name;
+    CHANNEL_ID = CHANNEL_ID.replace("/","")
+    connection.channel = CHANNEL_ID;
+  }
+});
+
 connection.extra = EXTRA;
 
 var firebaseURL = 'https://glaring-fire-1858.firebaseio.com/';
 
-var remoteMediaStreams = document.getElementById('video-chats');
+var remoteMediaStreams = document.getElementById('remote-media-streams');
 var localMediaStream = document.getElementById('local-media-stream');
 var ctrlJoin = document.getElementById('setup-new-meeting');
 var ctrlLeave = document.getElementById('leave-current-meeting');
@@ -55,19 +55,15 @@ connection.onstream = function(e) {
 };
 
 connection.openSignalingChannel = function (config) {
-    config.channel = config.channel || this.channel;
-    
+    config.channel = config.channel || this.channel;  
     var socket = new Firebase(firebaseURL + config.channel);
     socket.channel = config.channel;
-    
     socket.on('child_added', function (data) {
         config.onmessage(data.val());
     });
-    
     socket.send = function(data) {
         this.push(data);
     };
-    
     config.onopen && setTimeout(config.onopen, 1);
     socket.onDisconnect().remove();
     return socket;
@@ -76,7 +72,6 @@ connection.openSignalingChannel = function (config) {
 function afterEach(setTimeoutInteval, numberOfTimes, callback, startedTimes) {
     startedTimes = (startedTimes || 0) + 1;
     if (startedTimes >= numberOfTimes) return;
-
     setTimeout(function() {
         callback();
         afterEach(setTimeoutInteval, numberOfTimes, callback, startedTimes);
@@ -106,14 +101,10 @@ connection.onunmute = function(event) {
     }
 };
 
-
 document.getElementById('setup-new-meeting').onclick = function(){
   // setup signaling channel
-  //console.log('firebaseURL connection.channel',firebaseURL,connection.channel)
-  console.log('connection.sessionid',connection.sessionid);
   var roomFirebase = new Firebase(firebaseURL + connection.channel + '-session');
   roomFirebase.once('value', function (data) {
-    console.log('roomFirebase data.val',data.val);
     var sessionDescription = data.val();
 
     // checking for room; if not available "open" otherwise "join"
@@ -147,7 +138,6 @@ document.getElementById('setup-new-meeting').onclick = function(){
   ctrlLeave.className = 'shown';
 }
 
-
 document.getElementById('leave-current-meeting').onclick = function(){
   connection.leave();
   connection.close();
@@ -155,7 +145,5 @@ document.getElementById('leave-current-meeting').onclick = function(){
   ctrlJoin.className = 'shown';
   ctrlLeave.className = 'hidden';
 }
-
-
 
 });
