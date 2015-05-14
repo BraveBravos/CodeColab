@@ -164,6 +164,7 @@ app.post ('/api/orgs/repos', function (req, res) {
     });
 });
 
+//this is to get files from the master branch, by default
 app.post('/api/files', function (req, res) {
   var fileId = req.body.fileId;
   request ({
@@ -176,6 +177,25 @@ app.post('/api/files', function (req, res) {
       // docs.sendDoc(db, file, fileId, fileSha);
       res.status(200).send({file:file, fileSha:fileSha});
     });
+})
+
+//this is to get updates files after a merge, and maybe after a file is newly created
+//https://api.github.com/repos/adamlg/chatitude/contents/ff.html?ref=CODECOLAB
+app.post('/api/getUpdatedFile', function (req, res) {
+  var filePath = req.body.filePath
+  var ownerAndRepo = req.body.ownerAndRepo //need to get this from $scope.selected
+  request({
+    //we get them from the CODECOLAB branch so we don't have to wait for the pull request to go through - watch this for bugs,
+    //and switch to master if needed
+    url: 'https://api.github.com/repos/' + ownerAndRepo + '/contents/' + filePath + '?ref=CODECOLAB&access_token=' + req.session.token,
+    headers: {'User-Agent': req.session.passport.user[0].username}
+  },
+    function(err, resp, body) {
+      var fileSha=JSON.parse(body).sha
+      var file = atob(JSON.parse(body).content);
+      // docs.sendDoc(db, file, fileId, fileSha);
+      res.status(200).send({file:file, fileSha:fileSha});      
+    })
 })
 
 app.post('/api/sjs', function (req, res) {

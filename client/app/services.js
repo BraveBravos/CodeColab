@@ -8,6 +8,7 @@ angular.module('codeColab.services', [])
   var fileUrl,fileId,filePath;
   var globalUrl;
   var globalId;
+  var globalPath;
 
   var getRepos = function ($scope) {
     return $http({
@@ -127,24 +128,27 @@ angular.module('codeColab.services', [])
         // console.log('rDoc attached: ',rDoc)
 
         if(rDoc.getSnapshot()==='') {
+          //should we run updaterightOrigValue here?
           $scope.CM.rightOriginal().setValue(data)
           // console.log('should be rDoc value: ',$scope.CM.rightOriginal().getValue())
         }
 
       })
+      //so that this only runs after the comp value is retrieved
+      loadShare($scope,id,data)
     })
     
   }
 
-  var updateRightOrigValue = function($scope, url, id) {
-    // console.log('update: ',url,id)
+  var updateRightOrigValue = function($scope) {
+    console.log('selected: ',$scope.selected,globalPath)
     //just set value of rightOrig
     return $http ({
       method:'POST',
-      url: '/api/files',
+      url: '/api/getUpdatedFile',
       data: {
-        url: url,
-        fileId: id
+        filePath: globalPath,
+        ownerAndRepo: $scope.selected
       }
     })
     .then (function (data) {
@@ -246,6 +250,8 @@ angular.module('codeColab.services', [])
     this.path = path
     globalUrl = url
     globalId = id
+    globalPath = path
+    console.log('globalPath: ',globalPath)
     var that = this;
 
     return $http ({
@@ -258,8 +264,8 @@ angular.module('codeColab.services', [])
     })
     .then (function (data) {
       that.fileSha = data.data.fileSha;
-      loadShare($scope, id, data.data.file)
       resetRightOrig($scope, id, data.data.file)
+      // loadShare($scope, id, data.data.file)
     });
   }
 
@@ -304,7 +310,7 @@ angular.module('codeColab.services', [])
       if (response.status === 200) {
         bootbox.alert("Merge Successful")
       }
-      $scope.saveRepo({name: $scope.selected})
+      // $scope.saveRepo({name: $scope.selected})
       // that.loadFile($scope, this.fileUrl, this.fileId , this.filePath)
       console.log('merge: ',globalUrl, globalId)
       updateRightOrigValue($scope, globalUrl, globalId)
