@@ -9,6 +9,7 @@ angular.module('codeColab.main', [])
   $scope.selectRepo = "";
   $scope.spinner = false;
   $scope.textSpinner = false;
+  $scope.commitMade = false;
 
   $scope.editorWillLoad = function () {
     $scope.textSpinner = true

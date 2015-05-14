@@ -77,6 +77,7 @@ angular.module('codeColab.services', [])
     .then(function(response){
       if (response.status === 200) {
         bootbox.alert("Commit Successful")
+        $scope.commitMade = true;
       }
     })
   }
@@ -144,7 +145,7 @@ angular.module('codeColab.services', [])
 
   var updateRightOrigValue = function($scope) {
     console.log('selected: ',$scope.selected,globalPath)
-    
+
     if($scope.right) {
       $scope.right.rDoc.unsubscribe()
       $scope.right.rSjs.disconnect()
