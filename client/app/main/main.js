@@ -7,6 +7,7 @@ angular.module('codeColab.main', [])
   $scope.modalShown = false;
   $scope.repos = [{name:'Select a Repository'}];
   $scope.selectRepo = "";
+  $scope.spinner = false;
 
   $scope.init = function () {
     Share.getRepos($scope);

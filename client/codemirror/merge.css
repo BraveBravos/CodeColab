@@ -39,6 +39,7 @@
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   overflow: hidden;
+  margin-top: 20px;
 /*  border-left: 1px solid #ddd;
   border-right: 1px solid #ddd;*/
   position: relative;
@@ -68,12 +69,14 @@
   position: absolute;
   cursor: pointer;
   color: #44c;
+  /*margin-top: 20px;*/
 }
 
 .CodeMirror-merge-copy-reverse {
   position: absolute;
   cursor: pointer;
   color: #44c;
+  /*margin-top: 20px;*/
 }
 
 .CodeMirror-merge-copybuttons-left .CodeMirror-merge-copy { left: 2px; }

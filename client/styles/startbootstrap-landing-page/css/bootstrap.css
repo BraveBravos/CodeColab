@@ -3886,7 +3886,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .nav > li > a {
   position: relative;
   display: block;
-  padding: 10px 15px;
+  padding: 10px 10px;
 }
 .nav > li > a:hover,
 .nav > li > a:focus {
@@ -3911,7 +3911,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 }
 .nav .nav-divider {
   height: 1px;
-  margin: 9px 0;
+  margin: 5px 0;
   overflow: hidden;
   background-color: #e5e5e5;
 }
@@ -4069,7 +4069,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .navbar {
   position: relative;
   min-height: 50px;
-  margin-bottom: 20px;
+  /*margin-bottom: 20px;*/
   border: 1px solid transparent;
 }
 @media (min-width: 768px) {
@@ -4106,6 +4106,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
     height: auto !important;
     padding-bottom: 0;
     overflow: visible !important;
+    /*border: 2px solid black;*/
   }
   .navbar-collapse.in {
     overflow-y: visible;
@@ -4157,7 +4158,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   position: fixed;
   right: 0;
   left: 0;
-  z-index: 1030;
+  z-index: 1000;
 }
 @media (min-width: 768px) {
   .navbar-fixed-top,
@@ -4196,11 +4197,12 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 }
 .navbar-toggle {
   position: relative;
-  float: right;
-  padding: 9px 10px;
+  /*float: right;*/
+  /*padding: 9px 10px;*/
+  /*padding-top: 10px;*/
   margin-top: 8px;
-  margin-right: 15px;
-  margin-bottom: 8px;
+  /*margin-right: 15px;*/
+  margin-bottom: 5px;
   background-color: transparent;
   background-image: none;
   border: 1px solid transparent;
@@ -4226,11 +4228,19 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .navbar-nav {
   margin: 7.5px -15px;
 }
+
 .navbar-nav > li > a {
-  padding-top: 10px;
-  padding-bottom: 10px;
+  /*padding-bottom: 10px;*/
+  vertical-align: text-bottom;
+  text-align: center;
   line-height: 20px;
 }
+
+/*.navbar-nav > li > .mergebutton {
+  vertical-align: text-bottom;
+  padding-top: 10px;
+}*/
+
 @media (max-width: 767px) {
   .navbar-nav .open .dropdown-menu {
     position: static;
@@ -4264,11 +4274,11 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   }
   .navbar-nav > li > a {
     /*padding-top: 5px;*/
-    padding-bottom: 15px;
+    /*padding-bottom: 15px;*/
   }
 }
 .navbar-form {
-  padding: 10px 15px;
+  /*padding: 10px 15px;*/
   margin-top: 8px;
   margin-right: -15px;
   margin-bottom: 8px;
@@ -6581,4 +6591,4 @@ button.close {
     display: none !important;
   }
 }
-/*# sourceMappingURL=bootstrap.css.map */
+# sourceMappingURL=bootstrap.css.map 

@@ -79,7 +79,7 @@ html, body {
 }
 
 .navbar {
-  margin-bottom: 5px;
+  /*margin-bottom: 5px;*/
   height: 25px;
 }
 
@@ -113,9 +113,17 @@ html, body {
 }
 
 
-.herokulogin {
+.herokulogin, .fa-code-fork {
   max-height: 30px;
 }
+
+.spinner {
+  text-align: center;
+  color: white;
+}
+
+
+
 
 
 
