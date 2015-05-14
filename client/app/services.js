@@ -105,7 +105,7 @@ angular.module('codeColab.services', [])
     var rSjs = new sharejs.Connection(rSocket);
     var rDoc = rSjs.get('origDocuments', id);
     $scope.right = {rDoc: rDoc, rSjs: rSjs}
-    
+
     rDoc.subscribe()
 
     rDoc.whenReady(function() {
@@ -114,7 +114,7 @@ angular.module('codeColab.services', [])
         rDoc.create('text')
         // console.log('created')
       }
-      
+
       rDoc.subscribe(function(err) {
         // console.log('rDoc subscribed: ',rDoc)
 
@@ -139,7 +139,7 @@ angular.module('codeColab.services', [])
       //so that this only runs after the comp value is retrieved
       loadShare($scope,id,data)
     })
-    
+
   }
 
   var updateRightOrigValue = function($scope) {
@@ -156,7 +156,7 @@ angular.module('codeColab.services', [])
     .then (function (data) {
       console.log(data)
       $scope.CM.rightOriginal().setValue(data.data.file)
-    });    
+    });
   }
 
   var resetCM = function($scope) {
@@ -279,8 +279,11 @@ angular.module('codeColab.services', [])
     });
   }
 
-  var deployApp = function($scope, repo, name){
+  var deployApp = function($scope, name){
+    console.log('ths', this)
     console.log('deploying', name)
+    console.log('repo', localStorage.repo)
+    var repo = localStorage.repo;
     return $http({
       method: 'POST',
       url: '/api/deploy',
