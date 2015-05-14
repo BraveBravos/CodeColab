@@ -95,7 +95,7 @@ angular.module('codeColab.fileStruct', [])
 .controller('fileStructCtrl', function ($http, $scope, Share){
 
   $scope.loadFile = function(file){
-    // $scope.currentFile = file
+    $scope.$parent.editorWillLoad()
     Share.loadFile($scope.$parent,file.url, file.id, file.fullPath);
   }
 

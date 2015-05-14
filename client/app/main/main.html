@@ -32,7 +32,7 @@
           <ul class="nav navbar-nav navbar-right">
             <li>
               <a ng-click="mergeModal()">
-                <i class="fa fa-code-fork fa-2x"></i>
+                <i class="mergeButton fa fa-code-fork fa-2x"></i>
                 Merge Branch
               </a>
             </li>
@@ -44,7 +44,7 @@
             </li>
              <li class='logout'>
                 <a href="/logout">
-                <span class="fa fa-sign-out"></span>Logout</a>
+                <span class="logoutIMG fa fa-sign-out fa-2x"></span>Logout</a>
             </li>
           </ul>
         </div>
@@ -54,7 +54,12 @@
     <!-- /.container -->
 </nav>
 
+<div class='spinner' ng-show='textSpinner'>
+  <i class="fa fa-spinner fa-pulse fa-5x"></i>
+</div>
+
 <div class = 'CodeMirror-fullscreen'>
+
 
   <div id="files" style='height:50%; overflow:auto;'>
     <ng-include src="fileStruct.url"></ng-include>
@@ -62,7 +67,9 @@
 
   <ng-include src="videochat.url"></ng-include>
 
-  <div id="area"></div>
+  <div id="area">
+    
+  </div>
 
 </div>
 

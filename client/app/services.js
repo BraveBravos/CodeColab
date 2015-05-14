@@ -218,6 +218,11 @@ angular.module('codeColab.services', [])
         }
         // console.log('after subscribed',doc.getSnapshot(),codeEditor.editor().getValue())
         ce = $scope.CM
+
+        //below is for the text editor spinner
+        $scope.$parent.$apply(function () {
+          $scope.$parent.editorHasLoaded()
+        })
       });
 
       // codeEditor.editor().on('change', function(change) {

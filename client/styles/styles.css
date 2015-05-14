@@ -59,13 +59,13 @@ html, body {
 .logout {
   text-align: center;
   text-decoration: none;
-  margin-top: 5px;
+  /*margin-top: 5px;*/
   margin-left: 10px;
 }
 
-.navbar {
+/*.navbar {
   height: 25px;
-}
+}*/
 
 .submit {
   margin-left: 5px;
@@ -101,8 +101,9 @@ html, body {
   padding-left: 20px;
 }
 
-.herokulogin, .fa-code-fork {
-  max-height: 30px;
+.herokulogin, .logoutIMG, .mergeButton {
+  height: 25px;
+  vertical-align: text-bottom;
 }
 
 .spinner {
@@ -113,6 +114,7 @@ html, body {
 .nav {
   cursor: pointer;
 }
+
 
 
 
