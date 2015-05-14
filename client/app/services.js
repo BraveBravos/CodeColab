@@ -6,6 +6,8 @@ angular.module('codeColab.services', [])
   var ce;
   var fileSha;
   var fileUrl,fileId,filePath;
+  var globalUrl;
+  var globalId;
 
   var getRepos = function ($scope) {
     return $http({
@@ -55,7 +57,7 @@ angular.module('codeColab.services', [])
         path = this.path,
         repo = repo,
         sha = this.fileSha;
-
+        console.log('commit',path,sha)
     // function utf8_to_b64(str) {
     //   return window.btoa(unescape(encodeURIComponent(str)));
     // }
@@ -89,12 +91,77 @@ angular.module('codeColab.services', [])
     })
   }
 
+  var resetRightOrig = function($scope, id, data) {
+    if($scope.right) {
+      $scope.right.rDoc.unsubscribe()
+      $scope.right.rSjs.disconnect()
+      $scope.CM.rightOriginal().detachShareJsDoc()
+    }
+
+    var rSocket = new BCSocket(null, {reconnect: true});
+    var rSjs = new sharejs.Connection(rSocket);
+    var rDoc = rSjs.get('origDocuments', id);
+    $scope.right = {rDoc: rDoc, rSjs: rSjs}
+    
+    rDoc.subscribe()
+
+    rDoc.whenReady(function() {
+      // console.log('rDoc ready')
+      if (!rDoc.type) {
+        rDoc.create('text')
+        // console.log('created')
+      }
+      
+      rDoc.subscribe(function(err) {
+        // console.log('rDoc subscribed: ',rDoc)
+
+        //if doc is new, set value based on GH master so we can update origDocuments collection
+
+        // var newRight = rDoc.getSnapshot()==='' ? CodeMirror.Doc('testing some stuff','javascript') : CodeMirror.Doc('testing some stuff','javascript')
+        // console.log('newRight value: ',newRight.getValue())
+
+        // $scope.CM.rightOriginal().swapDoc(newRight)
+        // console.log('rightOriginal value: ',$scope.CM.rightOriginal().getValue())
+
+        rDoc.attachCodeMirror($scope.CM.rightOriginal())
+        // console.log('rDoc attached: ',rDoc)
+
+        if(rDoc.getSnapshot()==='') {
+          $scope.CM.rightOriginal().setValue(data)
+          // console.log('should be rDoc value: ',$scope.CM.rightOriginal().getValue())
+        }
+
+      })
+    })
+    
+  }
+
+  var updateRightOrigValue = function($scope, url, id) {
+    // console.log('update: ',url,id)
+    //just set value of rightOrig
+    return $http ({
+      method:'POST',
+      url: '/api/files',
+      data: {
+        url: url,
+        fileId: id
+      }
+    })
+    .then (function (data) {
+      console.log(data)
+      $scope.CM.rightOriginal().setValue(data.data.file)
+    });    
+  }
+
   var resetCM = function($scope) {
     // console.log('reset entered')
     if($scope.share) {
       $scope.share.doc.unsubscribe()
       $scope.share.sjs.disconnect()
+      $scope.right.rDoc.unsubscribe()
+      $scope.right.rSjs.disconnect()
       $scope.CM.editor().detachShareJsDoc()
+      $scope.CM.rightOriginal().detachShareJsDoc()
     }
 
     $scope.CM.rightOriginal().setValue('')
@@ -111,14 +178,13 @@ angular.module('codeColab.services', [])
       $scope.share.doc.unsubscribe()
       $scope.share.sjs.disconnect()
       $scope.CM.editor().detachShareJsDoc()
+      //add stuff for other connection and rightOriginal() here
     }
 
     var socket = new BCSocket(null, {reconnect: true});
-    // console.log('socket',socket)
     var sjs = new sharejs.Connection(socket);
     var doc = sjs.get('documents', id);
 
-    // console.log('doc',doc)
     doc.subscribe()
 
     doc.whenReady(function() {
@@ -137,7 +203,7 @@ angular.module('codeColab.services', [])
         // $scope.CM.editor().setValue(newEditor.getValue())
         $scope.CM.editor().swapDoc(newEditor)
 
-        $scope.CM.rightOriginal().setValue(data);
+        // $scope.CM.rightOriginal().setValue(data);
         doc.attachCodeMirror($scope.CM.editor())
 
         // probably some more efficient way to do this, but it works for now - if doc exists in
@@ -173,11 +239,13 @@ angular.module('codeColab.services', [])
     $scope.share = {sjs:sjs,doc:doc}
   }
 
-    var loadFile = function ($scope, url, id, path) {
+  var loadFile = function ($scope, url, id, path) {
     this.fileUrl = url;
     this.fileId = id;
     this.filePath = path;
     this.path = path
+    globalUrl = url
+    globalId = id
     var that = this;
 
     return $http ({
@@ -191,6 +259,7 @@ angular.module('codeColab.services', [])
     .then (function (data) {
       that.fileSha = data.data.fileSha;
       loadShare($scope, id, data.data.file)
+      resetRightOrig($scope, id, data.data.file)
     });
   }
 
@@ -236,7 +305,9 @@ angular.module('codeColab.services', [])
         bootbox.alert("Merge Successful")
       }
       $scope.saveRepo({name: $scope.selected})
-      // that.loadFile($scope, that.fileUrl, that.fileId , that.filePath)
+      // that.loadFile($scope, this.fileUrl, this.fileId , this.filePath)
+      console.log('merge: ',globalUrl, globalId)
+      updateRightOrigValue($scope, globalUrl, globalId)
     })
   }
 
@@ -256,7 +327,9 @@ angular.module('codeColab.services', [])
     loadFile: loadFile,
     deployApp: deployApp,
     checkName: checkName,
-    mergeBranch: mergeBranch
+    mergeBranch: mergeBranch,
+    resetRightOrig: resetRightOrig,
+    updateRightOrigValue: updateRightOrigValue
   }
 })
 
