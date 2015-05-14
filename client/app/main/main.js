@@ -32,9 +32,9 @@ angular.module('codeColab.main', [])
   }
 
   $scope.saveRepo = function(repo) {
+    Share.resetCM($scope)
     $scope.selected = repo.name;
     localStorage.repo = repo.name
-    Share.resetCM($scope)
     // FileStructDo.getTree(repo)
     if (!$scope.ref) {
       var branch = 'master'

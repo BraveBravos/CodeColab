@@ -144,6 +144,13 @@ angular.module('codeColab.services', [])
 
   var updateRightOrigValue = function($scope) {
     console.log('selected: ',$scope.selected,globalPath)
+    
+    if($scope.right) {
+      $scope.right.rDoc.unsubscribe()
+      $scope.right.rSjs.disconnect()
+      $scope.CM.rightOriginal().detachShareJsDoc()
+    }
+
     //just set value of rightOrig
     return $http ({
       method:'POST',
@@ -155,7 +162,9 @@ angular.module('codeColab.services', [])
     })
     .then (function (data) {
       console.log(data)
-      $scope.CM.rightOriginal().setValue(data.data.file)
+      var newRight = CodeMirror.Doc(data.data.file,'javascript')
+      // $scope.CM.rightOriginal().setValue(data.data.file)
+      $scope.CM.rightOriginal().swapDoc(newRight)
     });
   }
 
@@ -170,11 +179,14 @@ angular.module('codeColab.services', [])
       $scope.CM.rightOriginal().detachShareJsDoc()
     }
 
-    $scope.CM.rightOriginal().setValue('')
+    // $scope.CM.rightOriginal().setValue('')
 
     var placeholderDoc = CodeMirror.Doc('Select a file to start editing.  You will make your changes in this editor.','javascript')
     $scope.CM.editor().swapDoc(placeholderDoc)
     $scope.CM.editor().setOption('readOnly', true)
+
+    var placeholderRight = CodeMirror.Doc('This will display the original text.', 'javascript')
+    $scope.CM.rightOriginal().swapDoc(placeholderRight)
 
   }
 
