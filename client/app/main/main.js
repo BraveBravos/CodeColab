@@ -17,7 +17,6 @@ angular.module('codeColab.main', [])
   $scope.createBranch = function(){
     //save ref and sha to use in commit
     Share.createBranch($scope.selected).then(function(branch) {
-      console.log("Got branch info:", branch)
       $scope.ref = branch.data.ref;
       $scope.sha = branch.data.sha;
     })

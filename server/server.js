@@ -166,7 +166,6 @@ app.post ('/api/orgs/repos', function (req, res) {
 
 app.post('/api/files', function (req, res) {
   var fileId = req.body.fileId;
-  console.log('filereq', fileId)
   request ({
     url: req.body.url+'?access_token='+req.session.token,
     headers: {'User-Agent': req.session.passport.user[0].username}
@@ -221,7 +220,6 @@ app.post ('/api/fileStruct/tree', function (req, res) {
   },
   function (err, resp, body) {
     var data = JSON.parse(body);
-    console.log('tree response', data)
     var sha = data.object.sha;
     req.session.treeSha = sha;
     var base = 'https://api.github.com/repos'
