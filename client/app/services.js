@@ -45,6 +45,7 @@ angular.module('codeColab.services', [])
       }
     })
     .then(function(branchInfo){
+      console.log('branchinfo', branchInfo)
       return branchInfo  //return ref and sha
     })
   }
@@ -232,8 +233,9 @@ angular.module('codeColab.services', [])
       }
     })
     .then (function(response) {
+      console.log('back', $scope.selected)
       $scope.saveRepo({name: $scope.selected})
-      that.loadFile($scope, this.fileUrl, this.fileId , this.filePath)
+      that.loadFile($scope, that.fileUrl, that.fileId , that.filePath)
     })
   }
 

@@ -166,6 +166,7 @@ app.post ('/api/orgs/repos', function (req, res) {
 
 app.post('/api/files', function (req, res) {
   var fileId = req.body.fileId;
+  console.log('filereq', fileId)
   request ({
     url: req.body.url+'?access_token='+req.session.token,
     headers: {'User-Agent': req.session.passport.user[0].username}
@@ -351,7 +352,6 @@ app.post('/api/branch', function(req, res){
   );
 
 })
-    //three calls - create pull request, merge pull request, reload the repo
 
 app.post('/api/merge', function (req, res) {
   var repo = req.body.repo,
