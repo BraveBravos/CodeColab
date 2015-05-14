@@ -71,7 +71,11 @@ angular.module('codeColab.main', [])
         if (values === null) {
           return;
         }
-        Share.mergeBranch($scope.selected, values.pullTitle, values.comments, $scope)
+        bootbox.confirm("Are you sure you want to merge your changes into your master branch?", function (result) {
+          if (result) {
+            Share.mergeBranch($scope.selected, values.pullTitle, values.comments, $scope)
+          }
+        })
       }
     });
   }
