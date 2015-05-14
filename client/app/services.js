@@ -232,6 +232,9 @@ angular.module('codeColab.services', [])
       }
     })
     .then (function(response) {
+      if (response.status === 200) {
+        bootbox.alert("Merge Successful")
+      }
       $scope.saveRepo({name: $scope.selected})
       // that.loadFile($scope, that.fileUrl, that.fileId , that.filePath)
     })
