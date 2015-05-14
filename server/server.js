@@ -194,7 +194,7 @@ app.post('/api/getUpdatedFile', function (req, res) {
       var fileSha=JSON.parse(body).sha
       var file = atob(JSON.parse(body).content);
       // docs.sendDoc(db, file, fileId, fileSha);
-      res.status(200).send({file:file, fileSha:fileSha});      
+      res.status(200).send({file:file, fileSha:fileSha});
     })
 })
 
@@ -393,9 +393,12 @@ app.post('/api/merge', function (req, res) {
       console.log('merge err', err)
     } else {
       console.log('pull request is ...',body)
-     var sha = body.head.sha;
-     var num = body.number;
-      request({
+      if (body.errors) {
+        res.status(200).send(body.errors[0].message)
+      } else {
+        var sha = body.head.sha;
+        var num = body.number
+        request({
         method: 'PUT',
         url: 'https://api.github.com/repos/' + repo + '/pulls/' + num + '/merge?access_token='+ req.session.token,
         headers : {
@@ -406,16 +409,18 @@ app.post('/api/merge', function (req, res) {
           sha: sha
         }
       },
-      function (err, resp, body) {
-        request({
-          method: "GET",
-          url: "https://api.github.com/repos/" + repo + "/pulls/" + num + "/files?access_token=" + req.session.token,
-          headers: { 'User-Agent': user}
-        }, function (err, resp, body) {
-          console.log('files changed', JSON.parse(body))
-          res.sendStatus(200);
+        function (err, resp, body) {
+          console.log('second merge error', body)
+          request({
+            method: "GET",
+            url: "https://api.github.com/repos/" + repo + "/pulls/" + num + "/files?access_token=" + req.session.token,
+            headers: { 'User-Agent': user}
+          }, function (err, resp, body) {
+            console.log('files changed', JSON.parse(body))
+            res.sendStatus(200);
+          })
         })
-      })
+      }
     }
   })
 })
