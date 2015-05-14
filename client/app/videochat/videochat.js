@@ -25,6 +25,8 @@ $scope.$watch('selectRepo', function(){
     CHANNEL_ID = $scope.selectRepo.name;
     CHANNEL_ID = CHANNEL_ID.replace("/","")
     connection.channel = CHANNEL_ID;
+    ctrlJoin.className = 'shown';
+    ctrlLeave.className = 'hidden';
   }
 });
 
@@ -36,6 +38,7 @@ var remoteMediaStreams = document.getElementById('remote-media-streams');
 var localMediaStream = document.getElementById('local-media-stream');
 var ctrlJoin = document.getElementById('setup-new-meeting');
 var ctrlLeave = document.getElementById('leave-current-meeting');
+var locMedStream = null;
 
 connection.session = {
     audio: true,
@@ -46,7 +49,8 @@ connection.onstream = function(e) {
     console.log('connection.onstream e = ',e);
     if(e.type === 'local'){
       localMediaStream.insertBefore(e.mediaElement, localMediaStream.firstChild);
-       e.mediaElement.className = 'my-video';
+      locMedStream = e.stream;
+      e.mediaElement.className = 'my-video';
     }else if(e.type === 'remote'){
       remoteMediaStreams.insertBefore(e.mediaElement, remoteMediaStreams.firstChild);
       e.mediaElement.className = 'their-video';
@@ -142,6 +146,7 @@ document.getElementById('leave-current-meeting').onclick = function(){
   connection.leave();
   connection.close();
   connection.disconnect();
+  locMedStream.stop();
   ctrlJoin.className = 'shown';
   ctrlLeave.className = 'hidden';
 }
