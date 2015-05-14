@@ -79,7 +79,6 @@ html, body {
 }
 
 .navbar {
-  /*margin-bottom: 5px;*/
   height: 25px;
 }
 
@@ -110,8 +109,12 @@ html, body {
 
 .tree {
   margin-top: 20px;
+  color: white;
 }
 
+.tree > p {
+  padding-left: 20px;
+}
 
 .herokulogin, .fa-code-fork {
   max-height: 30px;

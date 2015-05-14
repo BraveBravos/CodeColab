@@ -50,7 +50,6 @@ angular.module('codeColab.fileStruct', [])
 
     })
 
-  // fileStructCtrl.toggleSpinner()
   var results = []
 
   // parses tree.path into a node label when node is not a "top"
@@ -94,16 +93,11 @@ angular.module('codeColab.fileStruct', [])
 
 
 .controller('fileStructCtrl', function ($http, $scope, Share){
-  // $scope.spinner = $scope.$parent.spinner
 
   $scope.loadFile = function(file){
     // $scope.currentFile = file
     Share.loadFile($scope.$parent,file.url, file.id, file.fullPath);
   }
-
-  // $scope.toggleSpinner = function(){
-  //   $scope.spinner = FileStructDo.toggleSpinner($scope.spinner)
-  // }
 
 })
 
