@@ -4,7 +4,7 @@
   /*background-color: gray;*/
   /*position: absolute;*/
   position: fixed;
-  width: 190px;
+  width: 250px;
   bottom:4px;
   left:5px;
   color: white;
@@ -20,7 +20,7 @@
   
   overflow: scroll;
   
-  width: 190px;
+  width: 250px;
   bottom:4px;
 }
 
@@ -62,21 +62,25 @@
   position: static;
   display:block;
   bottom:20px;
-  width: 190px;
+  width: 240px;
+  margin-left: auto;
+  margin-right: auto;
  
   /*background-color: white;*/
   text-align: center;
 }
 
 .their-video {
-  width: 190px;
+  width: 240px;
   /*background-color: gray;*/
   text-align: center;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 #setup-new-meeting {
   display:inline-block;
-  width:190px;
+  width:250px;
   position: fixed;
   text-align: center;
   left:10px;
@@ -86,11 +90,10 @@
 
 #leave-current-meeting {
   display:inline-block;
-  width:190px;
+  width:250px;
   position: fixed;
   text-align: center;
   bottom:2px;
-  left:10px;
   cursor: pointer;
 }
 
