@@ -54,9 +54,6 @@
     <!-- /.container -->
 </nav>
 
-<div class='spinner' ng-show='textSpinner'>
-  <i class="fa fa-spinner fa-pulse fa-5x"></i>
-</div>
 
 <div class = 'CodeMirror-fullscreen'>
 
@@ -67,8 +64,10 @@
 
   <ng-include src="videochat.url"></ng-include>
 
-  <div id="area">
-    
+  <div id="area"> 
+    <div class='spinner' ng-show='textSpinner'>
+      <i class="fa fa-spinner fa-pulse fa-5x"></i>
+    </div>
   </div>
 
 </div>
