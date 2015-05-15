@@ -22,7 +22,6 @@
 	</div>
 */
 
-
 'use strict';
 
 angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', function( $compile ) {
