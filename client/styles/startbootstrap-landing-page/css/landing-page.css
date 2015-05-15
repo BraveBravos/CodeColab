@@ -215,9 +215,12 @@ p.copyright {
 
 .blurb > h3 {
     text-align: center;
+    font-weight: 400;
+    color: #88c3e0;
+
 }
 
-.description {
+.description, .description2 {
     width: 40%;
     margin-left:53%;
     text-align: justify;
@@ -225,11 +228,20 @@ p.copyright {
     font-size: 1.1em;
     font-weight: 500;
     line-height: 25px;
+    /*text-align: center;*/
+}
+
+.description2 {
+    text-align: center;
+    line-height: 20px;
 }
 
 .mainbody {
     background-color: #607D8B;
 }
 
+.about-section-heading-spacer {
+    text-align: center;
+}
 
 
