@@ -209,18 +209,14 @@ p.copyright {
     float: left;
 }
 
-.blurb {
-    color: gray;
-}
-
 .blurb > h3 {
     text-align: center;
     font-weight: 400;
     color: #88c3e0;
-
 }
 
 .description, .description2 {
+    color: gray;
     width: 40%;
     margin-left:53%;
     text-align: justify;
@@ -228,7 +224,6 @@ p.copyright {
     font-size: 1.1em;
     font-weight: 500;
     line-height: 25px;
-    /*text-align: center;*/
 }
 
 .description2 {
