@@ -45,7 +45,6 @@ angular.module('codeColab.services', [])
           url: '/api/branch/' + repo
       })
       .then (function(exists){
-        console.log('exists', exists)
         if (exists.data === false) {
           return $http({
             method: 'POST',
@@ -70,7 +69,7 @@ angular.module('codeColab.services', [])
         path = this.path,
         repo = repo,
         sha = this.fileSha;
-        console.log('commit',path,sha)
+        // console.log('commit',path,sha)
     // function utf8_to_b64(str) {
     //   return window.btoa(unescape(encodeURIComponent(str)));
     // }
@@ -107,7 +106,7 @@ angular.module('codeColab.services', [])
   }
 
   var resetRightOrig = function($scope, id, data) {
-    console.log('right: ',id)
+    // console.log('right: ',id)
     if($scope.right) {
       $scope.right.rDoc.unsubscribe()
       $scope.right.rSjs.disconnect()
@@ -156,7 +155,6 @@ angular.module('codeColab.services', [])
   }
 
   var updateRightOrigValue = function($scope) {
-    console.log('selected: ',$scope.selected,globalPath)
 
     if($scope.right) {
       $scope.right.rDoc.unsubscribe()
@@ -204,7 +202,6 @@ angular.module('codeColab.services', [])
   }
 
   var loadShare = function ($scope, id, data) {
-    console.log('loadShare: ',id)
     // this fires if we already have an existing doc and connection
     if($scope.share){
       $scope.share.doc.unsubscribe()
@@ -286,7 +283,6 @@ angular.module('codeColab.services', [])
     globalUrl = url
     globalId = id
     globalPath = path
-    console.log('globalPath: ',globalPath)
     var that = this;
 
     return $http ({
@@ -306,9 +302,6 @@ angular.module('codeColab.services', [])
   }
 
   var deployApp = function($scope, name){
-    console.log('ths', this)
-    console.log('deploying', name)
-    console.log('repo', localStorage.repo)
     var repo = localStorage.repo;
     return $http({
       method: 'POST',
@@ -355,7 +348,6 @@ angular.module('codeColab.services', [])
           bootbox.alert("Merge Successful")
           // $scope.saveRepo({name: $scope.selected})
           // that.loadFile($scope, this.fileUrl, this.fileId , this.filePath)
-          console.log('merge: ',globalUrl, globalId)
           updateRightOrigValue($scope, globalUrl, globalId)
         }
       }
