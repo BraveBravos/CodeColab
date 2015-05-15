@@ -8,14 +8,23 @@ module.exports = function(config){
     files: [
       // angular source
       'client/bower_components/angular/angular.js',
-      'client/bower_components/angular-route/angular-route.js',
       'client/bower_components/angular-mocks/angular-mocks.js',
-      'client/bower_components/jquery/dist/jquery.min.js',
+      'client/bower_components/angular-route/angular-route.js',
+      'client/bower_components/jquery/dist/jquery.js',
+      'client/bower_components/bootstrap/dist/js/bootstrap.js',
+      'client/bootbox/bootbox.js',
+      'client/codemirror/codemirror.js',
 
       // our app files
       'client/app/app.js',
+      'client/app/bcsocket.js',
       'client/app/services.js',
+      'client/app/deploy/deploy.js',
+      'client/app/main/fileStruct.js',
+      'client/app/main/main.js',
       'client/app/main/*.js',
+      'client/app/main/angular.treeview.js',
+      'client/app/videochat/*.js',
 
       // spec files
       'specs/*.js'
@@ -56,14 +65,14 @@ module.exports = function(config){
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers : ['Chrome'],
-    // browsers : ['PhantomJS'],
+    // browsers : ['Chrome'],
+    browsers : ['PhantomJS'],
 
     singleRun : true,
 
     plugins : [
-            // 'karma-phantomjs-launcher',
-            'karma-chrome-launcher',
+            'karma-phantomjs-launcher',
+            // 'karma-chrome-launcher',
             'karma-jasmine',
             'karma-junit-reporter',
             'karma-nyan-reporter',
