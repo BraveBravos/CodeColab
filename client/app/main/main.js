@@ -11,6 +11,7 @@ angular.module('codeColab.main', [])
   $scope.textSpinner = false;
   $scope.commitMade = false;
   $scope.fileLoaded = false;
+  $scope.reposLoaded = false;
 
   //shows spinner for text editor when file loading
   $scope.editorWillLoad = function () {
