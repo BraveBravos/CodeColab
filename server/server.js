@@ -421,22 +421,23 @@ app.post('/api/merge', function (req, res) {
 })
 
 app.post('/api/files/newFile', function(req, res) {
-  console.log(req.session.username,req.body.repo,req.body.fullPath,req.session.token)
-  res.sendStatus(200)
-  // request.put({
-  //   url: 'https://api.github.com/repos/' + req.session.username + '/' + req.body.repo + '/contents/' + req.body.fullPath + '?access_token=' + req.session.token,
-  //   headers: {'User-Agent': req.session.username},
-  //   data: {
-  //    path: req.body.fullPath,
-  //    message: 'File created.',
-  //    content: '',
-  //    branch: 'CODECOLAB'
-  //   }
-  // }, 
-  //  function(err, resp, body) {
-  //    //will use response to get url and id of newly created file, and return it to our client-side function
-  //    res.send(JSON.parse(body))
-  // })
+  // console.log(req.session.username,req.body.repo,req.body.fullPath,req.session.token)
+  // res.sendStatus(200)
+  request.put({
+    url: 'https://api.github.com/repos/' + req.session.username + '/' + req.body.repo + '/contents/' + req.body.fullPath + '?access_token=' + req.session.token,
+    headers: {'User-Agent': req.session.username},
+    json: {
+      'path': req.body.fullPath,
+      'message': 'File created.',
+      'content': '',
+      'branch': 'CODECOLAB'
+    }
+  }, 
+   function(err, resp, body) {
+    console.log(body)
+     //will use response to get url and id of newly created file, and return it to our client-side function
+     res.send(body)
+  })
 })
 
 app.use(browserChannel( function(client) {

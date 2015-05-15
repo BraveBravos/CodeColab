@@ -96,11 +96,34 @@ angular.module('codeColab.fileStruct', [])
 .controller('fileStructCtrl', function ($http, $scope, Share){
 
   $scope.loadFile = function(file){
+    console.log('loadFile: ',file)
     $scope.$parent.editorWillLoad()
     Share.loadFile($scope.$parent,file.url, file.id, file.fullPath);
   }
 
-  $scope.addFile = function(file){
+  $scope.addFile = function(file,arr){
+    // console.log('addFile tree: ',$scope.tree)
+    // console.log('selected repo: ',$scope.selected, $scope.selected.slice($scope.selected.lastIndexOf('/')+1), $scope.selected.slice(0,$scope.selected.lastIndexOf('/')))
+    return $http({
+      method: 'POST',
+      url: '/api/files/newFile',
+      data: {
+        repo: $scope.selected.slice($scope.selected.lastIndexOf('/')+1),
+        owner: $scope.selected.slice(0,$scope.selected.lastIndexOf('/')),
+        fullPath : file.fullPath
+      }
+    })
+    .then(function(data) {
+      console.log(data)
+      //set file.id and file.url here - data.data.whatever
+      file.id = data.data.content.sha
+      file.url = data.data.content.git_url
+      arr.push(file)
+      console.log(file)
+    })
+  }
+
+  $scope.addFolder = function(file,arr){
     // file.testing=5
     // console.log('addFile tree: ',$scope.tree)
     // console.log('selected repo: ',$scope.selected, $scope.selected.slice($scope.selected.lastIndexOf('/')+1), $scope.selected.slice(0,$scope.selected.lastIndexOf('/')))
@@ -114,7 +137,12 @@ angular.module('codeColab.fileStruct', [])
       }
     })
     .then(function(data) {
-      //set file.id and file.url here
+      console.log(data)
+      //set file.id and file.url here - data.data.whatever
+      file.id=5555555
+      file.url='test.com'
+      arr.push(file)
+      console.log(file)
     })
   }
 

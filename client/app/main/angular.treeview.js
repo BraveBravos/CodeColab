@@ -70,6 +70,7 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 			  '</ul>'+
 			'</div>'
 
+			//need to change this based on whether node is file or folder, top or not - probably use ng-show
 			var menuEndDiv = '<div class="dropdown position-fixed" id="{{node.'+nodeId+'}}-menu" style="position:fixed">'+
 			  '<ul class="dropdown-menu" role="menu">'+
 			    '<li>'+
@@ -80,7 +81,7 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 			    '</li>'+
 			    '<li>'+
 			    	'<a class="pointer" role="menuitem" tabindex="2"'+
-			    		'ng-click="panel.highlight = false">'+
+			    		'ng-click="'+treeId+'.newFolder(node)">'+
 			    			'Add subfolder in this folder'+
 			    	'</a>'+
 			    '</li>'+
@@ -92,22 +93,15 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 			    '</li>'+
 			    '<li>'+
 			      '<a class="pointer" role="menuitem" tabindex="4" '+
-			         'ng-click="panel.expanded = false"> '+
+			         'ng-click="'+treeId+'.newFolder()">'+
 			        'Add folder in root folder'+
 			      '</a>' +
 			    '</li>'+
-			    // '<li>'+
-			    //   '<a class="pointer" role="menuitem" tabindex="5"'+
-			    //     'ng-click="addPanel()">'+
-			    //     'Add a panel'+
-			    //   '</a>'+
-			    // '</li>'+
 			    '<li>'+
-			      '<a href="https://github.com/ianwalter/ng-context-menu"'+
-			        'role="menuitem"'+
-			        'tabindex="-1">'+
-			        'ng-context-menu on GitHub'+
-			      '</a>'+
+			      '<a class="pointer" role="menuitem" tabindex="5" '+
+			         'ng-click="'+treeId+'.deleteFile(node)">'+
+			        'Delete {{node.'+nodeLabel+'}}'+
+			      '</a>' +
 			    '</li>'+
 			  '</ul>'+
 			'</div>'
@@ -161,7 +155,7 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 							scope.loadFile(scope[treeId].currentNode)
 						}
 					};
-
+					//need to set the treeId
 					//newFile function
 					scope[treeId].newFile = scope[treeId].newFile || function(node) {
 						var fileName = prompt('Enter the name of your new file (including the file extension, such as .js or .html).')
@@ -174,8 +168,8 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 								url:'',
 								id:'',
 							}
-
-							node.children.push(newFile)
+							scope.addFile(newFile,node.children)
+							// node.children.push(newFile)
 						} else {
 							var newFile = {
 								children: [],
@@ -187,8 +181,55 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 								top:true,
 								type:'file'
 							}
+							scope.addFile(newFile,scope.tree)
+							// scope.tree.push(newFile)
 
-							scope.tree.push(newFile)
+						}
+					}
+
+					//newFolder function
+					scope[treeId].newFolder = scope[treeId].newFolder || function(node) {
+						var folderName = prompt('Enter the name of your new folder.')
+						if(node) {
+							var placeholderFile = {
+								children: [],
+								fullPath: node.fullPath+'/'+folderName + '/placeholder.txt',
+								label:'placeholder.txt',
+								//probably need to update url and id after GitHub API call
+								url:'',
+								id:''
+							}
+
+							var newFolder = {
+								children:[placeholderFile],
+								fullPath: node.fullPath+'/'+folderName,
+								label:folderName,
+								url:'',
+								id:'',
+								type:'folder'
+							}
+							node.children.push(newFolder)
+						} else {
+							var placeholderFile = {
+								children: [],
+								fullPath: folderName + '/placeholder.txt',
+								label:'placeholder.txt',
+								//probably need to update url and id after GitHub API call
+								url:'',
+								id:''
+							}
+
+							var newFolder = {
+								children:[placeholderFile],
+								fullPath: folderName,
+								label:folderName,
+								url:'',
+								id:'',
+								top:true,
+								type:'folder'
+							}
+
+							scope.tree.push(newFolder)
 
 						}
 					}
