@@ -1,7 +1,7 @@
 angular.module('codeColab.services', [])
 
 
-.factory('Share', function ($http, $window, $location) {
+.factory('Share', function ($http, $window, $location, $q) {
   var path;
   var ce;
   var fileSha;
@@ -39,17 +39,29 @@ angular.module('codeColab.services', [])
   }
 
   var createBranch = function(repo){
-    // console.log('REPO',repo);
-    return $http({
-      method: 'POST',
-      url: '/api/branch',
-      data: {
-        repo: repo
-      }
-    })
-    .then(function(branchInfo){
-      return branchInfo  //return ref and sha
-    })
+    var deferred = $q.defer();
+      deferred.resolve( $http({
+          method: 'GET',
+          url: '/api/branch/' + repo
+      })
+      .then (function(exists){
+        console.log('exists', exists)
+        if (exists.data === false) {
+          return $http({
+            method: 'POST',
+            url: '/api/branch',
+            data: {
+              repo: repo
+            }
+          })
+          .then(function(branchInfo){
+            return(true)  //return ref and sha
+          })
+        } else {
+          return(false);
+        }
+      }))
+      return deferred.promise;
   }
 
   var commit = function(message, repo, $scope){
