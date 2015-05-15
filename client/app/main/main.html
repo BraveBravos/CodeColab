@@ -26,11 +26,11 @@
           </div>
 
           <form class="navbar-form navbar-left" role="search">
-          <button class="btn btn-default" ng-show='check()' ng-click="commitModal()" >Make Commit</button>
+          <button class="btn btn-default" ng-show='fileLoaded' ng-click="commitModal()" >Make Commit</button>
           </form>
 
           <ul class="nav navbar-nav navbar-right">
-            <li>
+            <li ng-show = "commitMade">
               <a ng-click="mergeModal()">
                 <i class="mergeButton fa fa-code-fork fa-2x"></i>
                 Merge Branch
@@ -64,7 +64,7 @@
 
   <ng-include src="videochat.url"></ng-include>
 
-  <div id="area"> 
+  <div id="area">
     <div class='spinner' ng-show='textSpinner'>
       <i class="fa fa-spinner fa-pulse fa-5x"></i>
     </div>

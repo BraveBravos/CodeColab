@@ -1,7 +1,7 @@
 // var codeColab = angular.module('codeColab.main', [])
 angular.module('codeColab.main', [])
 
-.controller('codeCtrl', function ($scope, $location, Share, FileStructDo) {
+.controller('codeCtrl', function ($scope, $location, Share, FileStructDo, $q) {
   $scope.fileStruct = {url: "app/main/fileStruct.html"};
   $scope.videochat = {url : "app/videochat/videochat.html"};
   $scope.modalShown = false;
@@ -9,6 +9,8 @@ angular.module('codeColab.main', [])
   $scope.selectRepo = "";
   $scope.spinner = false;
   $scope.textSpinner = false;
+  $scope.commitMade = false;
+  $scope.fileLoaded = false;
 
   $scope.editorWillLoad = function () {
     $scope.textSpinner = true
@@ -23,33 +25,15 @@ angular.module('codeColab.main', [])
     Share.loadCM($scope);
   }
 
-  $scope.createBranch = function(){
-    //save ref and sha to use in commit
-    Share.createBranch($scope.selected).then(function(branch) {
-      $scope.ref = branch.data.ref;
-      $scope.sha = branch.data.sha;
-    })
-  }
-
   $scope.saveRepo = function(repo) {
+    $scope.fileLoaded = false;
     Share.resetCM($scope)
     $scope.selected = repo.name;
-    localStorage.repo = repo.name
-    // FileStructDo.getTree(repo)
-    if (!$scope.ref) {
-      var branch = 'master'
-    } else {
-      var branch = 'CODECOLAB'
-    }
-    FileStructDo.getTree($scope, repo, branch)
-
-    if(!$scope.ref) {
-      $scope.createBranch()
-    }
-  }
-
-  $scope.check = function(){
-    return !!($scope.selected)
+    localStorage.repo = repo.name;
+    var promise = Share.createBranch($scope.selected);
+    promise.then(function(result) {
+      FileStructDo.getTree($scope, repo, 'CODECOLAB')
+    });
   }
 
   $scope.mergeModal = function(){

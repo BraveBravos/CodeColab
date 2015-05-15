@@ -1,7 +1,7 @@
 angular.module('codeColab.services', [])
 
 
-.factory('Share', function ($http, $window, $location) {
+.factory('Share', function ($http, $window, $location, $q) {
   var path;
   var ce;
   var fileSha;
@@ -39,17 +39,28 @@ angular.module('codeColab.services', [])
   }
 
   var createBranch = function(repo){
-    // console.log('REPO',repo);
-    return $http({
-      method: 'POST',
-      url: '/api/branch',
-      data: {
-        repo: repo
-      }
-    })
-    .then(function(branchInfo){
-      return branchInfo  //return ref and sha
-    })
+    var deferred = $q.defer();
+      deferred.resolve( $http({
+          method: 'GET',
+          url: '/api/branch/' + repo
+      })
+      .then (function(exists){
+        if (exists.data === false) {
+          return $http({
+            method: 'POST',
+            url: '/api/branch',
+            data: {
+              repo: repo
+            }
+          })
+          .then(function(branchInfo){
+            return(true)  //return ref and sha
+          })
+        } else {
+          return(false);
+        }
+      }))
+      return deferred.promise;
   }
 
   var commit = function(message, repo, $scope){
@@ -58,7 +69,7 @@ angular.module('codeColab.services', [])
         path = this.path,
         repo = repo,
         sha = this.fileSha;
-        console.log('commit',path,sha)
+        // console.log('commit',path,sha)
     // function utf8_to_b64(str) {
     //   return window.btoa(unescape(encodeURIComponent(str)));
     // }
@@ -77,6 +88,7 @@ angular.module('codeColab.services', [])
     .then(function(response){
       if (response.status === 200) {
         bootbox.alert("Commit Successful")
+        $scope.commitMade = true;
       }
     })
   }
@@ -94,7 +106,7 @@ angular.module('codeColab.services', [])
   }
 
   var resetRightOrig = function($scope, id, data) {
-    console.log('right: ',id)
+    // console.log('right: ',id)
     if($scope.right) {
       $scope.right.rDoc.unsubscribe()
       $scope.right.rSjs.disconnect()
@@ -143,8 +155,7 @@ angular.module('codeColab.services', [])
   }
 
   var updateRightOrigValue = function($scope) {
-    console.log('selected: ',$scope.selected,globalPath)
-    
+
     if($scope.right) {
       $scope.right.rDoc.unsubscribe()
       $scope.right.rSjs.disconnect()
@@ -191,7 +202,6 @@ angular.module('codeColab.services', [])
   }
 
   var loadShare = function ($scope, id, data) {
-    console.log('loadShare: ',id)
     // this fires if we already have an existing doc and connection
     if($scope.share){
       $scope.share.doc.unsubscribe()
@@ -273,7 +283,6 @@ angular.module('codeColab.services', [])
     globalUrl = url
     globalId = id
     globalPath = path
-    console.log('globalPath: ',globalPath)
     var that = this;
 
     return $http ({
@@ -285,6 +294,7 @@ angular.module('codeColab.services', [])
       }
     })
     .then (function (data) {
+      $scope.$parent.fileLoaded = true;
       that.fileSha = data.data.fileSha;
       resetRightOrig($scope, id, data.data.file)
       // loadShare($scope, id, data.data.file)
@@ -292,9 +302,6 @@ angular.module('codeColab.services', [])
   }
 
   var deployApp = function($scope, name){
-    console.log('ths', this)
-    console.log('deploying', name)
-    console.log('repo', localStorage.repo)
     var repo = localStorage.repo;
     return $http({
       method: 'POST',
@@ -341,7 +348,6 @@ angular.module('codeColab.services', [])
           bootbox.alert("Merge Successful")
           // $scope.saveRepo({name: $scope.selected})
           // that.loadFile($scope, this.fileUrl, this.fileId , this.filePath)
-          console.log('merge: ',globalUrl, globalId)
           updateRightOrigValue($scope, globalUrl, globalId)
         }
       }

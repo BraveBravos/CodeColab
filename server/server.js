@@ -31,6 +31,7 @@ var express = require('express'),
     }),
     request = require('request'),
     github = require('octonode'),
+    url = require('url'),
     sess;
 
 
@@ -233,13 +234,14 @@ app.post ('/api/fileStruct/tree', function (req, res) {
   var repo = req.body.repo[1];
   var branch = req.body.branch;
   // req.session.repo = repo;
-  console.log("Making request:", 'https://api.github.com/repos/' +owner+ '/' +repo+ '/git/refs/heads/master?access_token='+ req.session.token)
+  console.log("Making request:", 'https://api.github.com/repos/' +owner+ '/' +repo+ '/git/refs/heads/'+branch+'/?access_token='+ req.session.token)
   request({
     url: 'https://api.github.com/repos/' +owner+ '/' +repo+ '/git/refs/heads/' + branch+'?access_token='+ req.session.token,
     headers: {'User-Agent': req.session.passport.user[0].username}
   },
   function (err, resp, body) {
     var data = JSON.parse(body);
+    console.log('tree response', data)
     var sha = data.object.sha;
     req.session.treeSha = sha;
     var base = 'https://api.github.com/repos'
@@ -324,6 +326,24 @@ app.get('/logout', function (req, res){
   res.redirect('/');
 })
 
+app.get('/api/branch/*', function(req, res) {
+  var repo = req.url.split('/').slice(3).join('/');
+  request({
+    url: 'https://api.github.com/repos/'+repo+'/branches?access_token=' + req.session.token,
+    headers: {'User-Agent': req.session.username}
+  },
+    function(err, resp, body) {
+      var exists= false;
+      var branches = JSON.parse(body);
+      branches.forEach(function(branch) {
+        if (branch.name==="CODECOLAB") {
+          exists ='true';
+        }
+      })
+      res.send(exists);
+    })
+})
+
 app.post('/api/branch', function(req, res){
   var owner=req.session.username;
   var repo = req.body.repo;
@@ -335,41 +355,33 @@ app.post('/api/branch', function(req, res){
   },
     function (err, resp, body) {
       if (err) console.log(err);
-
       // console.log('INSIDE GIT BRANCH')
       var ref = JSON.parse(body).ref,
           sha = JSON.parse(body).object.sha;
+      console.log('branch req ref', ref)
+      console.log('branch req sha', sha)
 
-      var send = JSON.stringify({
-        ref: 'refs/heads/'+'CODECOLAB', //the new branch name
-        sha: sha
-      });
-
+      // var send = JSON.stringify({
+      //   ref: 'refs/heads/'+'CODECOLAB', //the new branch name
+      //   sha: sha
+      // });
+  console.log('post going to https://api.github.com/repos/' + repo + '/git/refs?access_token='+ req.session.token)
+   console.log('headers', 'User-Agent', owner, 'Content-Type', 'application/json')
+   console.log('body', 'sha', sha)
       request.post({
         url: 'https://api.github.com/repos/' + repo + '/git/refs?access_token='+ req.session.token,
         headers: {'User-Agent': owner, 'Content-Type': 'application/json'},
-        body: send
+        json: {
+          ref: "refs/heads/CODECOLAB",
+          sha: sha
+        }
       },
         function(err, resp, body){
-          if (resp.statusCode === 422) { //branch exists
-            console.log('Entering existing CODECOLAB branch')
-            request.get({
-              url: 'https://api.github.com/repos/' + repo +'/git/refs/heads/CODECOLAB?access_token='+ req.session.token,
-              headers: {'User-Agent': owner}
-            },
-            function(err, resp, body){
-              res.send(body)
-            })
-          } else {
-            console.log('New Branch Created!', body)
-            res.send(body) //send back to client to use for commits
-          }
-        }
-      )
-    }
-  );
-
-})
+          console.log('New Branch Created!', body)
+          res.send(body) //send back to client to use for commits
+        })
+      })
+    });
 
 app.post('/api/merge', function (req, res) {
   var repo = req.body.repo,
