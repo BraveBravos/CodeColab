@@ -321,8 +321,19 @@ angular.module('codeColab.services', [])
       }
       var appURL ='https://'+name+'.herokuapp.com';
       if (name!== 'taken') {
-        $location.path('/');
-        $window.open(appURL)
+        return $http({
+          method: "GET",
+          url: 'api/deploy/'+ name
+        })
+        .then (function (response){
+          var re = /\n/g;
+          var log = response.data.replace(re, '<br>')
+          bootbox.alert("Heroku Build Log<br>"+ log, function () {
+            return;
+          });
+        })
+        // $location.path('/');
+        // $window.open(appURL)
       }
     })
   }
