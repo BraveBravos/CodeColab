@@ -157,8 +157,11 @@ app.post ('/api/orgs/repos', function (req, res) {
     headers: {'User-Agent': req.session.passport.user[0].username}
   },
     function (err, resp, body) {
-      var data = JSON.parse(body).map(function (repo) {
-        return {name: repo.full_name, id: repo.id};
+      var data = [];
+        JSON.parse(body).forEach(function (repo) {
+        if (repo.permissions.push === true) {
+          data.push({name: repo.full_name, id: repo.id});
+        }
       });
       res.status(200).json(data)
     });
