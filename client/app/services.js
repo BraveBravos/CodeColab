@@ -32,6 +32,7 @@ angular.module('codeColab.services', [])
             orgRepos.data.forEach(function (orgRepo) {
               $scope.repos.push(orgRepo);
             })
+            $scope.reposLoaded = true;
           })
         })
       })
