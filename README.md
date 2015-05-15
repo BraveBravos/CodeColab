@@ -1,7 +1,6 @@
 [![Build Status](https://travis-ci.org/BraveBravos/CodeColab.svg?branch=master)](https://travis-ci.org/BraveBravos/CodeColab)
 
 
-
 ## Team Members
 
   - __Product Owner__: [phillydorn](https://github.com/phillydorn)
@@ -17,14 +16,24 @@
 
 ## Usage
 
-> Create an account, collaborate, blah blah fill this in....
+- Sign in with GitHub
+- Select a repository to work on
+- Code / video chat!
+- Commit
+- Merge branch/changes in with 'merge' button
+- Deploy your application with 'deploy' button
 
-## Requirements
+
+## Tech Stack
 
 - Node
 - Express
 - Angular
 - MongoDB
-- MySQL
 
 ## Contributing
+
+See [CONTRIBUTING.md](https://github.com/unexpected-lion/ourglass/blob/master/contributing.md) for contribution guidelines.
+
+
+
