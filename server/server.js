@@ -310,6 +310,10 @@ app.post('/api/deploy', function(req, res) {
 
 });
 
+app.get('/api/deploy/*', function (req, res) {
+
+})
+
 app.get('/auth/heroku/fail', function(req, res) {
   console.log('fail!')
 
