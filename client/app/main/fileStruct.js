@@ -2,14 +2,12 @@ angular.module('codeColab.fileStruct', [])
 
 .factory ('FileStructDo', function ($http){
 
-  //toggles the spinner while repo files are loading 
   var toggleSpinner = function(spinner){
     if (spinner === false) spinner = true
     else { spinner = false };
     return spinner;
   }
 
-  //gets file/folder names from GitHub for the selected repository
   var getTree = function ($scope, repoName, branch) {
     $scope.spinner = this.toggleSpinner($scope.spinner)
     var that = this;
@@ -32,7 +30,7 @@ angular.module('codeColab.fileStruct', [])
       bigTree.forEach(function(item) {
 
       if (item.type === 'tree' || item.path.lastIndexOf('/')===-1) {
-        tree[item.path] = {top:true, fullPath: item.path, label:item.path, id:item.id, url:item.url, collapsed:true, children:[]}
+        tree[item.path] = {top:true, fullPath: item.path, label:item.path, id:item.sha, url:item.url, collapsed:true, children:[]}
       }
 
       var divider = item.path.lastIndexOf('/');
@@ -47,7 +45,7 @@ angular.module('codeColab.fileStruct', [])
       } else {
         var fullPath = item.path
         item.path=item.path.slice(divider+1)
-        tree[path].children.push({label:item.path, fullPath: fullPath, url:item.url, id:item.id, children:[]})
+        tree[path].children.push({label:item.path, fullPath: fullPath, url:item.url, id:item.sha, children:[]})
       }
 
     })
@@ -97,14 +95,35 @@ angular.module('codeColab.fileStruct', [])
 
 .controller('fileStructCtrl', function ($http, $scope, Share){
 
-  //load file to editor
   $scope.loadFile = function(file){
-    // console.log('loadFile: ',file)
+    console.log('loadFile: ',file)
     $scope.$parent.editorWillLoad()
     Share.loadFile($scope.$parent,file.url, file.id, file.fullPath);
   }
 
-  $scope.addFile = function(file){
+  $scope.addFile = function(file,arr){
+    // console.log('addFile tree: ',$scope.tree)
+    // console.log('selected repo: ',$scope.selected, $scope.selected.slice($scope.selected.lastIndexOf('/')+1), $scope.selected.slice(0,$scope.selected.lastIndexOf('/')))
+    return $http({
+      method: 'POST',
+      url: '/api/files/newFile',
+      data: {
+        repo: $scope.selected.slice($scope.selected.lastIndexOf('/')+1),
+        owner: $scope.selected.slice(0,$scope.selected.lastIndexOf('/')),
+        fullPath : file.fullPath
+      }
+    })
+    .then(function(data) {
+      console.log(data)
+      //set file.id and file.url here - data.data.whatever
+      file.id = data.data.content.sha
+      file.url = data.data.content.git_url
+      arr.push(file)
+      console.log(file)
+    })
+  }
+
+  $scope.addFolder = function(file,arr){
     // file.testing=5
     // console.log('addFile tree: ',$scope.tree)
     // console.log('selected repo: ',$scope.selected, $scope.selected.slice($scope.selected.lastIndexOf('/')+1), $scope.selected.slice(0,$scope.selected.lastIndexOf('/')))
@@ -118,7 +137,12 @@ angular.module('codeColab.fileStruct', [])
       }
     })
     .then(function(data) {
-      //set file.id and file.url here
+      console.log(data)
+      //set file.id and file.url here - data.data.whatever
+      file.id=5555555
+      file.url='test.com'
+      arr.push(file)
+      console.log(file)
     })
   }
 
