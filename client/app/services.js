@@ -326,7 +326,11 @@ angular.module('codeColab.services', [])
           url: 'api/deploy/'+ name
         })
         .then (function (response){
-          console.log(response)
+          var re = /\n/g;
+          var log = response.data.replace(re, '<br>')
+          bootbox.alert("Heroku Build Log<br>"+ log, function () {
+            return;
+          });
         })
         // $location.path('/');
         // $window.open(appURL)
