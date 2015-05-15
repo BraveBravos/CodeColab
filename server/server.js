@@ -31,8 +31,7 @@ var express = require('express'),
     }),
     request = require('request'),
     github = require('octonode'),
-    url = require('url'),
-    sess;
+    url = require('url');
 
 
 if (!process.env.CLIENT_ID) {
@@ -303,6 +302,10 @@ app.post('/api/deploy', function(req, res) {
           res.status(200).send({name: 'taken'})
         } else {
           var name = body.app.name;
+          if (!req.session.apps) {
+            req.session.apps = {};
+          }
+          req.session.apps[name] = body.id;
           res.status(200).send({name: name})
         }
       }
@@ -311,7 +314,55 @@ app.post('/api/deploy', function(req, res) {
 });
 
 app.get('/api/deploy/*', function (req, res) {
+  var name = req.url.split('/').slice(3).join('/');
+  var token = req.session.herokuToken;
+  var appId = req.session.apps[name];
 
+  function checkBuild () {
+    //Gets App setup info(including BuildID) from heroku for app name sent
+    request({
+      url: "https://api.heroku.com/app-setups/"+ appId,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/vnd.heroku+json; version=3',
+        'Authorization': 'Bearer '+ token
+      }
+    }, function (err, resp, body) {
+      //Gets build log for given buildID
+      console.log('first body', JSON.parse(body))
+        var buildId = JSON.parse(body).build.id;
+          console.log ("https://api.heroku.com/apps/"+name+"/builds/" + buildId + "/result")
+        if (buildId !==null) {
+          function successBuild() {
+            request({
+            url: "https://api.heroku.com/apps/"+name+"/builds/" + buildId + "/result",
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/vnd.heroku+json; version=3',
+              'Authorization': 'Bearer '+ token
+            }
+            }, function (err,resp, body) {
+                  console.log('successbody', JSON.parse(body))
+                if (JSON.parse(body).build.status === "pending" ){
+                  setTimeout(successBuild, 3000);
+                } else {
+                  var log = '';
+                  JSON.parse(body).lines.forEach(function(line) {
+                    log+=line.line;
+                  })
+                  res.send(log);
+                  // console.log(JSON.parse(body));
+                }
+              })
+            }
+            successBuild();
+          } else {
+        checkBuild();
+      }
+    })
+
+  }
+  setTimeout(checkBuild, 3000);
 })
 
 app.get('/auth/heroku/fail', function(req, res) {
