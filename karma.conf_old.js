@@ -10,10 +10,11 @@ module.exports = function(config){
       'client/bower_components/angular/angular.js',
       'client/bower_components/angular-mocks/angular-mocks.js',
       'client/bower_components/angular-route/angular-route.js',
-      'client/bower_components/jquery/dist/jquery.js',
-      'client/bower_components/bootstrap/dist/js/bootstrap.js',
-      'client/bootbox/bootbox.js',
+      'client/bower_components/jquery/dist/**.js',
+      'client/bower_components/bootstrap/**/*.js',
+      'client/bootbox/*.js',
       'client/codemirror/codemirror.js',
+      'client/codemirror/merge.js',
 
       // our app files
       'client/app/app.js',
@@ -21,7 +22,7 @@ module.exports = function(config){
       'client/app/services.js',
       'client/app/deploy/deploy.js',
       'client/app/main/fileStruct.js',
-      'client/app/main/main.js',
+      'client/app/main/*.js',
       'client/app/main/*.js',
       'client/app/main/angular.treeview.js',
       'client/app/videochat/*.js',
@@ -43,7 +44,7 @@ module.exports = function(config){
 
     // reporters: ['progress'],
 
-    reporters: ['progress', 'nyan', 'unicorn'],
+    reporters: ['nyan', 'unicorn'],
     nyanReporter: { suppressErrorReport: false }, 
 
     // web server port
@@ -61,7 +62,7 @@ module.exports = function(config){
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ['jasmine'],
+    frameworks: [ 'requirejs', 'jasmine'],
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
@@ -74,6 +75,7 @@ module.exports = function(config){
             'karma-phantomjs-launcher',
             // 'karma-chrome-launcher',
             'karma-jasmine',
+            'karma-requirejs',
             'karma-junit-reporter',
             'karma-nyan-reporter',
             'karma-unicorn-reporter'
