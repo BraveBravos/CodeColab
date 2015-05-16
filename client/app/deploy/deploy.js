@@ -3,8 +3,9 @@ angular.module('codeColab.deploy', [])
 .controller('deployCtrl', function ($scope, Share) {
 
 
-  $scope.deploy = 'DEPLOYING!!!';
+  $scope.deploy = 'Deploy Page';
   $scope.first = true;
+  $scope.deploying = false;
 
   $scope.checkForApp = function() {
     Share.checkForApp($scope, localStorage.repo)
@@ -20,7 +21,7 @@ angular.module('codeColab.deploy', [])
           $scope.first = false;
           validName = Share.checkName(name)
           if (validName) {
-            console.log('validName')
+            $scope.deploying = true;
             Share.deployApp($scope, name);
           } else {
             console.log('invalidName')
@@ -33,6 +34,7 @@ angular.module('codeColab.deploy', [])
           name = enterName;
           validName = Share.checkName(name)
           if (validName) {
+            $scope.deploying=true;
             Share.deployApp($scope, name);
           } else {
             $scope.deployApp();

@@ -312,6 +312,7 @@ angular.module('codeColab.services', [])
         if (response.data === false) {
           $scope.deployApp();
         } else {
+          $scope.deploying=true;
          that.rebuild($scope, repo)
         }
       })
@@ -349,14 +350,14 @@ angular.module('codeColab.services', [])
       url: 'api/deploy/'+ repo + buildId
     })
     .then (function (response){
+      $location.path('/');
       var re = /\n/g;
       var log = response.data.replace(re, '<br>')
       bootbox.alert("Heroku Build Log<br>"+ log, function () {
         return;
       });
+      $window.open(appURL)
     })
-    // $location.path('/');
-    // $window.open(appURL)
   }
 
   var rebuild = function($scope, repo) {
