@@ -350,6 +350,7 @@ app.post('/api/deploy', function(req, res) {
         if (body.message === "Name is already taken") {
           res.status(200).send({name: 'taken'})
         } else {
+          console.log('deploy body', body)
           var name = body.app.name;
             docs.addApp(req, name, body.id, repo)
           res.status(200).send({name: name})
