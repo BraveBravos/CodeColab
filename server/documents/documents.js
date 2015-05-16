@@ -71,8 +71,12 @@ module.exports = {
     var collection = db.get('Users');
     collection.find({githubId:githubId}, function (err, user) {
       var apps = user[0].apps;
-      var userApp = apps[repo];
-      cb(userApp);
+      if (apps[repo]) {
+        var userApp = apps[repo];
+        cb(userApp);
+      } else {
+        cb(false);
+      }
     })
   }
 

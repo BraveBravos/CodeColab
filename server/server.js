@@ -279,6 +279,51 @@ app.get('/auth/heroku/callback',
   passport.authenticate('heroku', {successRedirect: '/#/deploy', failureRedirect: '/auth/heroku/fail' })
   );
 
+app.get('/api/apps/*', function (req, res) {
+  var repo = req.url.split('/').slice(3).join('/');
+  docs.getApp(req, repo, function (userApp) {
+    if (!userApp) {
+      res.send(false);
+    } else {
+      res.sendStatus(200);
+    }
+  })
+})
+
+app.post('/api/builds', function (req, res) {
+  var repo = req.body.repo;
+  var token = req.session.herokuToken;
+  var apiToken = process.env.HEROKU_API_TOKEN || keys.herokuAPIToken
+  console.log ('bearer', token)
+  console.log("https://github.com/" + repo + "/tarball/master?token="+apiToken)
+
+  docs.getApp(req, repo, function (userApp){
+    request({
+      method: 'POST',
+      url: "https://api.heroku.com/apps/"+ userApp.name + "/builds",
+      headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/vnd.heroku+json; version=3',
+      'Authorization': 'Bearer '+ token
+      },
+      json: {
+        source_blob : {
+          "url" : "https://github.com/" + repo + "/tarball/master?token="+apiToken,
+          "version": null
+        }
+      }
+    },
+      function (err, resp, body) {
+        if (err) {
+          console.log("rebuild error", err);
+        } else {
+          console.log('rebuild body', body)
+          res.send({name: userApp.name, buildId: body.id})
+        }
+      })
+  })
+})
+
 app.post('/api/deploy', function(req, res) {
   var repo = req.body.repo;
   var name = req.body.name;
@@ -315,14 +360,17 @@ app.post('/api/deploy', function(req, res) {
 });
 
 app.get('/api/deploy/*', function (req, res) {
-  var repo = req.url.split('/').slice(3).join('/');
+  var params = req.url.split('/').slice(3);
+  if (params.length>2) {
+    var buildId = params.pop();
+  }
+  var repo =   params.join('/');
   var token = req.session.herokuToken;
-  var userApp;
   docs.getApp(req, repo, function (userApp) {
-    userApp = userApp;
   var name = userApp.name;
   var appId = userApp.id;
   console.log('userapp', userApp)
+
   function checkBuild () {
     //Gets App setup info(including BuildID) from heroku for app name sent
     request({
@@ -336,9 +384,18 @@ app.get('/api/deploy/*', function (req, res) {
       //Gets build log for given buildID
       console.log('first body', JSON.parse(body))
         var buildId = JSON.parse(body).build.id;
+        console.log('current buildID', buildId);
           console.log ("https://api.heroku.com/apps/"+name+"/builds/" + buildId + "/result")
         if (buildId !==null) {
-          function successBuild() {
+            successBuild(buildId);
+          } else {
+        checkBuild();
+      }
+    })
+
+  }
+
+          function successBuild(buildId) {
             request({
             url: "https://api.heroku.com/apps/"+name+"/builds/" + buildId + "/result",
             headers: {
@@ -349,7 +406,9 @@ app.get('/api/deploy/*', function (req, res) {
             }, function (err,resp, body) {
                   console.log('successbody', JSON.parse(body))
                 if (JSON.parse(body).build.status === "pending" ){
-                  setTimeout(successBuild, 3000);
+                  setTimeout(function () {
+                    successBuild(buildId);
+                  }, 3000);
                 } else {
                   var log = '';
                   JSON.parse(body).lines.forEach(function(line) {
@@ -360,14 +419,12 @@ app.get('/api/deploy/*', function (req, res) {
                 }
               })
             }
-            successBuild();
-          } else {
-        checkBuild();
-      }
-    })
 
+  if (!buildId) {
+    setTimeout(checkBuild, 3000);
+  } else {
+    successBuild(buildId);
   }
-  setTimeout(checkBuild, 3000);
   });
 })
 
