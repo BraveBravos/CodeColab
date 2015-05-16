@@ -31,6 +31,7 @@ var express = require('express'),
     }),
     request = require('request'),
     github = require('octonode'),
+    bcrypt = require('bcrypt')
     url = require('url');
 
 if (!process.env.CLIENT_ID) {
@@ -170,21 +171,24 @@ app.post ('/api/orgs/repos', function (req, res) {
     });
 });
 
-//this is to get files from the master branch, by default
 app.post('/api/files', function (req, res) {
   var fileId = req.body.fileId;
   request ({
-    url: req.body.url+'?access_token='+req.session.token,
+    // changed this to refer to the CODECOLAB branch by default.  This is what the code used to be.
+    // url: req.body.url+'?access_token='+req.session.token,
+    url: req.body.url+'?ref=CODECOLAB&access_token='+req.session.token,
     headers: {'User-Agent': req.session.username}
   },
     function (err, resp, body) {
       var fileSha=JSON.parse(body).sha
+      // console.log('content: ',JSON.parse(body).content)
       var file = atob(JSON.parse(body).content);
       // docs.sendDoc(db, file, fileId, fileSha);
       res.status(200).send({file:file, fileSha:fileSha});
     });
 })
 
+//now that api/files is updated, this might not be needed anymore - need to verify
 //this is to get updates files after a merge, and maybe after a file is newly created
 //https://api.github.com/repos/adamlg/chatitude/contents/ff.html?ref=CODECOLAB
 app.post('/api/getUpdatedFile', function (req, res) {
@@ -240,7 +244,8 @@ app.post ('/api/fileStruct/tree', function (req, res) {
       repo = req.body.repo[1],
       branch = req.body.branch;
   // req.session.repo = repo;
-  // console.log("Making request:", 'https://api.github.com/repos/' +owner+ '/' +repo+ '/git/refs/heads/'+branch+'/?access_token='+ req.session.token)
+
+  // console.log("Making request:", 'https://api.github.com/repos/' +owner+ '/' +repo+ '/git/refs/heads/'+branch+'?access_token='+ req.session.token)
   request({
     url: 'https://api.github.com/repos/' +owner+ '/' +repo+ '/git/refs/heads/' + branch+'?access_token='+ req.session.token,
     headers: {'User-Agent': req.session.username}
@@ -261,7 +266,15 @@ app.post ('/api/fileStruct/tree', function (req, res) {
       },
       function (err, resp, body){
         var data = JSON.parse(body)
-        res.status(200).send(data.tree)
+        // var salt = bcrypt.genSaltSync(10)
+        var salt = '$2a$10$JX4yfb1a6c0Ec6yYxkleie'
+        var newTree = data.tree.map(function(item) {
+          item.id = '0'+bcrypt.hashSync(repo+'/'+item.path+'Code-Colab-Extra-Salt',salt)
+          item.url = base+'/'+ owner + '/' + repo + '/contents/' + item.path
+          return item
+        })
+        // console.log(newTree)
+        res.status(200).send(newTree)
       }
     )   // this is a request inside of a request, so the ) may need to move
   });

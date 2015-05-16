@@ -1,4 +1,4 @@
-  {
+{
   "name": "CodeColab",
   "version": "0.0.1",
   "description": "Real-time code collaboration",
@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "atob": "^1.1.2",
+    "bcrypt": "^0.8.3",
     "body-parser": "^1.12.3",
     "bower": "^1.4.1",
     "browserchannel": "^2.0.0",
