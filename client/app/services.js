@@ -324,7 +324,7 @@ angular.module('codeColab.services', [])
       if (name!== 'taken') {
         return $http({
           method: "GET",
-          url: 'api/deploy/'+ name
+          url: 'api/deploy/'+ repo
         })
         .then (function (response){
           var re = /\n/g;
