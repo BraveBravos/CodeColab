@@ -160,7 +160,6 @@ angular.module('codeColab.services', [])
       $scope.right.rSjs.disconnect()
       $scope.CM.rightOriginal().detachShareJsDoc()
     }
-    console.log('update Url: ',$scope.loadedUrl)
     //just set value of rightOrig
     return $http ({
       method:'POST',
@@ -173,7 +172,7 @@ angular.module('codeColab.services', [])
     .then (function (data) {
       console.log(data)
       var newRight = CodeMirror.Doc(data.data.file,'javascript')
-      $scope.CM.rightOriginal().swapDoc(newRight)
+      // $scope.CM.rightOriginal().swapDoc(newRight)
       $scope.CM.rightOriginal().setValue(data.data.file)
     });
   }
@@ -279,8 +278,6 @@ angular.module('codeColab.services', [])
     this.fileId = id;
     this.filePath = path;
     this.path = path
-    $scope.loadedUrl = url
-    $scope.loadedId = id
     globalPath = path
     var that = this;
 
@@ -295,7 +292,6 @@ angular.module('codeColab.services', [])
     .then (function (data) {
       $scope.$parent.fileLoaded = true;
       that.fileSha = data.data.fileSha;
-      console.log('loadFile: ',$scope, id, data.data.file)
       resetRightOrig($scope, id, data.data.file)
       // loadShare($scope, id, data.data.file)
     });
