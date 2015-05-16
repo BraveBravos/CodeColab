@@ -95,6 +95,8 @@ angular.module('codeColab.fileStruct', [])
 
 .controller('fileStructCtrl', function ($http, $scope, Share){
 
+  var fileSignal = new Firebase('https://glaring-fire-1858.firebaseio.com/filesignal');
+
   $scope.loadFile = function(file){
     console.log('loadFile: ',file)
     $scope.$parent.editorWillLoad()
@@ -119,7 +121,9 @@ angular.module('codeColab.fileStruct', [])
       file.id = data.data.content.sha
       file.url = data.data.content.git_url
       arr.push(file)
-      console.log(file)
+      //console.log('$scope.addFile sanitizeArrayObjects',sanitizeArrayObjects(arr))
+      console.log('$scope.addFile sanitizeArrayObjects($scope.$parent.tree)',sanitizeArrayObjects($scope.$parent.tree))
+      //fileSignal.set(sanitizeArrayObjects($scope.$parent.tree));
     })
   }
 
@@ -146,13 +150,30 @@ angular.module('codeColab.fileStruct', [])
     })
   }
 
+  var sanitizeArrayObjects = function(arrayObjs){
+    var res = []
+    for(var i = 0;i < arrayObjs.length;i++){
+      res.push(transformObj(arrayObjs[i]));
+    }  
+    return res;
+  }
+
+  var transformObj = function(obj){
+      var temp = {};
+      var keys = Object.keys(obj);
+      for(var n = 0;n < keys.length;n++){
+        var keyName = keys[n].replace('$$','');
+        if(keyName === 'children'){
+          console.log('transformObj keyName',keyName)
+          temp[keyName] = sanitizeArrayObjects(obj[keys[n]]);
+        }
+        if(typeof obj[keys[n]] === 'undefined'){
+          temp[keyName] = 'undefined';
+        }else{
+          temp[keyName] = obj[keys[n]];  
+        }
+      }
+      return temp;
+  }
+
 })
-
-
-
-
-
-
-
-
-

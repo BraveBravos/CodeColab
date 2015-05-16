@@ -28,11 +28,19 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 	return {
 		restrict: 'A',
 		link: function ( scope, element, attrs ) {
+
+      var fileSignal = new Firebase('https://glaring-fire-1858.firebaseio.com/filesignal');
+
 			//tree id
 			var treeId = attrs.treeId;
 
 			//tree model
 			var treeModel = attrs.treeModel;
+			console.log('treeModel',treeModel)
+			fileSignal.on('value',function(snap){
+        console.log('fileSignal on value snap.val() = ',snap.val()) 
+        //scope.tree = snap.val();
+      });
 
 			//node id
 			var nodeId = attrs.nodeId || 'id';
