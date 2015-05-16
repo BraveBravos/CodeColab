@@ -32,7 +32,7 @@ angular.module('codeColab.fileStruct', [])
       bigTree.forEach(function(item) {
 
       if (item.type === 'tree' || item.path.lastIndexOf('/')===-1) {
-        tree[item.path] = {top:true, fullPath: item.path, label:item.path, id:item.sha, url:item.url, collapsed:true, children:[]}
+        tree[item.path] = {top:true, fullPath: item.path, label:item.path, id:item.id, url:item.url, collapsed:true, children:[]}
       }
 
       var divider = item.path.lastIndexOf('/');
@@ -47,7 +47,7 @@ angular.module('codeColab.fileStruct', [])
       } else {
         var fullPath = item.path
         item.path=item.path.slice(divider+1)
-        tree[path].children.push({label:item.path, fullPath: fullPath, url:item.url, id:item.sha, children:[]})
+        tree[path].children.push({label:item.path, fullPath: fullPath, url:item.url, id:item.id, children:[]})
       }
 
     })
@@ -98,6 +98,7 @@ angular.module('codeColab.fileStruct', [])
 
   //load file to editor
   $scope.loadFile = function(file){
+    console.log('loadFile: ',file)
     $scope.$parent.editorWillLoad()
     Share.loadFile($scope.$parent,file.url, file.id, file.fullPath);
   }
