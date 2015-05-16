@@ -33,7 +33,6 @@ var express = require('express'),
     github = require('octonode'),
     url = require('url');
 
-
 if (!process.env.CLIENT_ID) {
   var keys = require('../keys.js');
 }
@@ -62,14 +61,14 @@ app.use(function (req, res, next) {
 })
 
 
-app.get('/auth/github/callback', function (req, res, next) {
-  if (req.session) {
-    sess = req.session;
-  } else {
-    console.log('no session')
-  }
-  next();
-});
+// app.get('/auth/github/callback', function (req, res, next) {
+//   if (req.session) {
+//     // sess = req.session;
+//   } else {
+//     console.log('no session')
+//   }
+//   next();
+// });
 
 
 app.listen(app.get('port'), function() {
