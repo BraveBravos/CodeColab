@@ -245,11 +245,8 @@ app.post ('/api/fileStruct/tree', function (req, res) {
       repo = req.body.repo[1],
       branch = req.body.branch;
   // req.session.repo = repo;
-<<<<<<< HEAD
-  // console.log("Making request:", 'https://api.github.com/repos/' +owner+ '/' +repo+ '/git/refs/heads/'+branch+'/?access_token='+ req.session.token)
-=======
+
   // console.log("Making request:", 'https://api.github.com/repos/' +owner+ '/' +repo+ '/git/refs/heads/'+branch+'?access_token='+ req.session.token)
->>>>>>> looks like it's working
   request({
     url: 'https://api.github.com/repos/' +owner+ '/' +repo+ '/git/refs/heads/' + branch+'?access_token='+ req.session.token,
     headers: {'User-Agent': req.session.username}
