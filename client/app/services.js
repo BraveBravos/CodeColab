@@ -310,7 +310,9 @@ angular.module('codeColab.services', [])
     })
       .then (function(response){
         if (response.data === false) {
-          $scope.deployApp();
+          if($scope.deployApp) {
+            $scope.deployApp();
+          }
         } else {
           $scope.deploying=true;
          that.rebuild($scope, repo)
@@ -370,10 +372,12 @@ angular.module('codeColab.services', [])
       }
     })
     .then (function (response) {
-      $scope.deploy = "REBUILDING!!!";
-      var name = response.data.name;
-      var buildId = response.data.buildId;
-      that.showLog(name, repo, buildId);
+      if ($location.path() === '/deploy') {
+        $scope.deploy = "REBUILDING!!!";
+        var name = response.data.name;
+        var buildId = response.data.buildId;
+        that.showLog(name, repo, buildId);
+      }
     })
   }
 
@@ -396,6 +400,7 @@ angular.module('codeColab.services', [])
           bootbox.alert("You have an outstanding pull request on this branch. Please resolve on GitHub.")
         }else {
           bootbox.alert("Merge Successful")
+          that.checkForApp($scope, repo)
           // $scope.saveRepo({name: $scope.selected})
           // that.loadFile($scope, this.fileUrl, this.fileId , this.filePath)
           updateRightOrigValue($scope, globalUrl, globalId)
