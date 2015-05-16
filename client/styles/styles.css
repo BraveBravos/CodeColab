@@ -111,7 +111,15 @@ html, body {
 }
 
 
-
+.deployContainer {
+  margin: 10% auto;
+  text-align: center;
+  width: 50%;
+  color: white;
+  font-family: "Lato","Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-weight: 500;
+  font-size: 1.5em;
+}
 
 
 
