@@ -196,7 +196,7 @@ app.post('/api/getUpdatedFile', function (req, res) {
   var filePath = req.body.filePath,
       ownerAndRepo = req.body.ownerAndRepo //need to get this from $scope.selected
   request({
-    //we get them from the CODECOLAB branch so we don't have to wait for the pull request to go through - 
+    //we get them from the CODECOLAB branch so we don't have to wait for the pull request to go through -
     // watch this for bugs, and switch to master if needed
     url: 'https://api.github.com/repos/' + ownerAndRepo + '/contents/' + filePath + '?ref=CODECOLAB&access_token=' + req.session.token,
     headers: {'User-Agent': req.session.username}
@@ -311,8 +311,6 @@ app.post('/api/builds', function (req, res) {
   var repo = req.body.repo;
   var token = req.session.herokuToken;
   var apiToken = process.env.HEROKU_API_TOKEN || keys.herokuAPIToken
-  console.log ('bearer', token)
-  console.log("https://github.com/" + repo + "/tarball/master?token="+apiToken)
 
   docs.getApp(req, repo, function (userApp){
     request({
@@ -325,7 +323,7 @@ app.post('/api/builds', function (req, res) {
       },
       json: {
         source_blob : {
-          "url" : "https://github.com/" + repo + "/tarball/master?token="+apiToken,
+          "url" : "https://github.com/" + repo + "/tarball/CODECOLAB?token="+apiToken,
           "version": null
         }
       }
@@ -361,7 +359,7 @@ app.post('/api/deploy', function(req, res) {
     }
   },
     function (err, resp, body) {
-      if (err) console.log('err', err) 
+      if (err) console.log('err', err)
       else {
         console.log('response', body)
         if (body.message === "Name is already taken") {
@@ -412,29 +410,29 @@ app.get('/api/deploy/*', function (req, res) {
 
   }
 
-          function successBuild(buildId) {
-            request({
-            url: "https://api.heroku.com/apps/"+name+"/builds/" + buildId + "/result",
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/vnd.heroku+json; version=3',
-              'Authorization': 'Bearer '+ token
-            }
-            }, function (err,resp, body) {
-                  // console.log('successbody', JSON.parse(body))
-                if (JSON.parse(body).build.status === "pending" ){
-                  setTimeout(function () {
-                    successBuild(buildId);
-                  }, 3000);
-                } else {
-                  var log = '';
-                  JSON.parse(body).lines.forEach(function(line) {
-                    log+=line.line;
-                  })
-                  res.send(log);
-                }
-              })
-            }
+  function successBuild(buildId) {
+    request({
+    url: "https://api.heroku.com/apps/"+name+"/builds/" + buildId + "/result",
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/vnd.heroku+json; version=3',
+      'Authorization': 'Bearer '+ token
+    }
+    }, function (err,resp, body) {
+          // console.log('successbody', JSON.parse(body))
+        if (JSON.parse(body).build.status === "pending" ){
+          setTimeout(function () {
+            successBuild(buildId);
+          }, 3000);
+        } else {
+          var log = '';
+          JSON.parse(body).lines.forEach(function(line) {
+            log+=line.line;
+          })
+          res.send(log);
+        }
+      })
+    }
 
   if (!buildId) {
     setTimeout(checkBuild, 3000);
