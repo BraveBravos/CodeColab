@@ -51,7 +51,10 @@ app.use(session({
   secret: 'oursecret',
   saveUninitialized: true,
   resave: true,
-  store: new MongoStore({url: 'mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810'})
+  store: new MongoStore({
+    url: 'mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810',
+    ttl: 60*60*8,
+    })
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -104,6 +107,7 @@ passport.use(new GitHubStrategy({
     req.session.token = accessToken;
     req.session.userID = profile.id
     req.session.username = profile.username;
+    req.session.cookie.expires = new Date(Date.now() + 8*60*60*1000)
     return done(null, profile)
   }
 ));
@@ -328,7 +332,7 @@ app.post('/api/deploy', function(req, res) {
   var repo = req.body.repo;
   var name = req.body.name;
   var token = req.session.herokuToken
-  console.log('req.session', req.session)
+  console.log('req.session', req.express-session)
   var apiToken = process.env.HEROKU_API_TOKEN || keys.herokuAPIToken
   request.post({
     url: "https://api.heroku.com/app-setups",
@@ -441,7 +445,7 @@ app.get('/api/auth', function(req, res){
 })
 
 app.get('/logout', function (req, res){
-  //req.session.destroy()
+  req.session.destroy()
   req.logout();
   res.redirect('/');
 })

@@ -3,7 +3,7 @@ angular.module('codeColab.deploy', [])
 .controller('deployCtrl', function ($scope, Share) {
 
 
-  $scope.deploy = 'DEPLOYED!!!';
+  $scope.deploy = 'DEPLOYING!!!';
   $scope.first = true;
 
   $scope.checkForApp = function() {
