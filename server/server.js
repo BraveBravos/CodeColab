@@ -51,7 +51,10 @@ app.use(session({
   secret: 'oursecret',
   saveUninitialized: true,
   resave: true,
-  store: new MongoStore({url: 'mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810'})
+  store: new MongoStore({
+    url: 'mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810',
+    ttl: 60*60*8,
+    })
 }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -79,8 +82,9 @@ app.listen(app.get('port'), function() {
 passport.serializeUser(function(user, done) {
   db.get('Users').find({githubId: user.id}, function (err, result) {
     if(result.length === 0){ //User isn't in DB (FIRST TIMER!)
-      var insertData = [{githubId: user.id, username: user.username}]
+      var insertData = [{githubId: user.id, username: user.username, apps: {}}]
       db.get('Users').insert(insertData);
+      done(null, result);
     } else { //User is already in DB, just return their data
       done(null, result);
     }
@@ -103,6 +107,7 @@ passport.use(new GitHubStrategy({
     req.session.token = accessToken;
     req.session.userID = profile.id
     req.session.username = profile.username;
+    req.session.cookie.expires = new Date(Date.now() + 8*60*60*1000)
     return done(null, profile)
   }
 ));
@@ -123,7 +128,7 @@ function(req, accessToken, refreshToken, profile, done) {
 app.get('/api/repos', function (req, res) {
   request({
     url: 'https://api.github.com/user/repos?access_token='+ req.session.token+ '&type=all',
-    headers: {'User-Agent': req.session.passport.user[0].username}
+    headers: {'User-Agent': req.session.username}
   },
   function(err,resp,body) {
     var data = JSON.parse(body).map(function (repo) {
@@ -139,7 +144,7 @@ app.get('/api/repos', function (req, res) {
 app.get('/api/orgs', function (req, res) {
   request({
     url: 'https://api.github.com/user/orgs?access_token='+ req.session.token+ '&type=all',
-    headers: {'User-Agent': req.session.passport.user[0].username}
+    headers: {'User-Agent': req.session.username}
   },
   function (err, resp, body) {
     var orgList = JSON.parse(body).map(function (org) {
@@ -154,7 +159,7 @@ app.post ('/api/orgs/repos', function (req, res) {
   var org = req.body.org;
   request({
     url: 'https://api.github.com/orgs/'+ org + '/repos?access_token='+ req.session.token,
-    headers: {'User-Agent': req.session.passport.user[0].username}
+    headers: {'User-Agent': req.session.username}
   },
     function (err, resp, body) {
       var data = [];
@@ -172,7 +177,7 @@ app.post('/api/files', function (req, res) {
   var fileId = req.body.fileId;
   request ({
     url: req.body.url+'?access_token='+req.session.token,
-    headers: {'User-Agent': req.session.passport.user[0].username}
+    headers: {'User-Agent': req.session.username}
   },
     function (err, resp, body) {
       var fileSha=JSON.parse(body).sha
@@ -191,7 +196,7 @@ app.post('/api/getUpdatedFile', function (req, res) {
     //we get them from the CODECOLAB branch so we don't have to wait for the pull request to go through - watch this for bugs,
     //and switch to master if needed
     url: 'https://api.github.com/repos/' + ownerAndRepo + '/contents/' + filePath + '?ref=CODECOLAB&access_token=' + req.session.token,
-    headers: {'User-Agent': req.session.passport.user[0].username}
+    headers: {'User-Agent': req.session.username}
   },
     function(err, resp, body) {
       var fileSha=JSON.parse(body).sha
@@ -239,7 +244,7 @@ app.post ('/api/fileStruct/tree', function (req, res) {
   console.log("Making request:", 'https://api.github.com/repos/' +owner+ '/' +repo+ '/git/refs/heads/'+branch+'/?access_token='+ req.session.token)
   request({
     url: 'https://api.github.com/repos/' +owner+ '/' +repo+ '/git/refs/heads/' + branch+'?access_token='+ req.session.token,
-    headers: {'User-Agent': req.session.passport.user[0].username}
+    headers: {'User-Agent': req.session.username}
   },
   function (err, resp, body) {
     var data = JSON.parse(body);
@@ -253,7 +258,7 @@ app.post ('/api/fileStruct/tree', function (req, res) {
 
     request({
       url: concat,
-      headers: {'User-Agent': req.session.passport.user[0].username}
+      headers: {'User-Agent': req.session.username}
       },
       function (err, resp, body){
         var data = JSON.parse(body)
@@ -277,6 +282,51 @@ app.get('/auth/heroku', passport.authenticate('heroku'));
 app.get('/auth/heroku/callback',
   passport.authenticate('heroku', {successRedirect: '/#/deploy', failureRedirect: '/auth/heroku/fail' })
   );
+
+app.get('/api/apps/*', function (req, res) {
+  var repo = req.url.split('/').slice(3).join('/');
+  docs.getApp(req, repo, function (userApp) {
+    if (!userApp) {
+      res.send(false);
+    } else {
+      res.sendStatus(200);
+    }
+  })
+})
+
+app.post('/api/builds', function (req, res) {
+  var repo = req.body.repo;
+  var token = req.session.herokuToken;
+  var apiToken = process.env.HEROKU_API_TOKEN || keys.herokuAPIToken
+  console.log ('bearer', token)
+  console.log("https://github.com/" + repo + "/tarball/master?token="+apiToken)
+
+  docs.getApp(req, repo, function (userApp){
+    request({
+      method: 'POST',
+      url: "https://api.heroku.com/apps/"+ userApp.name + "/builds",
+      headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/vnd.heroku+json; version=3',
+      'Authorization': 'Bearer '+ token
+      },
+      json: {
+        source_blob : {
+          "url" : "https://github.com/" + repo + "/tarball/master?token="+apiToken,
+          "version": null
+        }
+      }
+    },
+      function (err, resp, body) {
+        if (err) {
+          console.log("rebuild error", err);
+        } else {
+          console.log('rebuild body', body)
+          res.send({name: userApp.name, buildId: body.id})
+        }
+      })
+  })
+})
 
 app.post('/api/deploy', function(req, res) {
   var repo = req.body.repo;
@@ -304,11 +354,9 @@ app.post('/api/deploy', function(req, res) {
         if (body.message === "Name is already taken") {
           res.status(200).send({name: 'taken'})
         } else {
+          console.log('deploy body', body)
           var name = body.app.name;
-          if (!req.session.apps) {
-            req.session.apps = {};
-          }
-          req.session.apps[name] = body.id;
+            docs.addApp(req, name, body.id, repo)
           res.status(200).send({name: name})
         }
       }
@@ -317,9 +365,16 @@ app.post('/api/deploy', function(req, res) {
 });
 
 app.get('/api/deploy/*', function (req, res) {
-  var name = req.url.split('/').slice(3).join('/');
+  var params = req.url.split('/').slice(3);
+  if (params.length>2) {
+    var buildId = params.pop();
+  }
+  var repo =   params.join('/');
   var token = req.session.herokuToken;
-  var appId = req.session.apps[name];
+  docs.getApp(req, repo, function (userApp) {
+  var name = userApp.name;
+  var appId = userApp.id;
+  console.log('userapp', userApp)
 
   function checkBuild () {
     //Gets App setup info(including BuildID) from heroku for app name sent
@@ -334,9 +389,18 @@ app.get('/api/deploy/*', function (req, res) {
       //Gets build log for given buildID
       console.log('first body', JSON.parse(body))
         var buildId = JSON.parse(body).build.id;
+        console.log('current buildID', buildId);
           console.log ("https://api.heroku.com/apps/"+name+"/builds/" + buildId + "/result")
         if (buildId !==null) {
-          function successBuild() {
+            successBuild(buildId);
+          } else {
+        checkBuild();
+      }
+    })
+
+  }
+
+          function successBuild(buildId) {
             request({
             url: "https://api.heroku.com/apps/"+name+"/builds/" + buildId + "/result",
             headers: {
@@ -347,7 +411,9 @@ app.get('/api/deploy/*', function (req, res) {
             }, function (err,resp, body) {
                   console.log('successbody', JSON.parse(body))
                 if (JSON.parse(body).build.status === "pending" ){
-                  setTimeout(successBuild, 3000);
+                  setTimeout(function () {
+                    successBuild(buildId);
+                  }, 3000);
                 } else {
                   var log = '';
                   JSON.parse(body).lines.forEach(function(line) {
@@ -358,14 +424,13 @@ app.get('/api/deploy/*', function (req, res) {
                 }
               })
             }
-            successBuild();
-          } else {
-        checkBuild();
-      }
-    })
 
+  if (!buildId) {
+    setTimeout(checkBuild, 3000);
+  } else {
+    successBuild(buildId);
   }
-  setTimeout(checkBuild, 3000);
+  });
 })
 
 app.get('/auth/heroku/fail', function(req, res) {
@@ -379,7 +444,7 @@ app.get('/api/auth', function(req, res){
 })
 
 app.get('/logout', function (req, res){
-  //req.session.destroy()
+  req.session.destroy()
   req.logout();
   res.redirect('/');
 })

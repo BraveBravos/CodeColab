@@ -3,8 +3,12 @@ angular.module('codeColab.deploy', [])
 .controller('deployCtrl', function ($scope, Share) {
 
 
-  $scope.deploy = "DEPLOYED!"
+  $scope.deploy = 'DEPLOYING!!!';
   $scope.first = true;
+
+  $scope.checkForApp = function() {
+    Share.checkForApp($scope, localStorage.repo)
+  }
 
   $scope.deployApp = function(){
     var validName = false;
@@ -38,5 +42,5 @@ angular.module('codeColab.deploy', [])
     }
 
 
-  $scope.deployApp();
+  $scope.checkForApp();
 })

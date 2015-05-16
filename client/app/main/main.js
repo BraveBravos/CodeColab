@@ -11,6 +11,7 @@ angular.module('codeColab.main', [])
   $scope.textSpinner = false;
   $scope.commitMade = false;
   $scope.fileLoaded = false;
+  $scope.reposLoaded = false;
 
   //shows spinner for text editor when file loading
   $scope.editorWillLoad = function () {
@@ -71,6 +72,10 @@ angular.module('codeColab.main', [])
     bootbox.prompt("Please enter your commit message:", function (result) {
       Share.commit(result, $scope.selected, $scope);
     })
+  }
+
+  $scope.rebuild = function() {
+    Share.rebuild($scope.selected);
   }
 
   $scope.init();
