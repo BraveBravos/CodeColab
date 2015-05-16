@@ -2605,7 +2605,7 @@ this['DIFF_EQUAL'] = DIFF_EQUAL;
             "class", dv.classes.connect);
     }
     if (dv.copyButtons) {
-      var copy = dv.copyButtons.appendChild(elt("div", dv.type == "left" ? "\u21dd" : "\u21dc",
+      var copy = dv.copyButtons.appendChild(elt("div", dv.type == "left" ? "\u21dd" : "<<---",
                                                 "CodeMirror-merge-copy"));
       var editOriginals = dv.mv.options.allowEditingOriginals;
       copy.title = editOriginals ? "Push to left" : "Revert chunk";
