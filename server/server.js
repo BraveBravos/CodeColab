@@ -315,10 +315,14 @@ app.post('/api/deploy', function(req, res) {
 });
 
 app.get('/api/deploy/*', function (req, res) {
-  var name = req.url.split('/').slice(3).join('/');
+  var repo = req.url.split('/').slice(3).join('/');
   var token = req.session.herokuToken;
-  var appId = req.session.apps[name];
-
+  var userApp;
+  docs.getApp(req, repo, function (userApp) {
+    userApp = userApp;
+  var name = userApp.name;
+  var appId = userApp.id;
+  console.log('userapp', userApp)
   function checkBuild () {
     //Gets App setup info(including BuildID) from heroku for app name sent
     request({
@@ -364,6 +368,7 @@ app.get('/api/deploy/*', function (req, res) {
 
   }
   setTimeout(checkBuild, 3000);
+  });
 })
 
 app.get('/auth/heroku/fail', function(req, res) {

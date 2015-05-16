@@ -63,6 +63,17 @@ module.exports = {
           if (err) console.log('error adding app');
         });
     })
+  },
+
+  getApp: function(req, repo, cb) {
+    var db = req.db;
+    var githubId = req.session.userID;
+    var collection = db.get('Users');
+    collection.find({githubId:githubId}, function (err, user) {
+      var apps = user[0].apps;
+      var userApp = apps[repo];
+      cb(userApp);
+    })
   }
 
 }
