@@ -122,8 +122,8 @@ angular.module('codeColab.fileStruct', [])
       file.url = data.data.content.git_url
       arr.push(file)
       //console.log('$scope.addFile sanitizeArrayObjects',sanitizeArrayObjects(arr))
-      console.log('$scope.addFile sanitizeArrayObjects($scope.$parent.tree)',sanitizeArrayObjects($scope.$parent.tree))
-      //fileSignal.set(sanitizeArrayObjects($scope.$parent.tree));
+      //console.log('$scope.addFile sanitizeArrayObjects($scope.$parent.tree)',sanitizeArrayObjects($scope.$parent.tree))
+      fileSignal.set(sanitizeArrayObjects($scope.$parent.tree));
     })
   }
 

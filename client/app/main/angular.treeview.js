@@ -39,7 +39,7 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 			console.log('treeModel',treeModel)
 			fileSignal.on('value',function(snap){
         console.log('fileSignal on value snap.val() = ',snap.val()) 
-        //scope.tree = snap.val();
+        scope.tree = snap.val();
       });
 
 			//node id
