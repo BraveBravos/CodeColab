@@ -136,7 +136,7 @@ angular.module('codeColab.services', [])
 
         // $scope.CM.rightOriginal().swapDoc(newRight)
         // console.log('rightOriginal value: ',$scope.CM.rightOriginal().getValue())
-        console.log('db right value: ',rDoc.getSnapshot())
+
         rDoc.attachCodeMirror($scope.CM.rightOriginal())
         // console.log('rDoc attached: ',rDoc)
 
@@ -170,7 +170,7 @@ angular.module('codeColab.services', [])
       }
     })
     .then (function (data) {
-      console.log(data)
+      // console.log(data)
       var newRight = CodeMirror.Doc(data.data.file,'javascript')
       // $scope.CM.rightOriginal().swapDoc(newRight)
       $scope.CM.rightOriginal().setValue(data.data.file)
