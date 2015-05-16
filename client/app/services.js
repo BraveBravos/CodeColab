@@ -32,6 +32,7 @@ angular.module('codeColab.services', [])
             orgRepos.data.forEach(function (orgRepo) {
               $scope.repos.push(orgRepo);
             })
+            $scope.reposLoaded = true;
           })
         })
       })
@@ -301,8 +302,24 @@ angular.module('codeColab.services', [])
     });
   }
 
+  var checkForApp = function($scope, repo) {
+    var that = this;
+    return $http({
+      method : 'GET',
+      url: '/api/apps/'+repo
+    })
+      .then (function(response){
+        if (response.data === false) {
+          $scope.deployApp();
+        } else {
+         that.rebuild($scope, repo)
+        }
+      })
+  }
+
   var deployApp = function($scope, name){
     var repo = localStorage.repo;
+    var that = this;
     return $http({
       method: 'POST',
       url: '/api/deploy',
@@ -318,23 +335,44 @@ angular.module('codeColab.services', [])
           $scope.first = true;
           $scope.deployApp()
         })
+      } else {
+        that.showLog(name, repo);
       }
-      var appURL ='https://'+name+'.herokuapp.com';
-      if (name!== 'taken') {
-        return $http({
-          method: "GET",
-          url: 'api/deploy/'+ name
-        })
-        .then (function (response){
-          var re = /\n/g;
-          var log = response.data.replace(re, '<br>')
-          bootbox.alert("Heroku Build Log<br>"+ log, function () {
-            return;
-          });
-        })
-        // $location.path('/');
-        // $window.open(appURL)
+    })
+  }
+
+  function showLog (name, repo, buildId) {
+    var appURL ='https://'+name+'.herokuapp.com';
+    var buildId = buildId? '/'+buildId : '';
+    return $http({
+      method: "GET",
+      url: 'api/deploy/'+ repo + buildId
+    })
+    .then (function (response){
+      var re = /\n/g;
+      var log = response.data.replace(re, '<br>')
+      bootbox.alert("Heroku Build Log<br>"+ log, function () {
+        return;
+      });
+    })
+    // $location.path('/');
+    // $window.open(appURL)
+  }
+
+  var rebuild = function($scope, repo) {
+    var that = this;
+    return $http({
+      method: 'POST',
+      url: '/api/builds',
+      data: {
+        repo: repo
       }
+    })
+    .then (function (response) {
+      $scope.deploy = "REBUILDING!!!";
+      var name = response.data.name;
+      var buildId = response.data.buildId;
+      that.showLog(name, repo, buildId);
     })
   }
 
@@ -379,7 +417,10 @@ angular.module('codeColab.services', [])
     loadCM: loadCM,
     resetCM: resetCM,
     loadFile: loadFile,
+    checkForApp: checkForApp,
     deployApp: deployApp,
+    rebuild: rebuild,
+    showLog: showLog,
     checkName: checkName,
     mergeBranch: mergeBranch,
     resetRightOrig: resetRightOrig,
