@@ -2605,10 +2605,10 @@ this['DIFF_EQUAL'] = DIFF_EQUAL;
             "class", dv.classes.connect);
     }
     if (dv.copyButtons) {
-      var copy = dv.copyButtons.appendChild(elt("div", dv.type == "left" ? "\u21dd" : "\u21dc",
-                                                "CodeMirror-merge-copy"));
+      var copy = dv.copyButtons.appendChild(elt("div", dv.type == "left" ? "\u21dd" : "\u2190",
+                                                "CodeMirror-merge-copy diffShow"));
       var editOriginals = dv.mv.options.allowEditingOriginals;
-      copy.title = editOriginals ? "Push to left" : "Revert chunk";
+      copy.title = editOriginals ? "Push to left" : "Click to revert changes";
       copy.chunk = chunk;
       copy.style.top = top + "px";
 

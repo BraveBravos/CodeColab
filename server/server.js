@@ -132,7 +132,6 @@ app.get('/api/repos', function (req, res) {
       return {name: repo.full_name, id: repo.id};
     })
       res.status(200).json(data)
-      // res.status(200).data
   });
 });
 
@@ -185,17 +184,17 @@ app.post('/api/files', function (req, res) {
 //this is to get updates files after a merge, and maybe after a file is newly created
 //https://api.github.com/repos/adamlg/chatitude/contents/ff.html?ref=CODECOLAB
 app.post('/api/getUpdatedFile', function (req, res) {
-  var filePath = req.body.filePath
-  var ownerAndRepo = req.body.ownerAndRepo //need to get this from $scope.selected
+  var filePath = req.body.filePath,
+      ownerAndRepo = req.body.ownerAndRepo //need to get this from $scope.selected
   request({
-    //we get them from the CODECOLAB branch so we don't have to wait for the pull request to go through - watch this for bugs,
-    //and switch to master if needed
+    //we get them from the CODECOLAB branch so we don't have to wait for the pull request to go through - 
+    // watch this for bugs, and switch to master if needed
     url: 'https://api.github.com/repos/' + ownerAndRepo + '/contents/' + filePath + '?ref=CODECOLAB&access_token=' + req.session.token,
     headers: {'User-Agent': req.session.passport.user[0].username}
   },
     function(err, resp, body) {
-      var fileSha=JSON.parse(body).sha
-      var file = atob(JSON.parse(body).content);
+      var fileSha=JSON.parse(body).sha,
+          file = atob(JSON.parse(body).content);
       // docs.sendDoc(db, file, fileId, fileSha);
       res.status(200).send({file:file, fileSha:fileSha});
     })
@@ -204,6 +203,7 @@ app.post('/api/getUpdatedFile', function (req, res) {
 app.post('/api/sjs', function (req, res) {
   var fileId = req.body.fileId,
       file = req.body.file;
+
     docs.setSjs(db, file, fileId);
     res.sendStatus(200);
 });
@@ -232,24 +232,24 @@ app.post('/api/repos/commit', function(req, res){
 })
 
 app.post ('/api/fileStruct/tree', function (req, res) {
-  var owner = req.body.repo[0];
-  var repo = req.body.repo[1];
-  var branch = req.body.branch;
+  var owner = req.body.repo[0],
+      repo = req.body.repo[1],
+      branch = req.body.branch;
   // req.session.repo = repo;
-  console.log("Making request:", 'https://api.github.com/repos/' +owner+ '/' +repo+ '/git/refs/heads/'+branch+'/?access_token='+ req.session.token)
+  // console.log("Making request:", 'https://api.github.com/repos/' +owner+ '/' +repo+ '/git/refs/heads/'+branch+'/?access_token='+ req.session.token)
   request({
     url: 'https://api.github.com/repos/' +owner+ '/' +repo+ '/git/refs/heads/' + branch+'?access_token='+ req.session.token,
     headers: {'User-Agent': req.session.passport.user[0].username}
   },
   function (err, resp, body) {
     var data = JSON.parse(body);
-    console.log('tree response', data)
+    // console.log('tree response', data)
     var sha = data.object.sha;
     req.session.treeSha = sha;
-    var base = 'https://api.github.com/repos'
-    var more = '/git/trees/'
-    var last = '?recursive=1&access_token='
-    var concat = base + '/' +owner+ '/' + repo + more + sha + last + req.session.token
+    var base = 'https://api.github.com/repos',
+        more = '/git/trees/',
+        last = '?recursive=1&access_token=',
+        concat = base + '/' +owner+ '/' + repo + more + sha + last + req.session.token
 
     request({
       url: concat,
@@ -276,13 +276,14 @@ app.get('/auth/heroku', passport.authenticate('heroku'));
 
 app.get('/auth/heroku/callback',
   passport.authenticate('heroku', {successRedirect: '/#/deploy', failureRedirect: '/auth/heroku/fail' })
-  );
+);
 
 app.post('/api/deploy', function(req, res) {
-  var repo = req.body.repo;
-  var name = req.body.name;
-  var token = req.session.herokuToken
-  var apiToken = process.env.HEROKU_API_TOKEN || keys.herokuAPIToken
+  var repo = req.body.repo,
+      name = req.body.name,
+      token = req.session.herokuToken,
+      apiToken = process.env.HEROKU_API_TOKEN || keys.herokuAPIToken
+
   request.post({
     url: "https://api.heroku.com/app-setups",
     headers: {
@@ -297,9 +298,8 @@ app.post('/api/deploy', function(req, res) {
     }
   },
     function (err, resp, body) {
-      if (err) {
-        console.log('err', err)
-      } else {
+      if (err) console.log('err', err) 
+      else {
         console.log('response', body)
         if (body.message === "Name is already taken") {
           res.status(200).send({name: 'taken'})
@@ -317,9 +317,9 @@ app.post('/api/deploy', function(req, res) {
 });
 
 app.get('/api/deploy/*', function (req, res) {
-  var name = req.url.split('/').slice(3).join('/');
-  var token = req.session.herokuToken;
-  var appId = req.session.apps[name];
+  var name = req.url.split('/').slice(3).join('/'),
+      token = req.session.herokuToken,
+      appId = req.session.apps[name];
 
   function checkBuild () {
     //Gets App setup info(including BuildID) from heroku for app name sent
@@ -345,7 +345,7 @@ app.get('/api/deploy/*', function (req, res) {
               'Authorization': 'Bearer '+ token
             }
             }, function (err,resp, body) {
-                  console.log('successbody', JSON.parse(body))
+                  // console.log('successbody', JSON.parse(body))
                 if (JSON.parse(body).build.status === "pending" ){
                   setTimeout(successBuild, 3000);
                 } else {
@@ -354,7 +354,6 @@ app.get('/api/deploy/*', function (req, res) {
                     log+=line.line;
                   })
                   res.send(log);
-                  // console.log(JSON.parse(body));
                 }
               })
             }
@@ -363,15 +362,12 @@ app.get('/api/deploy/*', function (req, res) {
         checkBuild();
       }
     })
-
   }
   setTimeout(checkBuild, 3000);
 })
 
 app.get('/auth/heroku/fail', function(req, res) {
-  console.log('fail!')
-
-
+  console.log('Heroku fail!')
 });
 
 app.get('/api/auth', function(req, res){
@@ -379,7 +375,6 @@ app.get('/api/auth', function(req, res){
 })
 
 app.get('/logout', function (req, res){
-  //req.session.destroy()
   req.logout();
   res.redirect('/');
 })
@@ -391,21 +386,19 @@ app.get('/api/branch/*', function(req, res) {
     headers: {'User-Agent': req.session.username}
   },
     function(err, resp, body) {
-      var exists= false;
-      var branches = JSON.parse(body);
+      var exists= false,
+          branches = JSON.parse(body);
+
       branches.forEach(function(branch) {
-        if (branch.name==="CODECOLAB") {
-          exists ='true';
-        }
+        if (branch.name==="CODECOLAB") exists ='true';
       })
       res.send(exists);
     })
 })
 
 app.post('/api/branch', function(req, res){
-  var owner=req.session.username;
-  var repo = req.body.repo;
-
+  var owner=req.session.username,
+      repo = req.body.repo;
 
   request({
     url: 'https://api.github.com/repos/' + repo +'/git/refs/heads/master?access_token='+ req.session.token,
@@ -413,11 +406,10 @@ app.post('/api/branch', function(req, res){
   },
     function (err, resp, body) {
       if (err) console.log(err);
-      // console.log('INSIDE GIT BRANCH')
       var ref = JSON.parse(body).ref,
           sha = JSON.parse(body).object.sha;
-      console.log('branch req ref', ref)
-      console.log('branch req sha', sha)
+      // console.log('branch req ref', ref)
+      // console.log('branch req sha', sha)
 
       // var send = JSON.stringify({
       //   ref: 'refs/heads/'+'CODECOLAB', //the new branch name
@@ -435,7 +427,7 @@ app.post('/api/branch', function(req, res){
         }
       },
         function(err, resp, body){
-          console.log('New Branch Created!', body)
+          console.log('New Branch Created!')
           res.send(body) //send back to client to use for commits
         })
       })
@@ -459,15 +451,13 @@ app.post('/api/merge', function (req, res) {
     }
   },
   function (err, resp, body) {
-    if (err) {
-      console.log('merge err', err)
-    } else {
-      console.log('pull request is ...',body)
-      if (body.errors) {
-        res.status(200).send(body.errors[0].message)
-      } else {
-        var sha = body.head.sha;
-        var num = body.number
+    if (err) { console.log('merge err', err) }
+    else {
+      console.log('pull request is..', body)
+      if (body.errors) { res.status(200).send(body.errors[0].message) }
+      else {
+        var sha = body.head.sha,
+            num = body.number
         request({
         method: 'PUT',
         url: 'https://api.github.com/repos/' + repo + '/pulls/' + num + '/merge?access_token='+ req.session.token,
@@ -502,13 +492,11 @@ app.use(browserChannel( function(client) {
   stream._write = function(chunk, encoding, callback) {
     if (client.state !== 'closed') {
       client.send(chunk);
-      // console.log('received',chunk)
     }
     callback();
   };
 
   client.on('message', function(data) {
-    // console.log('message',data)
     stream.push(data);
   });
 
