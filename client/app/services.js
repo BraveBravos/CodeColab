@@ -339,6 +339,17 @@ angular.module('codeColab.services', [])
     })
   }
 
+  var rebuild = function(repo) {
+    return $http({
+      method: 'POST',
+      url: '/api/builds',
+      data: {
+
+      }
+    })
+
+  }
+
   var mergeBranch = function(repo, title, comments, $scope) {
     var that = this;
     return $http({
@@ -381,6 +392,7 @@ angular.module('codeColab.services', [])
     resetCM: resetCM,
     loadFile: loadFile,
     deployApp: deployApp,
+    rebuild: rebuild,
     checkName: checkName,
     mergeBranch: mergeBranch,
     resetRightOrig: resetRightOrig,

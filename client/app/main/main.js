@@ -74,6 +74,10 @@ angular.module('codeColab.main', [])
     })
   }
 
+  $scope.rebuild = function() {
+    Share.rebuild($scope.selected);
+  }
+
   $scope.init();
 })
 
