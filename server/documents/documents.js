@@ -10,9 +10,7 @@ module.exports = {
     var collection = db.get('origDocuments');
     collection.find({id: fileId}, function (err, found){
       if (found.length!==0) {
-
         // console.log('not err', found);
-
         collection.update({id: fileId},
           {$set:
             { data: file, fileSha:fileSha }
@@ -47,6 +45,23 @@ module.exports = {
           cb (found[0]);
         })
       }
+    })
+  },
+
+  addApp : function (req, name, id, repo) {
+    var db = req.db;
+    var githubId = req.session.userID;
+    var collection = db.get('Users');
+    collection.find({githubId: githubId}, function (err, user) {
+      var userApps = user[0].apps;
+      userApps[repo] = {name:name, id:id}
+      collection.update(user[0]._id,
+        {$set:
+          {apps: userApps}
+        },
+        function (err) {
+          if (err) console.log('error adding app');
+        });
     })
   }
 
