@@ -162,15 +162,13 @@ angular.module('codeColab.fileStruct', [])
       var temp = {};
       var keys = Object.keys(obj);
       for(var n = 0;n < keys.length;n++){
-        var keyName = keys[n].replace('$$','');
-        if(keyName === 'children'){
-          console.log('transformObj keyName',keyName)
-          temp[keyName] = sanitizeArrayObjects(obj[keys[n]]);
-        }
-        if(typeof obj[keys[n]] === 'undefined'){
-          temp[keyName] = 'undefined';
-        }else{
-          temp[keyName] = obj[keys[n]];  
+        console.log('typeof obj[keys[n]]',typeof obj[keys[n]])
+        if(keys[n].indexOf('$') === -1){
+          if(Array.isArray(obj[keys[n]])){
+            temp[keys[n]] = sanitizeArrayObjects(obj[keys[n]])
+          }else{
+            temp[keys[n]] = obj[keys[n]];
+          }
         }
       }
       return temp;
