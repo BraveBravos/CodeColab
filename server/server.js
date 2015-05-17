@@ -173,7 +173,7 @@ app.post ('/api/orgs/repos', function (req, res) {
 });
 
 app.post('/api/files', function (req, res) {
-  var fileId = req.body.fileId;
+  console.log('url: ',req.body.url+'?ref=CODECOLAB&access_token='+req.session.token)
   request ({
     // changed this to refer to the CODECOLAB branch by default.  This is what the code used to be.
     // url: req.body.url+'?access_token='+req.session.token,
@@ -189,8 +189,8 @@ app.post('/api/files', function (req, res) {
     });
 })
 
-//now that api/files is updated, this might not be needed anymore - need to verify
-//this is to get updates files after a merge, and maybe after a file is newly created
+//this is to get updates files after a merge, and maybe after a file is newly created - for some reason, I'm not getting api/files to work
+//when trying to update the rightOriginal side.
 //https://api.github.com/repos/adamlg/chatitude/contents/ff.html?ref=CODECOLAB
 app.post('/api/getUpdatedFile', function (req, res) {
   var filePath = req.body.filePath,
