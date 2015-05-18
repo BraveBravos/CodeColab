@@ -79,18 +79,40 @@ app.get('/auth/github/callback', function (req, res, next) {
 });
 
 passport.serializeUser(function(user, done) {
-  db.get('Users').find({githubId: user.id}, function (err, result) {
-    if(result.length === 0){ //User isn't in DB (FIRST TIMER!)
-      var insertData = [{githubId: user.id, username: user.username, apps: {}}]
-      db.get('Users').insert(insertData);
-      done(null, result);
-    } else { //User is already in DB, just return their data
-      done(null, result);
-    }
-  });
+  console.log('serializing!')
+  if (user.provider === 'github') {
+    db.get('Users').find({githubId: user.id}, function (err, result) {
+      if(result.length === 0){ //User isn't in DB (FIRST TIMER!)
+        var insertData = [{githubId: user.id, username: user.username, apps: {}}]
+        db.get('Users').insert(insertData);
+        done(null, result);
+      } else { //User is already in DB, just return their data
+        done(null, result);
+      }
+    });
+  } else {//for Heroku OAuth
+      db.get('Users').find({herokuId: user.id}, function (err, result) {
+          if(result.length === 0){ //User hasn't authorized heroku yet
+            var users = db.get('Users');
+            users.find({githubId: user.githubId}, function (err, result) {
+              users.update(result[0]._id,
+                {$set:
+                  {herokuId: user.id}
+                },
+                function (err) {
+                  if (err) console.log('error adding heroku token');
+                });
+            done(null, result);
+            });
+          } else { //Heroku ID is already in DB, just return their data
+            done(null, result);
+          }
+        });
+  }
 });
 
 passport.deserializeUser(function(obj, done) {
+  console.log('deserialize obj', obj)
   db.get('Users').find({githubId: obj.id}, function (err, result) {
     done(null, obj);
   });
@@ -107,6 +129,8 @@ passport.use(new GitHubStrategy({
     req.session.userID = profile.id
     req.session.username = profile.username;
     req.session.cookie.expires = new Date(Date.now() + 8*60*60*1000)
+    console.log('github session', profile)
+
     return done(null, profile)
   }
 ));
@@ -120,7 +144,9 @@ passport.use(new HerokuStrategy({
 function(req, accessToken, refreshToken, profile, done) {
   req.session.herokuToken = accessToken;
   console.log('heroku', accessToken)
-
+  console.log('heroku session', req.session);
+  console.log('heroku profile', profile)
+  profile.githubId = req.session.userID;
   return done(null, profile);
 }));
 
