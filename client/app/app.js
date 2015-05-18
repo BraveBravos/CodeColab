@@ -29,6 +29,10 @@ angular.module('codeColab', [
       templateUrl: '/app/deploy/deploy.html',
       controller: 'deployCtrl',
       authenticate: true
+    }) 
+    .when ('/tutorial', {
+      templateUrl: '/app/tutorial.html',
+      authenticate: false
     })
     /*.when ('/logout', {
       templateUrl : '/app/about/signin.html',
