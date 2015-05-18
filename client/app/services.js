@@ -68,7 +68,7 @@ angular.module('codeColab.services', [])
         path = this.path,
         repo = repo,
         sha = this.fileSha;
-        // console.log('commit',path,sha)
+
     // function utf8_to_b64(str) {
     //   return window.btoa(unescape(encodeURIComponent(str)));
     // }
@@ -105,29 +105,24 @@ angular.module('codeColab.services', [])
   }
 
   var resetRightOrig = function($scope, id, data) {
-    // console.log('right: ',id)
     if($scope.right) {
       $scope.right.rDoc.unsubscribe()
       $scope.right.rSjs.disconnect()
       $scope.CM.rightOriginal().detachShareJsDoc()
     }
 
-    var rSocket = new BCSocket(null, {reconnect: true});
-    var rSjs = new sharejs.Connection(rSocket);
-    var rDoc = rSjs.get('origDocuments', id);
+    var rSocket = new BCSocket(null, {reconnect: true}),
+        rSjs = new sharejs.Connection(rSocket),
+        rDoc = rSjs.get('origDocuments', id);
+
     $scope.right = {rDoc: rDoc, rSjs: rSjs}
 
     rDoc.subscribe()
 
     rDoc.whenReady(function() {
-      // console.log('rDoc ready')
-      if (!rDoc.type) {
-        rDoc.create('text')
-        // console.log('created')
-      }
+      if (!rDoc.type) { rDoc.create('text') }
 
       rDoc.subscribe(function(err) {
-        // console.log('rDoc subscribed: ',rDoc)
 
         //if doc is new, set value based on GH master so we can update origDocuments collection
 
@@ -140,11 +135,8 @@ angular.module('codeColab.services', [])
         rDoc.attachCodeMirror($scope.CM.rightOriginal())
         // console.log('rDoc attached: ',rDoc)
 
-        if(rDoc.getSnapshot()==='') {
-          //should we run updaterightOrigValue here?
-          $scope.CM.rightOriginal().setValue(data)
-          // console.log('should be rDoc value: ',$scope.CM.rightOriginal().getValue())
-        }
+        //should we run updaterightOrigValue here?
+        if(rDoc.getSnapshot()==='') { $scope.CM.rightOriginal().setValue(data) }
 
       })
       //so that this only runs after the comp value is retrieved
@@ -170,7 +162,6 @@ angular.module('codeColab.services', [])
       }
     })
     .then (function (data) {
-      // console.log(data)
       var newRight = CodeMirror.Doc(data.data.file,'javascript')
       // $scope.CM.rightOriginal().swapDoc(newRight)
       $scope.CM.rightOriginal().setValue(data.data.file)
@@ -178,7 +169,6 @@ angular.module('codeColab.services', [])
   }
 
   var resetCM = function($scope) {
-    // console.log('reset entered')
     if($scope.share) {
       $scope.share.doc.unsubscribe()
       $scope.share.sjs.disconnect()
@@ -216,13 +206,10 @@ angular.module('codeColab.services', [])
 
     doc.whenReady(function() {
       if (!doc.type) {
-        // console.log('created');
         doc.create('text');
       }
 
-      // console.log('ready')
       doc.subscribe(function(err) {
-        // console.log('subscribed')
 
         //this is the new doc - we need to use a doc for a swap
         var newEditor = doc.getSnapshot()==='' ? CodeMirror.Doc(data,'javascript') : CodeMirror.Doc(doc.getSnapshot(),'javascript')
@@ -249,14 +236,6 @@ angular.module('codeColab.services', [])
           $scope.$parent.editorHasLoaded()
         })
       });
-
-      // codeEditor.editor().on('change', function(change) {
-      //   console.log('changed',change)
-      // })
-      // codeEditor.editor().on('update', function() {
-      //   console.log('updated')
-      // })
-
 
     });
 
@@ -316,8 +295,8 @@ angular.module('codeColab.services', [])
   }
 
   var deployApp = function($scope, name){
-    var repo = localStorage.repo;
-    var that = this;
+    var repo = localStorage.repo,
+        that = this;
     return $http({
       method: 'POST',
       url: '/api/deploy',
@@ -408,7 +387,6 @@ angular.module('codeColab.services', [])
     var re = /^[a-z](?:[a-z]|\d|-)*/;
     return re.test(name);
   }
-
 
   return {
     getRepos : getRepos,

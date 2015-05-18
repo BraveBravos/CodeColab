@@ -13,7 +13,7 @@ angular.module('codeColab', [
 .config(['$routeProvider', function ($routeProvider) {
 	$routeProvider
 		.when('/', {
-      templateUrl: '/app/clientAuth/signin.html',
+      templateUrl: '/app/landing/signin.html',
       authenticate: false
     })
     .when ('/main', {
@@ -43,18 +43,16 @@ angular.module('codeColab', [
 .run(function($rootScope, $location, globalAuth){
   $rootScope.$on('$routeChangeStart', function(event, next){
     $rootScope.path = $location.path();
+    
     globalAuth.checkAuth().then(function(loggedIn){
       if(!loggedIn && next.$$route.authenticate){
-        //not logged in and requires auth, redirect to homepage
-        $location.path('/');
+        $location.path('/'); //not logged in and requires auth, redirect to homepage
       } else if(loggedIn && $location.path() === '/'){
-        //if loggedin
-        $location.path('main');
+        $location.path('main'); //if loggedin
       }
     });
   });
 })
-
 
 .factory('globalAuth', function($http){
   var checkAuth = function(){
@@ -68,10 +66,6 @@ angular.module('codeColab', [
 
   return {checkAuth: checkAuth};
 })
-
-
-
-
 
 
 

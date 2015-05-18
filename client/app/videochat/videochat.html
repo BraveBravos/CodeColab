@@ -1,10 +1,18 @@
 <div ng-controller="videochatCtrl" class='video-chat-area'>
-<div class='video-chats-area'>
-      <div id='video-chats'>
-        <div id='remote-media-streams'></div>
-        <div id='local-media-stream'></div>
-      </div>
+
+  <div class='video-chats-area'>
+    <div id='video-chats'>
+      <div id='remote-media-streams'></div>
+      <div id='local-media-stream'></div>
+    </div>
   </div>
-  <div id='setup-new-meeting' ng-click="joinChat()">Join Video Chat</div>
-<div id='leave-current-meeting' class='hidden' ng-click="leaveChat()">Leave Video Chat</div> 
+  
+  <div id='setup-new-meeting' ng-click="joinChat()">
+    Join Video Chat
+  </div>
+  
+  <div id='leave-current-meeting' class='hidden' ng-click="leaveChat()">
+    Leave Video Chat
+  </div> 
+  
 </div>

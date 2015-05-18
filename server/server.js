@@ -34,7 +34,6 @@ var express = require('express'),
     bcrypt = require('bcrypt')
     url = require('url');
 
-
 if (!process.env.CLIENT_ID) {
   var keys = require('../keys.js');
 }
@@ -65,19 +64,18 @@ app.use(function (req, res, next) {
   next();
 })
 
+app.listen(app.get('port'), function() {
+  console.log('Node app running on port', app.get('port'));
+});
+
 
 app.get('/auth/github/callback', function (req, res, next) {
   if (req.session) {
-    sess = req.session;
+    // sess = req.session;
   } else {
     console.log('no session')
   }
   next();
-});
-
-
-app.listen(app.get('port'), function() {
-  console.log('Node app running on port', app.get('port'));
 });
 
 passport.serializeUser(function(user, done) {
