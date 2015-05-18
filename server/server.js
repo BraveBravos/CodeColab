@@ -86,7 +86,6 @@ passport.serializeUser(function(user, done) {
         var insertData = [{githubId: user.id, username: user.username, apps: {}}]
         var promise = users.insert(insertData);
         promise.success(function(doc) {
-          console.log('doc', doc[0])
           done(null, doc[0]._id);
         })
       } else { //User is already in DB, just return their data
@@ -115,7 +114,6 @@ passport.serializeUser(function(user, done) {
 
 passport.deserializeUser(function(id, done) {
   db.get('Users').find({_id: id}, function (err, user) {
-  console.log('deserialize user', user[0])
     done(null, user[0]);
   });
 });
@@ -131,7 +129,6 @@ passport.use(new GitHubStrategy({
     // req.session.userID = profile.id
     // req.user.username = profile.username;
     req.session.cookie.expires = new Date(Date.now() + 8*60*60*1000)
-    console.log('github session', profile)
 
     return done(null, profile)
   }
@@ -150,7 +147,6 @@ function(req, accessToken, refreshToken, profile, done) {
 }));
 
 app.get('/api/repos', function (req, res) {
-  console.log('session',req.user)
   request({
     url: 'https://api.github.com/user/repos?access_token='+ req.session.token+ '&type=all',
     headers: {'User-Agent': req.user.username}
@@ -197,7 +193,6 @@ app.post ('/api/orgs/repos', function (req, res) {
 });
 
 app.post('/api/files', function (req, res) {
-  console.log('url: ',req.body.url+'?ref=CODECOLAB&access_token='+req.session.token)
   request ({
     // changed this to refer to the CODECOLAB branch by default.  This is what the code used to be.
     // url: req.body.url+'?access_token='+req.session.token,
@@ -206,7 +201,6 @@ app.post('/api/files', function (req, res) {
   },
     function (err, resp, body) {
       var fileSha=JSON.parse(body).sha
-      // console.log('content: ',JSON.parse(body).content)
       var file = atob(JSON.parse(body).content);
       // docs.sendDoc(db, file, fileId, fileSha);
       res.status(200).send({file:file, fileSha:fileSha});
@@ -258,7 +252,6 @@ app.post('/api/repos/commit', function(req, res){
   function(err, resp, body){
     if (err) console.log(err)
     else {
-      console.log('git commit sent!', body)
       res.sendStatus(200)
     }
   })
@@ -355,7 +348,6 @@ app.post('/api/builds', function (req, res) {
         if (err) {
           console.log("rebuild error", err);
         } else {
-          console.log('rebuild body', body)
           res.send({name: userApp.name, buildId: body.id})
         }
       })
@@ -367,7 +359,6 @@ app.post('/api/deploy', function(req, res) {
       name = req.body.name,
       token = req.session.herokuToken,
       apiToken = process.env.HEROKU_API_TOKEN || keys.herokuAPIToken
-      console.log('token', token)
   request.post({
     url: "https://api.heroku.com/app-setups",
     headers: {
@@ -384,13 +375,11 @@ app.post('/api/deploy', function(req, res) {
     function (err, resp, body) {
       if (err) console.log('err', err)
       else {
-        console.log('response', body)
         if (body.message === "Name is already taken") {
           res.status(200).send({name: 'taken'})
         } else if (body.message === "You\'ve reached the limit of 5 apps for unverified accounts. Delete some apps or add a credit card to verify your account.") {
           res.status(200).send({name: 'creditLimit'})
         } else {
-          console.log('deploy body', body)
           var name = body.app.name;
             docs.addApp(req, name, body.id, repo)
           res.status(200).send({name: name})
@@ -410,7 +399,6 @@ app.get('/api/deploy/*', function (req, res) {
   docs.getApp(req, repo, function (userApp) {
   var name = userApp.name;
   var appId = userApp.id;
-  console.log('userapp', userApp)
 
   function checkBuild () {
     //Gets App setup info(including BuildID) from heroku for app name sent
@@ -423,9 +411,7 @@ app.get('/api/deploy/*', function (req, res) {
       }
     }, function (err, resp, body) {
       //Gets build log for given buildID
-      console.log('first body', JSON.parse(body))
         var buildId = JSON.parse(body).build.id;
-          console.log ("https://api.heroku.com/apps/"+name+"/builds/" + buildId + "/result")
         if (buildId !==null) {
             successBuild(buildId);
           } else {
@@ -444,7 +430,6 @@ app.get('/api/deploy/*', function (req, res) {
       'Authorization': 'Bearer '+ token
     }
     }, function (err,resp, body) {
-          // console.log('successbody', JSON.parse(body))
         if (JSON.parse(body).build.status === "pending" ){
           setTimeout(function () {
             successBuild(buildId);
@@ -510,16 +495,6 @@ app.post('/api/branch', function(req, res){
       if (err) console.log(err);
       var ref = JSON.parse(body).ref,
           sha = JSON.parse(body).object.sha;
-      // console.log('branch req ref', ref)
-      // console.log('branch req sha', sha)
-
-      // var send = JSON.stringify({
-      //   ref: 'refs/heads/'+'CODECOLAB', //the new branch name
-      //   sha: sha
-      // });
-  console.log('post going to https://api.github.com/repos/' + repo + '/git/refs?access_token='+ req.session.token)
-   console.log('headers', 'User-Agent', owner, 'Content-Type', 'application/json')
-   console.log('body', 'sha', sha)
       request.post({
         url: 'https://api.github.com/repos/' + repo + '/git/refs?access_token='+ req.session.token,
         headers: {'User-Agent': owner, 'Content-Type': 'application/json'},
@@ -555,7 +530,6 @@ app.post('/api/merge', function (req, res) {
   function (err, resp, body) {
     if (err) { console.log('merge err', err) }
     else {
-      console.log('pull request is..', body)
       if (body.errors) { res.status(200).send(body.errors[0].message) }
       else {
         var sha = body.head.sha,
@@ -578,7 +552,6 @@ app.post('/api/merge', function (req, res) {
             url: "https://api.github.com/repos/" + repo + "/pulls/" + num + "/files?access_token=" + req.session.token,
             headers: { 'User-Agent': user}
           }, function (err, resp, body) {
-            console.log('files changed', JSON.parse(body))
             res.sendStatus(200);
           })
         })
@@ -603,13 +576,11 @@ app.use(browserChannel( function(client) {
   });
 
   client.on('close', function(reason) {
-    console.log('closed')
     stream.push(null);
     stream.emit('close');
   });
 
   stream.on('end', function() {
-    console.log('end')
     client.close();
   });
 
