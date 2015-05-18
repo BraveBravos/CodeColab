@@ -24,7 +24,6 @@ angular.module('codeColab.deploy', [])
             $scope.deploying = true;
             Share.deployApp($scope, name);
           } else {
-            console.log('invalidName')
             $scope.deployApp();
           }
        })
