@@ -2,6 +2,7 @@ var express = require('express'),
     connect = require('connect'),
     bodyParser = require ('body-parser'),
     atob = require('atob'),
+    btoa = require('btoa'),
     app = express(),
     mongo = require('mongodb'),
     monk =require ('monk'),
@@ -30,9 +31,7 @@ var express = require('express'),
       backend: backend
     }),
     request = require('request'),
-    github = require('octonode'),
-    bcrypt = require('bcrypt')
-    url = require('url');
+    bcrypt = require('bcrypt');
 
 if (!process.env.CLIENT_ID) {
   var keys = require('../keys.js');
@@ -126,8 +125,6 @@ passport.use(new GitHubStrategy({
   },
   function(req, accessToken, refreshToken, profile, done) {
     req.session.token = accessToken;
-    // req.session.userID = profile.id
-    // req.user.username = profile.username;
     req.session.cookie.expires = new Date(Date.now() + 8*60*60*1000)
 
     return done(null, profile)
@@ -227,34 +224,30 @@ app.post('/api/getUpdatedFile', function (req, res) {
     })
 })
 
-app.post('/api/sjs', function (req, res) {
-  var fileId = req.body.fileId,
-      file = req.body.file;
-
-    docs.setSjs(db, file, fileId);
-    res.sendStatus(200);
-});
-
-
-app.post('/api/repos/commit', function(req, res){
+app.post('/api/repos', function(req, res){
 
   var path = req.body.path,
       message = req.body.message,
       sha=req.body.sha,
       repo=req.body.repo,
-      content = req.body.content;
-
-  var client = github.client(req.session.token);
-  var ghrepo = client.repo(repo)
-
-  console.log("Sending", path, '::', message, '::', sha)
-  ghrepo.updateContents(path, message, content, sha, 'CODECOLAB',
-  function(err, resp, body){
+      content = btoa(req.body.content);
+  request ({
+    method: "PUT",
+    url: 'https://api.github.com/repos/' + repo+ '/contents/' + path +'?access_token='+ req.session.token,
+    headers: {'User-Agent': req.user.username},
+    json: {
+      message: message,
+      content: content,
+      sha: sha,
+      branch: "CODECOLAB"
+    }
+  },
+  function (err, resp, body) {
     if (err) console.log(err)
     else {
-      res.sendStatus(200)
+      res.status(200).send(body.content.sha);
     }
-  })
+  });
 })
 
 app.post ('/api/fileStruct/tree', function (req, res) {
@@ -546,7 +539,6 @@ app.post('/api/merge', function (req, res) {
         }
       },
         function (err, resp, body) {
-          console.log('second merge error', body)
           request({
             method: "GET",
             url: "https://api.github.com/repos/" + repo + "/pulls/" + num + "/files?access_token=" + req.session.token,
