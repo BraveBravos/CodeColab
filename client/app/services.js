@@ -184,16 +184,24 @@ angular.module('codeColab.services', [])
 
       $scope.treeStructure.on('replace', function() { 
         $scope.$parent.tree = $scope.treeStructure.get()[0]
+        $scope.$apply()
+        // $scope.treeStructure.get()[0].forEach(function(item) {
+        //   $scope.$parent.tree.push(item)
+        // })
+        // $scope.$parent.tree.push($scope.treeStructure.get()[0])
         // delete $scope.$parent.tree
         // how do I trigger a refresh?
         console.log('tree replaced: ',$scope.$parent.tree,$scope.tree,$scope.treeStructure.get()[0])
       })
+
       $scope.treeStructure.on('child op', function(path,op) {
         console.log('child op',path,op)
       })
+      
       $scope.treeStructure.on('insert', function() {
         console.log('inserted')
       })
+      
       $scope.treeStructure.on('delete', function() {
         console.log('deleted')
       })
@@ -209,7 +217,7 @@ angular.module('codeColab.services', [])
         // replace is what fires here - child op might fire also
         // replace also fires even if new value is the same
         rDoc.submitOp([
-          {p:['treeStructure',0],ld:rDoc.snapshot.treeStructure[0],li:[{label:'test1', fullPath: '', url:'', id:1, children:[]},{label:'test2', fullPath: '', url:'', id:2, children:[{label:'test22', fullPath: '', url:'', id:3, children:[]}]}]}
+          {p:['treeStructure',0],ld:rDoc.snapshot.treeStructure[0],li:[{label:'test100', fullPath: '', url:'', id:1, children:[]},{label:'test200', fullPath: '', url:'', id:2, children:[{label:'test2200', fullPath: '', url:'', id:3, children:[]}]}]}
         ])
         // for objects
         // rDoc.submitOp([
@@ -249,7 +257,7 @@ angular.module('codeColab.services', [])
         // rDoc.attachCodeMirror($scope.CM.rightOriginal(),$scope.origText)
         // console.log('rDoc attached: ',rDoc)
 
-        if($scope.origText.get()==='') {
+        if($scope.origTextTrigger.get()==='') {
           //should we run updaterightOrigValue here?
           $scope.CM.rightOriginal().setValue(data)
           console.log('snapshot: ',rDoc.getSnapshot())
