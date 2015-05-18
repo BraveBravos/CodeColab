@@ -361,6 +361,7 @@ angular.module('codeColab.services', [])
     })
   }
 
+
   var mergeBranch = function(repo, title, comments, $scope) {
     var that = this;
     return $http({

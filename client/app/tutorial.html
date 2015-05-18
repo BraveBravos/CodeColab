@@ -1,24 +1,24 @@
-<div id='signin'>
+<div id='tutorial'>
 
     <!-- Nav section -->
     <nav class="navbar navbar-default navbar-fixed-top topnav" role="navigation">
         <div class="container topnav">
             <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <!-- <div class="navbar-header"> -->
+                <!-- <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-             
-            </div>
+              -->
+            <!-- </div> -->
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a href="#tutorial">Tutorial</a>
-                    </li> 
+                        <a href="#/">Home</a>
+                    </li>
                     <li>
                         <a href="#about">About</a>
                     </li>
@@ -30,34 +30,6 @@
     </nav>
 
 
-    <!-- opening login section -->
-    <a name="about"></a>
-    <div class="intro-header">
-        <div class="container">
-
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="intro-message">
-                        <h1>CodeColab</h1>
-                        <h3>Create, Collaborate, Commit</h3>
-                        <hr class="intro-divider">
-                        <ul class="list-inline intro-social-buttons">
-                            <li>
-                                <a href="/auth/github" class="btn btn-default btn-lg"><i class="fa fa-github fa-fw"></i> <span class="network-name">Sign in with Github</span></a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-        <!-- /.container -->
-
-    </div>
-    <!-- /.intro-header -->
-
-    <!-- Page Content -->
-
   <a  name="services"></a>
     <div class="content-section-a">
 
@@ -68,15 +40,15 @@
                     <div class="clearfix"></div>
 
                     <h2 class="section-heading">
-                        Live Editing
+                        Merge Arrow
                     </h2>
                     
                     <p class="lead">
-                        CodeColab is a real-time collaborative suite made to increase productivity with teams and remote pairs. This application solves the issue of having access to the most recent code while eliminating the hassle of merging, rebasing, and submitting pull requests.
+                        At any point in your code, if you wish to revert changes you can click the white arrow in the middle of the left and right panel. Multiple arrows will show up, each one representing a different section of changes so you will be able to have complete control over what you wish to revert. 
                     </p>
                 </div>
                 <div class="col-lg-5 col-lg-offset-2 col-sm-6">
-                    <img class="img-responsive" src="styles/startbootstrap-landing-page/img/liveEdit.png" alt="">
+                    <img class="img-responsive" src="styles/img/mergeArrow.gif" alt="">
                 </div>
             </div>
 
@@ -94,11 +66,11 @@
                     <!-- <hr class="section-heading-spacer"> -->
                     <div class="clearfix"></div>
                     <h2 class="section-heading">
-                        GitHub Integration
+                        Committing
                     </h2>
                     
                     <p class="lead">
-                        We integrated GitHub to eliminate merge-conflicts and rebasing altogether while maintaining the protection of existing code by implementing automated branch creation and keeping the basic GitHub functionality behind the scenes. We've also incorporated and simplified the commit and pull request process to be inclusive in our application, saving the functionality of GitHub and improving the user interaction. 
+                        Once you select a repository, a 'CODECOLAB' branch is automatically created and a commit button will appear in the nav bar. Clicking the commit button, you are commiting your changes in the left panel to the GitHub branch- not to master. We've done this to protect any previous code and to keep the traditional GitHub workflow behind the scenes. You can delete the branch at any point on GitHub if you don't wish to keep the changes you've committed and when opening the repository again in CodeColab, a new branch will be recreated.
                     </p>
                 </div>
                 <div class="col-lg-5 col-sm-pull-6  col-sm-6">
@@ -121,12 +93,14 @@
                     <!-- <hr class="section-heading-spacer"> -->
                     <div class="clearfix"></div>
                     <h2 class="section-heading">
-                        Video Communication
+                        Pulling / Merging
                     </h2>
-                    <p class="lead">Many developers work remotely and it can be a pain to access external means of communication. In the best case scenario it's a separate application, and we wanted to change that. Our video chat allows clear communication and the essence of teamwork to persist when dealing with remote users across the globe eliminating the need to seek outno external means of communication.</p>
+                    <p class="lead">
+                        Once your team is satisfied with the changes and commits them, a merge button will appear in the right of the nav bar. Clicking this will prompt you to enter a pull request message. Entering this will submit a pull request from the CodeColab branch to master, and then merge the pull request in to the master branch of the repository after a second security prompt to confirm the merge.
+                    </p>
                 </div>
                 <div class="col-lg-5 col-lg-offset-2 col-sm-6">
-                    <img class="img-responsive" src="styles/startbootstrap-landing-page/img/videochat.png" alt="">
+                    <img class="img-responsive" src="styles/img/mergepull.png" alt="">
                 </div>
             </div>
 
@@ -135,6 +109,33 @@
 
     </div>
     <!-- /.content-section-a -->
+
+
+    <div class="content-section-b">
+        <div class="container">
+
+            <div class="row">
+                <div class="col-lg-5 col-lg-offset-1 col-sm-push-6  col-sm-6">
+                    <!-- <hr class="section-heading-spacer"> -->
+                    <div class="clearfix"></div>
+                    <h2 class="section-heading">
+                        Deployment
+                    </h2>
+                    
+                    <p class="lead">
+                        Once changes have been commited and merged into master, you can deploy your application on Heroku by clicking the 'Deploy' button in the upper right hand corner. You will be prompted to enter the name of your application, and your newly deployed application will open in separate tab. 
+                    </p>
+                </div>
+                <div class="col-lg-5 col-sm-pull-6  col-sm-6">
+                    <img class="img-responsive" src="styles/img/deploy.gif" alt="">
+                </div>
+            </div>
+
+        </div>
+        <!-- /.container -->
+    </div>
+    <!-- /.content-section-b -->
+
 
   <a  name="contact"></a>
     <div class="banner">
@@ -244,14 +245,6 @@
     <!-- /.banner -->
 
 </div>
-
-
-
-
-
-
-
-
 
 
 
