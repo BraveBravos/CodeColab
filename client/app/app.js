@@ -13,7 +13,7 @@ angular.module('codeColab', [
 .config(['$routeProvider', function ($routeProvider) {
 	$routeProvider
 		.when('/', {
-      templateUrl: '/app/clientAuth/signin.html',
+      templateUrl: '/app/landing/signin.html',
       authenticate: false
     })
     .when ('/main', {
