@@ -8,6 +8,7 @@ var express = require('express'),
     monk =require ('monk'),
     docs = require('./documents/documents.js'),
     fileStruct = require('./fileStruct.js'),
+    // db = monk('mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810'),
     db = monk('mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810'),
     cookieParser = require('cookie-parser'),
     session = require('express-session'),
@@ -24,6 +25,7 @@ var express = require('express'),
     http    = require( 'http' ),
     server  = http.createServer( app ),
     liveDBMongoClient = require('livedb-mongo'),
+    // dbClient =liveDBMongoClient('mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810',
     dbClient =liveDBMongoClient('mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810',
       {safe: true}),
     backend = livedb.client(dbClient),
@@ -543,6 +545,7 @@ app.use(browserChannel( function(client) {
   };
 
   client.on('message', function(data) {
+    console.log(data)
     stream.push(data);
   });
 

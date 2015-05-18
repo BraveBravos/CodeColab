@@ -101,18 +101,141 @@ angular.module('codeColab.services', [])
       $scope.CM.rightOriginal().detachShareJsDoc()
     }
 
-    var rSocket = new BCSocket(null, {reconnect: true}),
-        rSjs = new sharejs.Connection(rSocket),
-        rDoc = rSjs.get('origDocuments', id);
-
+    var rSocket = new BCSocket(null, {reconnect: true});
+    var rSjs = new sharejs.Connection(rSocket);
+    var rDoc = rSjs.get('adamShareTest', id);
+    // var rDoc = rSjs.get('adamShareTest', 'testDoc');
     $scope.right = {rDoc: rDoc, rSjs: rSjs}
 
     rDoc.subscribe()
 
     rDoc.whenReady(function() {
-      if (!rDoc.type) { rDoc.create('text') }
+
+//   console.log(rDoc);
+//   if (!rDoc.type) rDoc.create('json0');
+//   if (rDoc.type && rDoc.type.name === 'json0'){
+//     var context = rDoc.createContext();
+//     clientExample(context);
+//   }
+// function clientExample(context){
+//   console.log(
+//     'JSON Client API',
+//     'https://github.com/share/ShareJS/wiki/JSON-Client-API');
+//   console.log('json client',context);
+//   // Create some JSON object
+//   var myObject = [{ todo: [] },{completed: []}];
+//   // Set the structure of the document to the JSON object
+//   context.set( myObject, function(){
+//     // Get the document's JSON object
+//     docObject = context.get(); // => {'todo':[]}
+//     console.log('snapshot',docObject);
+//     // Get the "todo" subdoc
+//     todo = context.createContextAt([0,'todo']);
+//     console.log('todo',todo);
+//     // print out the "todo" subdoc
+//     console.log( todo.get() ); // => []
+//     // Create event when something is inserted into the doc
+//     todo.on('insert', function (pos, item) {
+//       console.log('inserted',pos,item);
+//     });
+//     todo.on('child op', function (path, op) {
+//       var item_idx = path[0]
+//       console.log("Item "+item_idx+" now reads "+todo.get()[item_idx])
+//     });
+//     // Push a value to the "todo" subdoc
+//     todo.push('take out the garbage');
+//     // Print out the "todo" subdoc again
+//     console.log( todo.get() ); // => ['take out the garbage']
+//     // subdoc's work even when their path changes
+//     // context.at().move(0,1,function(){
+//     //   // Set the "todo" subdoc to a completely different value
+//     //   todo.set('some string value');
+//     //   // Print out the "todo" subdoc again
+//     //   console.log( todo.get() ); // => 'some string value'
+//     //   // Get the document JSON object again
+//     //   console.log(doc.get()); // => [{completed: []},{todo:'some string value'}]
+//     // })
+//   });
+// }
+
+
+      // console.log('rDoc ready')
+      if (!rDoc.type) {
+        //create json instead
+        // rDoc.create('text')
+        rDoc.create('json0')
+
+        //need to do a submit op to 'seed' the json structure
+        // doc.submitOp([{p:[],od:null,oi:{grid:grid,playerTurn:1,chat:[]}}])
+        rDoc.submitOp([{p:[],od:null,oi:{origTextTrigger:[0],treeStructure:[0],commitAndMergeIndicators:{'commit':false,'merge':false}}}]) // might use set here instead
+        
+        console.log('created: ',rDoc)
+      }
 
       rDoc.subscribe(function(err) {
+        console.log('rDoc subscribed: ',rDoc)
+
+      //create new context for editor, tree, commit, and merge (maybe cursors and user list) to listen to
+      //we could probably create indicators to display which files have been changed/not committed
+      var editingCxt = rDoc.createContext()
+      $scope.origTextTrigger = editingCxt.createContextAt('origTextTrigger')
+      $scope.treeStructure = editingCxt.createContextAt('treeStructure')
+      $scope.commitAndMergeIndicators = editingCxt.createContextAt('commitAndMergeIndicators')
+
+      $scope.treeStructure.on('replace', function() { 
+        $scope.$parent.tree = $scope.treeStructure.get()[0]
+        // delete $scope.$parent.tree
+        // how do I trigger a refresh?
+        console.log('tree replaced: ',$scope.$parent.tree,$scope.tree,$scope.treeStructure.get()[0])
+      })
+      $scope.treeStructure.on('child op', function(path,op) {
+        console.log('child op',path,op)
+      })
+      $scope.treeStructure.on('insert', function() {
+        console.log('inserted')
+      })
+      $scope.treeStructure.on('delete', function() {
+        console.log('deleted')
+      })
+
+      $scope.commitAndMergeIndicators.on('replace', function() {
+        console.log('c/m replaced')
+        $scope.commitInd = $scope.commitAndMergeIndicators.get().commit
+        $scope.mergeInd = $scope.commitAndMergeIndicators.get().merge
+      })
+      
+      setTimeout(function() {
+        // console.log($scope.treeStructure.get())
+        // replace is what fires here - child op might fire also
+        // replace also fires even if new value is the same
+        rDoc.submitOp([
+          {p:['treeStructure',0],ld:rDoc.snapshot.treeStructure[0],li:[{label:'test1', fullPath: '', url:'', id:1, children:[]},{label:'test2', fullPath: '', url:'', id:2, children:[{label:'test22', fullPath: '', url:'', id:3, children:[]}]}]}
+        ])
+        // for objects
+        // rDoc.submitOp([
+        //   {p:['treeStructure','a'],od:rDoc.snapshot.treeStructure.a,oi:Math.random()}
+        // ])
+        //for just inserting into arrays
+        // rDoc.submitOp([
+        //   {p:['treeStructure',10],li:Math.random()} //this one actually triggers insert
+        // ])
+        // $scope.treeStructure.push(Math.random())
+        console.log('treeStructure: ',$scope.treeStructure.get())
+      },8500)
+
+      console.log(rDoc.getSnapshot(),rDoc.snapshot)
+
+      console.log($scope.origTextTrigger.get(),rDoc.getSnapshot().treeStructure[0],$scope.commitAndMergeIndicators.get())
+
+      console.log('added to scope: ',$scope.origText,$scope.treeStructure,$scope.commitAndMergeIndicators)
+
+      //pass context into attachCodeMirror function where appropriate
+      //add context event listeners
+
+      // $state.submitOp([
+      //   {p:['grid','values'],od:$state.snapshot.grid.values,oi:grid.values},
+      //   {p:['playerTurn'],od:$state.snapshot.playerTurn,oi:playerTurn}
+      // ]);
 
         //if doc is new, set value based on GH master so we can update origDocuments collection
 
@@ -122,11 +245,22 @@ angular.module('codeColab.services', [])
         // $scope.CM.rightOriginal().swapDoc(newRight)
         // console.log('rightOriginal value: ',$scope.CM.rightOriginal().getValue())
 
-        rDoc.attachCodeMirror($scope.CM.rightOriginal())
+        // need to restore this somehow - maybe?
+        // rDoc.attachCodeMirror($scope.CM.rightOriginal(),$scope.origText)
         // console.log('rDoc attached: ',rDoc)
 
-        //should we run updaterightOrigValue here?
-        if(rDoc.getSnapshot()==='') { $scope.CM.rightOriginal().setValue(data) }
+        if($scope.origText.get()==='') {
+          //should we run updaterightOrigValue here?
+          $scope.CM.rightOriginal().setValue(data)
+          console.log('snapshot: ',rDoc.getSnapshot())
+          // rDoc.submitOp([
+          //   {p:['origText'],od:'',oi:data}
+          // ])
+          $scope.origText.set(data)
+          console.log('snapshot 2: ',rDoc.getSnapshot())
+
+          // console.log('should be rDoc value: ',$scope.CM.rightOriginal().getValue())
+        }
 
       })
       //so that this only runs after the comp value is retrieved
