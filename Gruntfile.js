@@ -2,7 +2,8 @@ module.exports = function(grunt) {
 
   // Project configuration.
   grunt.initConfig({
-    pkg: grunt.file.readJSON('package.json'),
+    pkg: grunt.file.readJSON('package.json'), 
+    // pkg: grunt.file.readJSON('bower.json'),
     karma: {
       unit: {
         configFile: 'karma.conf.js'
@@ -30,6 +31,6 @@ module.exports = function(grunt) {
 
   // Default task(s).
   grunt.registerTask('default', ['karma']);
-  grunt.registerTask('localhost',['open:dev','run:server']);
+  grunt.registerTask('serve',['open:dev','run:server']);
 
 };
