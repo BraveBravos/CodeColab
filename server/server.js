@@ -195,13 +195,14 @@ app.post('/api/files', function (req, res) {
   },
     function (err, resp, body) {
       var fileSha=JSON.parse(body).sha
+      // console.log('content: ',JSON.parse(body).content)
       var file = atob(JSON.parse(body).content);
       // docs.sendDoc(db, file, fileId, fileSha);
-      res.status(200).send({file:file, fileSha:fileSha});
+      res.status(200).send({file:file});
     });
 })
 
-//this is to get updates files after a merge, and maybe after a file is newly created - for some reason, I'm not getting api/files to work
+//this is to get updated files after a merge, and maybe after a file is newly created - for some reason, I'm not getting api/files to work
 //when trying to update the rightOriginal side.
 //https://api.github.com/repos/adamlg/chatitude/contents/ff.html?ref=CODECOLAB
 app.post('/api/getUpdatedFile', function (req, res) {
@@ -217,6 +218,11 @@ app.post('/api/getUpdatedFile', function (req, res) {
       var fileSha=JSON.parse(body).sha,
           file = atob(JSON.parse(body).content);
       // docs.sendDoc(db, file, fileId, fileSha);
+      var salt = '$2a$10$JX4yfb1a6c0Ec6yYxkleie' //same as salt in tree
+      
+      file.id = '0'+bcrypt.hashSync(repo+'/'+item.path+'Code-Colab-Extra-Salt',salt)
+      file.url = 'https://api.github.com/repos/' + ownerAndRepo + '/contents/' + item.path
+
       res.status(200).send({file:file, fileSha:fileSha});
     })
 })
@@ -530,6 +536,34 @@ app.post('/api/merge', function (req, res) {
         })
       }
     }
+  })
+})
+
+app.post('/api/files/newFile', function(req, res) {
+  console.log('newFile path: ','https://api.github.com/repos/' + req.body.ownerAndRepo + '/contents/' + req.body.fullPath + '?access_token=' + req.session.token)
+  // res.sendStatus(200)
+  request.put({
+    url: 'https://api.github.com/repos/' + req.body.ownerAndRepo + '/contents/' + req.body.fullPath + '?access_token=' + req.session.token,
+    headers: {'User-Agent': req.session.username},
+    json: {
+      'path': req.body.fullPath,
+      'message': 'File created.',
+      'content': '',
+      'branch': 'CODECOLAB'
+    }
+  }, 
+  function(err, resp, body) {
+    // console.log('newFile body: ',body)
+    // var file = atob(JSON.parse(body).content);
+    // docs.sendDoc(db, file, fileId, fileSha);
+    var salt = '$2a$10$JX4yfb1a6c0Ec6yYxkleie' //same as salt in tree
+    
+    fileId = '0'+bcrypt.hashSync(req.body.ownerAndRepo+'/'+req.body.fullPath+'Code-Colab-Extra-Salt',salt)
+    fileUrl = 'https://api.github.com/repos/' + req.body.ownerAndRepo + '/contents/' + req.body.fullPath
+
+    // console.log(body)
+    //will use response to get url and id of newly created file, and return it to our client-side function
+    res.status(200).send({fileId:fileId,fileUrl:fileUrl})
   })
 })
 

@@ -100,6 +100,39 @@ angular.module('codeColab.fileStruct', [])
     $scope.$parent.editorWillLoad()
     Share.loadFile($scope.$parent,file);
   }
+
+  $scope.treeChange = function() {
+    console.log('parent: ',$scope.$parent.right)
+    // console.log('change: ',$scope.$parent.right.rDoc.snapshot.treeStructure[0],$scope.tree)
+    $scope.$parent.right.rDoc.submitOp([
+      {p:['treeStructure',0],ld:$scope.$parent.right.rDoc.snapshot.treeStructure[0],li:JSON.stringify($scope.tree)}
+    ])
+    // console.log('new Value: ',$scope.$parent.right.rDoc.snapshot.treeStructure[0])
+  }
+
+  $scope.addFile = function(file,arr){
+    // console.log('addFile tree: ',$scope.tree)
+    // console.log('selected repo: ',$scope.selected, $scope.selected.slice($scope.selected.lastIndexOf('/')+1), $scope.selected.slice(0,$scope.selected.lastIndexOf('/')))
+    return $http({
+      method: 'POST',
+      url: '/api/files/newFile',
+      data: {
+        ownerAndRepo: $scope.selected,
+        fullPath : file.fullPath
+      }
+    })
+    .then(function(data) {
+      // console.log('new file data: ',data)
+      //set file.id and file.url here - data.data.whatever
+      file.id = data.data.fileId
+      file.url = data.data.fileUrl
+      arr.push(file)
+      // console.log('new file: ',file)
+
+      $scope.treeChange()
+    })
+  }
+
 })
 
 

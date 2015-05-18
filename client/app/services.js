@@ -1,7 +1,9 @@
 angular.module('codeColab.services', [])
 
 
-.factory('Share', function ($http, $window, $location, $q) {
+.factory('Share', function ($http, $window, $location, $q, $timeout) {
+  var path;
+>>>>>>> combined with addFiles stuff and have it mostly working - need to refactor quite a bit though
   var ce;
 
   var getRepos = function ($scope) {
@@ -173,7 +175,7 @@ angular.module('codeColab.services', [])
       }
 
       rDoc.subscribe(function(err) {
-        console.log('rDoc subscribed: ',rDoc)
+        // console.log('rDoc subscribed: ',rDoc)
 
       //create new context for editor, tree, commit, and merge (maybe cursors and user list) to listen to
       //we could probably create indicators to display which files have been changed/not committed
@@ -183,59 +185,57 @@ angular.module('codeColab.services', [])
       $scope.commitAndMergeIndicators = editingCxt.createContextAt('commitAndMergeIndicators')
 
       $scope.treeStructure.on('replace', function() { 
-        $scope.$parent.tree = $scope.treeStructure.get()[0]
-        $scope.$apply()
-        // $scope.treeStructure.get()[0].forEach(function(item) {
-        //   $scope.$parent.tree.push(item)
-        // })
-        // $scope.$parent.tree.push($scope.treeStructure.get()[0])
-        // delete $scope.$parent.tree
-        // how do I trigger a refresh?
-        console.log('tree replaced: ',$scope.$parent.tree,$scope.tree,$scope.treeStructure.get()[0])
+        console.log('replace entered',$scope.treeStructure.get()[0])
+        $timeout(function() {
+          $scope.$parent.tree = JSON.parse($scope.treeStructure.get()[0])
+          // $scope.$apply()
+        })
+        // console.log('tree replaced: ',$scope.$parent.tree,$scope.tree,$scope.treeStructure.get()[0])
       })
 
-      $scope.treeStructure.on('child op', function(path,op) {
-        console.log('child op',path,op)
-      })
+      // $scope.treeStructure.on('child op', function(path,op) {
+      //   console.log('child op',path,op)
+      // })
       
-      $scope.treeStructure.on('insert', function() {
-        console.log('inserted')
-      })
+      // $scope.treeStructure.on('insert', function() {
+      //   console.log('inserted')
+      // })
       
-      $scope.treeStructure.on('delete', function() {
-        console.log('deleted')
-      })
+      // $scope.treeStructure.on('delete', function() {
+      //   console.log('deleted')
+      // })
 
       $scope.commitAndMergeIndicators.on('replace', function() {
         console.log('c/m replaced')
         $scope.commitInd = $scope.commitAndMergeIndicators.get().commit
         $scope.mergeInd = $scope.commitAndMergeIndicators.get().merge
       })
+
+      // setInterval(function() {
+      //   console.log('interval: ',rDoc.snapshot.treeStructure[0],$scope.tree)
+      //   rDoc.submitOp([
+      //     {p:['treeStructure',0],ld:rDoc.snapshot.treeStructure[0],li:JSON.stringify($scope.tree)}
+      //   ])
+      // },4500)
       
-      setTimeout(function() {
-        // console.log($scope.treeStructure.get())
-        // replace is what fires here - child op might fire also
-        // replace also fires even if new value is the same
-        rDoc.submitOp([
-          {p:['treeStructure',0],ld:rDoc.snapshot.treeStructure[0],li:[{label:'test100', fullPath: '', url:'', id:1, children:[]},{label:'test200', fullPath: '', url:'', id:2, children:[{label:'test2200', fullPath: '', url:'', id:3, children:[]}]}]}
-        ])
-        // for objects
-        // rDoc.submitOp([
-        //   {p:['treeStructure','a'],od:rDoc.snapshot.treeStructure.a,oi:Math.random()}
-        // ])
-        //for just inserting into arrays
-        // rDoc.submitOp([
-        //   {p:['treeStructure',10],li:Math.random()} //this one actually triggers insert
-        // ])
-        // $scope.treeStructure.push(Math.random())
-        console.log('treeStructure: ',$scope.treeStructure.get())
-      },8500)
-
-      console.log(rDoc.getSnapshot(),rDoc.snapshot)
-
-      console.log($scope.origTextTrigger.get(),rDoc.getSnapshot().treeStructure[0],$scope.commitAndMergeIndicators.get())
-
-      console.log('added to scope: ',$scope.origText,$scope.treeStructure,$scope.commitAndMergeIndicators)
+      // setTimeout(function() {
+      //   // console.log($scope.treeStructure.get())
+      //   // replace is what fires here - child op might fire also
+      //   // replace also fires even if new value is the same
+      //   rDoc.submitOp([
+      //     {p:['treeStructure',0],ld:rDoc.snapshot.treeStructure[0],li:[{label:'test100', fullPath: '', url:'', id:1, children:[]},{label:'test200', fullPath: '', url:'', id:2, children:[{label:'test2200', fullPath: '', url:'', id:3, children:[]}]}]}
+      //   ])
+      //   // for objects
+      //   // rDoc.submitOp([
+      //   //   {p:['treeStructure','a'],od:rDoc.snapshot.treeStructure.a,oi:Math.random()}
+      //   // ])
+      //   //for just inserting into arrays
+      //   // rDoc.submitOp([
+      //   //   {p:['treeStructure',10],li:Math.random()} //this one actually triggers insert
+      //   // ])
+      //   // $scope.treeStructure.push(Math.random())
+      //   console.log('treeStructure: ',$scope.treeStructure.get())
+      // },8500)
 
       //pass context into attachCodeMirror function where appropriate
       //add context event listeners
@@ -254,6 +254,7 @@ angular.module('codeColab.services', [])
         // console.log('rightOriginal value: ',$scope.CM.rightOriginal().getValue())
 
         // need to restore this somehow - maybe?
+        // should probably get rid of this rightOrig CodeMirror - we will probably just load the value from GitHub each time the page loads
         // rDoc.attachCodeMirror($scope.CM.rightOriginal(),$scope.origText)
         // console.log('rDoc attached: ',rDoc)
 
