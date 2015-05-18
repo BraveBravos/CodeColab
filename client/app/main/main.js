@@ -71,7 +71,7 @@ angular.module('codeColab.main', [])
   //modal for committing changes to GitHub
   $scope.commitModal = function() {
     bootbox.prompt("Please enter your commit message:", function (result) {
-      Share.commit(result, $scope.selected, $scope);
+      Share.commit(result, $scope.selected, $scope.currentFile, $scope);
     })
   }
 

@@ -2,7 +2,7 @@ angular.module('codeColab.fileStruct', [])
 
 .factory ('FileStructDo', function ($http){
 
-  //toggles the spinner while repo files are loading 
+  //toggles the spinner while repo files are loading
   var toggleSpinner = function(spinner){
     if (spinner === false) spinner = true
     else { spinner = false };
@@ -12,7 +12,7 @@ angular.module('codeColab.fileStruct', [])
   //gets file/folder names from GitHub for the selected repository
   var getTree = function ($scope, repoName, branch) {
     $scope.spinner = this.toggleSpinner($scope.spinner)
-    
+
     var that = this,
         repo = repoName.name.split('/');
 
@@ -34,7 +34,7 @@ angular.module('codeColab.fileStruct', [])
       bigTree.forEach(function(item) {
 
       if (item.type === 'tree' || item.path.lastIndexOf('/')===-1) {
-        tree[item.path] = {top:true, fullPath: item.path, label:item.path, id:item.id, url:item.url, collapsed:true, children:[]}
+        tree[item.path] = {top:true, fullPath: item.path, sha: item.sha, label:item.path, id:item.id, url:item.url, collapsed:true, children:[]}
       }
 
       var divider = item.path.lastIndexOf('/');
@@ -49,7 +49,7 @@ angular.module('codeColab.fileStruct', [])
       } else {
         var fullPath = item.path
         item.path=item.path.slice(divider+1)
-        tree[path].children.push({label:item.path, fullPath: fullPath, url:item.url, id:item.id, children:[]})
+        tree[path].children.push({label:item.path, sha: item.sha, fullPath: fullPath, url:item.url, id:item.id, children:[]})
       }
 
     })
@@ -97,9 +97,8 @@ angular.module('codeColab.fileStruct', [])
 .controller('fileStructCtrl', function ($http, $scope, Share){
   //load file to editor
   $scope.loadFile = function(file){
-    // console.log('loadFile: ',file)
     $scope.$parent.editorWillLoad()
-    Share.loadFile($scope.$parent,file.url, file.id, file.fullPath);
+    Share.loadFile($scope.$parent,file);
   }
 })
 

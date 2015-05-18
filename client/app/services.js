@@ -2,11 +2,7 @@ angular.module('codeColab.services', [])
 
 
 .factory('Share', function ($http, $window, $location, $q) {
-  var path;
   var ce;
-  var fileSha;
-  var fileUrl,fileId,filePath;
-  var globalPath;
 
   var getRepos = function ($scope) {
     return $http({
@@ -62,20 +58,13 @@ angular.module('codeColab.services', [])
       return deferred.promise;
   }
 
-  var commit = function(message, repo, $scope){
-    var message = message,
-        content = ce.editor().getValue(),
-        path = this.path,
-        repo = repo,
-        sha = this.fileSha;
-
-    // function utf8_to_b64(str) {
-    //   return window.btoa(unescape(encodeURIComponent(str)));
-    // }
-
+  var commit = function(message, repo, file, $scope){
+    var content = ce.editor().getValue(),
+        path = file.fullPath,
+        sha = file.sha;
     return $http({
       method: 'POST',
-      url: '/api/repos/commit',
+      url: '/api/repos',
       data: {
         message: message,
         content: content,
@@ -86,6 +75,7 @@ angular.module('codeColab.services', [])
     })
     .then(function(response){
       if (response.status === 200) {
+        $scope.currentFile.sha = response.data;
         bootbox.alert("Commit Successful")
         $scope.commitMade = true;
       }
@@ -157,7 +147,7 @@ angular.module('codeColab.services', [])
       method:'POST',
       url: '/api/getUpdatedFile',
       data: {
-        filePath: globalPath,
+        filePath: $scope.currentFile.fullPath,
         ownerAndRepo: $scope.selected
       }
     })
@@ -252,27 +242,21 @@ angular.module('codeColab.services', [])
     $scope.share = {sjs:sjs,doc:doc}
   }
 
-  var loadFile = function ($scope, url, id, path) {
-    this.fileUrl = url;
-    this.fileId = id;
-    this.filePath = path;
-    this.path = path
-    globalPath = path
-    var that = this;
+  var loadFile = function ($scope, file) {
+    $scope.$parent.currentFile = file;
 
     return $http ({
       method:'POST',
       url: '/api/files',
       data: {
-        url: url,
-        fileId: id
+        url: file.url,
+        fileId: file.id
       }
     })
     .then (function (data) {
       $scope.$parent.fileLoaded = true;
-      that.fileSha = data.data.fileSha;
-      resetRightOrig($scope, id, data.data.file)
-      // loadShare($scope, id, data.data.file)
+      $scope.$parent.currentFile.sha = data.data.fileSha;
+      resetRightOrig($scope, file.id, data.data.file)
     });
   }
 
