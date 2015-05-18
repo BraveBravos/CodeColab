@@ -56,8 +56,6 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 				'</ul>';
 
 
-				
-
 			//check tree id, tree model
 			if( treeId && treeModel ) {
 
@@ -87,6 +85,7 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 
 						//set currentNode
 						scope[treeId].currentNode = selectedNode;
+						
 						if (scope[treeId].currentNode.type !== 'folder') {
 							scope.loadFile(scope[treeId].currentNode)
 						} else {
