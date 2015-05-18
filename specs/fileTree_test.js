@@ -2,9 +2,13 @@
 
 // // var struct = require('../client/app/main/fileStruct.js');
 
-describe('CodeColab tests for client/app/main/fileStruct.js',function(){
+describe('CodeColab tests for methods in fileStruct.js',function(){
   
-  describe('fileStruct.js methods',function(){
+  describe('module factory.FileStructDo methods are defined',function(){
+
+  	it('toggleSpinner is defined',function(){
+  	  expect('toggleSpinner').toBeDefined();
+  	});
 
     it('getTree is defined',function(){
       expect('getTree').toBeDefined();

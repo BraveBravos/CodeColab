@@ -24,6 +24,7 @@
     "heroku-client": "^1.10.0",
     "livedb": "~0.4.8",
     "livedb-mongo": "^0.4.1",
+    "mocha-report": "0.0.2",
     "mongodb": "^2.0.28",
     "monk": "^1.0.1",
     "octonode": "^0.6.17",
@@ -40,6 +41,7 @@
   },
   "devDependencies": {
     "angular-mocks": "^1.3.15",
+    "bardjs": "^0.1.3",
     "grunt": "^0.4.5",
     "grunt-karma": "^0.10.1",
     "grunt-open": "^0.2.3",
@@ -52,14 +54,19 @@
     "karma-firefox-launcher": "^0.1.4",
     "karma-jasmine": "^0.3.5",
     "karma-junit-reporter": "^0.2.2",
+    "karma-mocha": "^0.1.10",
+    "karma-mocha-reporter": "^1.0.2",
     "karma-nyan-reporter": "0.0.60",
     "karma-phantomjs-launcher": "^0.1.4",
     "karma-requirejs": "^0.2.2",
     "karma-safari-launcher": "^0.1.1",
+    "karma-sinon": "^1.0.4",
     "karma-unicorn-reporter": "^0.1.4",
+    "mocha": "^2.2.5",
     "mocha-phantomjs": "^3.5.3",
     "phantomjs": "^1.9.16",
-    "requirejs": "^2.1.17"
+    "requirejs": "^2.1.17",
+    "sinon": "^1.14.1"
   },
   "engines": {
     "node": "0.12.2"

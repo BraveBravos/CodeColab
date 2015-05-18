@@ -1,11 +1,10 @@
-'use strict';
-
-//require('../client/app/videochat/videochat.js');
 
 describe('videochat tests',function(){
+  
+  beforeEach(module('codeColab.videochat'));
 
   describe('connection methods are defined',function(){
-    
+
     it('connection.onstream is defined',function(){
       expect('connection.onstream').toBeDefined();
     });
@@ -41,3 +40,5 @@ describe('videochat tests',function(){
   });
 
 });
+
+
