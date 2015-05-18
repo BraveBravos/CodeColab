@@ -27,7 +27,7 @@ module.exports = function(config) {
       'client/codemirror/merge.js',
       'client/codemirror/sublimekeymap.js',
       'client/codemirror/javascript.js',
-      'node_modules/RTCMultiConnection-v2.2.2.js',
+      // 'node_modules/RTCMultiConnection-v2.2.2.js',
       'node_modules/sinon/lib/sinon.js',
       'node_modules/bardjs/dist/bard.js',
       'client/app/bcsocket.js',
@@ -107,7 +107,7 @@ module.exports = function(config) {
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
     // browsers: ['PhantomJS'],
-    browsers : ['Chrome'],
+    browsers : ['Chrome', 'PhantomJS'],
 
 
     // Continuous Integration mode
