@@ -18,10 +18,10 @@ module.exports = function(config) {
     files: [
 
       // dependencies
-      'client/bower_components/jquery/dist/jquery.js',
       'client/bower_components/angular/angular.js',
       'client/bower_components/angular-mocks/angular-mocks.js',
       'client/bower_components/angular-route/angular-route.js',
+      'client/bower_components/jquery/dist/jquery.js',
       'client/bower_components/bootstrap/dist/js/bootstrap.js',
       'client/bootbox/bootbox.js',
       'client/codemirror/codemirror.js',
