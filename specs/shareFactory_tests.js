@@ -1,7 +1,7 @@
 
 describe('Share factory tests',function(){
   
-  beforeEach(module('codeColab.services'));
+  // beforeEach(angular.module('codeColab.services'));
 
   beforeEach(inject(function($rootScope){
     scope = $rootScope.$new();

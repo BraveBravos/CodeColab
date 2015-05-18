@@ -1,7 +1,7 @@
 
 describe('videochat tests',function(){
   
-  beforeEach(module('codeColab.videochat'));
+  // beforeEach(angular.module('codeColab.videochat'));
 
   describe('connection methods are defined',function(){
 
