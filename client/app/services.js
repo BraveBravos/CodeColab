@@ -333,6 +333,11 @@ angular.module('codeColab.services', [])
           $scope.first = true;
           $scope.deployApp()
         })
+      } else if (name === 'creditLimit') {
+        bootbox.alert("Heroku will not let you create any more apps without a credit card number. Please resolve with Heroku and try again.", function() {
+          $scope.first = true;
+          $location.path('/');
+        })
       } else {
         that.showLog(name, repo);
       }
