@@ -3,7 +3,7 @@ angular.module('codeColab.deploy', [])
 .controller('deployCtrl', function ($scope, Share) {
 
 
-  $scope.deploy = 'Deploy Page';
+  $scope.deploy = 'deploying';
   $scope.first = true;
   $scope.deploying = false;
 

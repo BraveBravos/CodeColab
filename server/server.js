@@ -69,11 +69,8 @@ app.listen(app.get('port'), function() {
 
 
 app.get('/auth/github/callback', function (req, res, next) {
-  if (req.session) {
-    console.log('session');
-  } else {
-    console.log('no session')
-  }
+  if (req.session) console.log('session');
+  else { console.log('no session') }
   next();
 });
 
@@ -150,11 +147,9 @@ app.get('/api/repos', function (req, res) {
   },
   function(err,resp,body) {
     var data = JSON.parse(body).map(function (repo) {
-      // console.log("body from server.api/repos", body)
-      // console.log("repo from server.api/repos", repo)
       return {name: repo.full_name, id: repo.id};
     })
-      res.status(200).json(data)
+    res.status(200).json(data)
   });
 });
 
@@ -254,16 +249,13 @@ app.post ('/api/fileStruct/tree', function (req, res) {
   var owner = req.body.repo[0],
       repo = req.body.repo[1],
       branch = req.body.branch;
-  // req.session.repo = repo;
 
-  // console.log("Making request:", 'https://api.github.com/repos/' +owner+ '/' +repo+ '/git/refs/heads/'+branch+'?access_token='+ req.session.token)
   request({
     url: 'https://api.github.com/repos/' +owner+ '/' +repo+ '/git/refs/heads/' + branch+'?access_token='+ req.session.token,
     headers: {'User-Agent': req.user.username}
   },
   function (err, resp, body) {
     var data = JSON.parse(body);
-    // console.log('tree response', data)
     var sha = data.object.sha;
     var base = 'https://api.github.com/repos',
         more = '/git/trees/',
@@ -276,14 +268,12 @@ app.post ('/api/fileStruct/tree', function (req, res) {
       },
       function (err, resp, body){
         var data = JSON.parse(body)
-        // var salt = bcrypt.genSaltSync(10)
         var salt = '$2a$10$JX4yfb1a6c0Ec6yYxkleie'
         var newTree = data.tree.map(function(item) {
           item.id = '0'+bcrypt.hashSync(repo+'/'+item.path+'Code-Colab-Extra-Salt',salt)
           item.url = base+'/'+ owner + '/' + repo + '/contents/' + item.path
           return item
         })
-        // console.log(newTree)
         res.status(200).send(newTree)
       }
     )   // this is a request inside of a request, so the ) may need to move
@@ -308,18 +298,15 @@ app.get('/auth/heroku/callback',
 app.get('/api/apps/*', function (req, res) {
   var repo = req.url.split('/').slice(3).join('/');
   docs.getApp(req, repo, function (userApp) {
-    if (!userApp) {
-      res.send(false);
-    } else {
-      res.sendStatus(200);
-    }
+    if (!userApp) { res.send(false) }
+    else { res.sendStatus(200) }
   })
 })
 
 app.post('/api/builds', function (req, res) {
-  var repo = req.body.repo;
-  var token = req.session.herokuToken;
-  var apiToken = process.env.HEROKU_API_TOKEN || keys.herokuAPIToken
+  var repo = req.body.repo,
+      token = req.session.herokuToken,
+      apiToken = process.env.HEROKU_API_TOKEN || keys.herokuAPIToken 
 
   docs.getApp(req, repo, function (userApp){
     request({
@@ -337,13 +324,10 @@ app.post('/api/builds', function (req, res) {
         }
       }
     },
-      function (err, resp, body) {
-        if (err) {
-          console.log("rebuild error", err);
-        } else {
-          res.send({name: userApp.name, buildId: body.id})
-        }
-      })
+    function (err, resp, body) {
+      if (err) { console.log("rebuild error", err) }
+      else { res.send({name: userApp.name, buildId: body.id}) }
+    })
   })
 })
 
@@ -352,6 +336,7 @@ app.post('/api/deploy', function(req, res) {
       name = req.body.name,
       token = req.session.herokuToken,
       apiToken = process.env.HEROKU_API_TOKEN || keys.herokuAPIToken
+
   request.post({
     url: "https://api.heroku.com/app-setups",
     headers: {
@@ -359,7 +344,6 @@ app.post('/api/deploy', function(req, res) {
       'Accept': 'application/vnd.heroku+json; version=3',
       'Authorization': 'Bearer '+ token
     },
-
     json: {
       app: {name: name},
       source_blob : {"url" : "https://github.com/" + repo + "/tarball/master?token="+apiToken}
@@ -384,11 +368,10 @@ app.post('/api/deploy', function(req, res) {
 
 app.get('/api/deploy/*', function (req, res) {
   var params = req.url.split('/').slice(3);
-  if (params.length>2) {
-    var buildId = params.pop();
-  }
-  var repo =   params.join('/');
-  var token = req.session.herokuToken;
+  if (params.length>2) { var buildId = params.pop() }
+  var repo =   params.join('/'),
+      token = req.session.herokuToken;
+
   docs.getApp(req, repo, function (userApp) {
   var name = userApp.name;
   var appId = userApp.id;
@@ -411,7 +394,6 @@ app.get('/api/deploy/*', function (req, res) {
         checkBuild();
       }
     })
-
   }
 
   function successBuild(buildId) {
@@ -437,11 +419,8 @@ app.get('/api/deploy/*', function (req, res) {
       })
     }
 
-  if (!buildId) {
-    setTimeout(checkBuild, 3000);
-  } else {
-    successBuild(buildId);
-  }
+  if (!buildId) { setTimeout(checkBuild, 3000) }
+  else { successBuild(buildId) }
   });
 })
 

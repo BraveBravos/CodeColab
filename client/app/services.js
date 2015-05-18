@@ -337,7 +337,7 @@ angular.module('codeColab.services', [])
     })
     .then (function (response) {
       if ($location.path() === '/deploy') {
-        $scope.deploy = "REBUILDING!!!";
+        $scope.deploy = "building!";
         var name = response.data.name;
         var buildId = response.data.buildId;
         that.showLog(name, repo, buildId);
