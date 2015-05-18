@@ -295,7 +295,7 @@ angular.module('codeColab.services', [])
   }
 
   var deployApp = function($scope, name){
-    var repo = localStorage.repo,gi
+    var repo = localStorage.repo,
         that = this;
     return $http({
       method: 'POST',
