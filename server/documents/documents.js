@@ -39,10 +39,9 @@ module.exports = {
   },
 
   addApp : function (req, name, id, repo) {
-    var db = req.db,
-        githubId = req.session.userID,
-        collection = db.get('Users');
-
+    var db = req.db;
+    var githubId = req.user.githubId;
+    var collection = db.get('Users');
     collection.find({githubId: githubId}, function (err, user) {
       var userApps = user[0].apps;
       userApps[repo] = {name:name, id:id}
@@ -55,10 +54,9 @@ module.exports = {
   },
 
   getApp: function(req, repo, cb) {
-    var db = req.db,
-        githubId = req.session.userID,
-        collection = db.get('Users');
-
+    var db = req.db;
+    var githubId = req.user.githubId;
+    var collection = db.get('Users');
     collection.find({githubId:githubId}, function (err, user) {
       var apps = user[0].apps;
       if (apps[repo]) {

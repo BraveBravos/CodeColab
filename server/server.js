@@ -71,7 +71,7 @@ app.listen(app.get('port'), function() {
 
 app.get('/auth/github/callback', function (req, res, next) {
   if (req.session) {
-    // sess = req.session;
+    console.log('session');
   } else {
     console.log('no session')
   }
@@ -79,22 +79,24 @@ app.get('/auth/github/callback', function (req, res, next) {
 });
 
 passport.serializeUser(function(user, done) {
-  console.log('serializing!')
+  var users = db.get('Users');
   if (user.provider === 'github') {
-    db.get('Users').find({githubId: user.id}, function (err, result) {
+    users.find({githubId: user.id}, function (err, result) {
       if(result.length === 0){ //User isn't in DB (FIRST TIMER!)
         var insertData = [{githubId: user.id, username: user.username, apps: {}}]
-        db.get('Users').insert(insertData);
-        done(null, result);
+        var promise = users.insert(insertData);
+        promise.success(function(doc) {
+          console.log('doc', doc[0])
+          done(null, doc[0]._id);
+        })
       } else { //User is already in DB, just return their data
-        done(null, result);
+        done(null, result[0]._id);
       }
     });
   } else {//for Heroku OAuth
-      db.get('Users').find({herokuId: user.id}, function (err, result) {
+      users.find({herokuId: user.id}, function (err, result) {
           if(result.length === 0){ //User hasn't authorized heroku yet
-            var users = db.get('Users');
-            users.find({githubId: user.githubId}, function (err, result) {
+            users.find({_id: user.codeColabId}, function (err, result) {
               users.update(result[0]._id,
                 {$set:
                   {herokuId: user.id}
@@ -102,19 +104,19 @@ passport.serializeUser(function(user, done) {
                 function (err) {
                   if (err) console.log('error adding heroku token');
                 });
-            done(null, result);
+            done(null, result[0]._id);
             });
           } else { //Heroku ID is already in DB, just return their data
-            done(null, result);
+            done(null, result[0]._id);
           }
         });
   }
 });
 
-passport.deserializeUser(function(obj, done) {
-  console.log('deserialize obj', obj)
-  db.get('Users').find({githubId: obj.id}, function (err, result) {
-    done(null, obj);
+passport.deserializeUser(function(id, done) {
+  db.get('Users').find({_id: id}, function (err, user) {
+  console.log('deserialize user', user[0])
+    done(null, user[0]);
   });
 });
 
@@ -126,8 +128,8 @@ passport.use(new GitHubStrategy({
   },
   function(req, accessToken, refreshToken, profile, done) {
     req.session.token = accessToken;
-    req.session.userID = profile.id
-    req.session.username = profile.username;
+    // req.session.userID = profile.id
+    // req.user.username = profile.username;
     req.session.cookie.expires = new Date(Date.now() + 8*60*60*1000)
     console.log('github session', profile)
 
@@ -143,17 +145,15 @@ passport.use(new HerokuStrategy({
 },
 function(req, accessToken, refreshToken, profile, done) {
   req.session.herokuToken = accessToken;
-  console.log('heroku', accessToken)
-  console.log('heroku session', req.session);
-  console.log('heroku profile', profile)
-  profile.githubId = req.session.userID;
+  profile.codeColabId = req.user._id;
   return done(null, profile);
 }));
 
 app.get('/api/repos', function (req, res) {
+  console.log('session',req.user)
   request({
     url: 'https://api.github.com/user/repos?access_token='+ req.session.token+ '&type=all',
-    headers: {'User-Agent': req.session.username}
+    headers: {'User-Agent': req.user.username}
   },
   function(err,resp,body) {
     var data = JSON.parse(body).map(function (repo) {
@@ -168,7 +168,7 @@ app.get('/api/repos', function (req, res) {
 app.get('/api/orgs', function (req, res) {
   request({
     url: 'https://api.github.com/user/orgs?access_token='+ req.session.token+ '&type=all',
-    headers: {'User-Agent': req.session.username}
+    headers: {'User-Agent': req.user.username}
   },
   function (err, resp, body) {
     var orgList = JSON.parse(body).map(function (org) {
@@ -183,7 +183,7 @@ app.post ('/api/orgs/repos', function (req, res) {
   var org = req.body.org;
   request({
     url: 'https://api.github.com/orgs/'+ org + '/repos?access_token='+ req.session.token,
-    headers: {'User-Agent': req.session.username}
+    headers: {'User-Agent': req.user.username}
   },
     function (err, resp, body) {
       var data = [];
@@ -202,7 +202,7 @@ app.post('/api/files', function (req, res) {
     // changed this to refer to the CODECOLAB branch by default.  This is what the code used to be.
     // url: req.body.url+'?access_token='+req.session.token,
     url: req.body.url+'?ref=CODECOLAB&access_token='+req.session.token,
-    headers: {'User-Agent': req.session.username}
+    headers: {'User-Agent': req.user.username}
   },
     function (err, resp, body) {
       var fileSha=JSON.parse(body).sha
@@ -223,7 +223,7 @@ app.post('/api/getUpdatedFile', function (req, res) {
     //we get them from the CODECOLAB branch so we don't have to wait for the pull request to go through -
     // watch this for bugs, and switch to master if needed
     url: 'https://api.github.com/repos/' + ownerAndRepo + '/contents/' + filePath + '?ref=CODECOLAB&access_token=' + req.session.token,
-    headers: {'User-Agent': req.session.username}
+    headers: {'User-Agent': req.user.username}
   },
     function(err, resp, body) {
       var fileSha=JSON.parse(body).sha,
@@ -273,13 +273,12 @@ app.post ('/api/fileStruct/tree', function (req, res) {
   // console.log("Making request:", 'https://api.github.com/repos/' +owner+ '/' +repo+ '/git/refs/heads/'+branch+'?access_token='+ req.session.token)
   request({
     url: 'https://api.github.com/repos/' +owner+ '/' +repo+ '/git/refs/heads/' + branch+'?access_token='+ req.session.token,
-    headers: {'User-Agent': req.session.username}
+    headers: {'User-Agent': req.user.username}
   },
   function (err, resp, body) {
     var data = JSON.parse(body);
     // console.log('tree response', data)
     var sha = data.object.sha;
-    req.session.treeSha = sha;
     var base = 'https://api.github.com/repos',
         more = '/git/trees/',
         last = '?recursive=1&access_token=',
@@ -287,7 +286,7 @@ app.post ('/api/fileStruct/tree', function (req, res) {
 
     request({
       url: concat,
-      headers: {'User-Agent': req.session.username}
+      headers: {'User-Agent': req.user.username}
       },
       function (err, resp, body){
         var data = JSON.parse(body)
@@ -486,7 +485,7 @@ app.get('/api/branch/*', function(req, res) {
   var repo = req.url.split('/').slice(3).join('/');
   request({
     url: 'https://api.github.com/repos/'+repo+'/branches?access_token=' + req.session.token,
-    headers: {'User-Agent': req.session.username}
+    headers: {'User-Agent': req.user.username}
   },
     function(err, resp, body) {
       var exists= false,
@@ -500,7 +499,7 @@ app.get('/api/branch/*', function(req, res) {
 })
 
 app.post('/api/branch', function(req, res){
-  var owner=req.session.username,
+  var owner=req.user.username,
       repo = req.body.repo;
 
   request({
@@ -540,7 +539,7 @@ app.post('/api/merge', function (req, res) {
   var repo = req.body.repo,
       title = req.body.title,
       comments = req.body.comments,
-      user = req.session.username;
+      user = req.user.username;
   request.post ({
     url: 'https://api.github.com/repos/' + repo + '/pulls?access_token='+ req.session.token,
     headers : {
