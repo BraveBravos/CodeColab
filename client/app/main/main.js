@@ -37,6 +37,7 @@ angular.module('codeColab.main', [])
     promise.then(function(result) {
       FileStructDo.getTree($scope, repo, 'CODECOLAB')
     });
+    Share.loadRepoShare($scope)
   }
 
   $scope.mergeModal = function(){
@@ -61,7 +62,7 @@ angular.module('codeColab.main', [])
         bootbox.confirm("Are you sure you want to merge your changes into your master branch?", function (result) {
           if (result) {
             Share.mergeBranch($scope.selected, values.pullTitle, values.comments, $scope)
-            Share.updateRightOrigValue($scope)
+            Share.updateRightOrigValue($scope,'CODECOLAB')
           }
         })
       }

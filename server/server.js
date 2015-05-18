@@ -198,7 +198,7 @@ app.post('/api/files', function (req, res) {
       // console.log('content: ',JSON.parse(body).content)
       var file = atob(JSON.parse(body).content);
       // docs.sendDoc(db, file, fileId, fileSha);
-      res.status(200).send({file:file});
+      res.status(200).send({file:file, fileSha:fileSha});
     });
 })
 
@@ -206,12 +206,14 @@ app.post('/api/files', function (req, res) {
 //when trying to update the rightOriginal side.
 //https://api.github.com/repos/adamlg/chatitude/contents/ff.html?ref=CODECOLAB
 app.post('/api/getUpdatedFile', function (req, res) {
-  var filePath = req.body.filePath,
-      ownerAndRepo = req.body.ownerAndRepo //need to get this from $scope.selected
+  var filePath = req.body.filePath
+  var ownerAndRepo = req.body.ownerAndRepo //need to get this from $scope.selected
+  var branch = req.body.branch
+
   request({
-    //we get them from the CODECOLAB branch so we don't have to wait for the pull request to go through -
+    // on merge, we get them from the CODECOLAB branch so we don't have to wait for the pull request to go through -
     // watch this for bugs, and switch to master if needed
-    url: 'https://api.github.com/repos/' + ownerAndRepo + '/contents/' + filePath + '?ref=CODECOLAB&access_token=' + req.session.token,
+    url: 'https://api.github.com/repos/' + ownerAndRepo + '/contents/' + filePath + '?ref=' + branch + '&access_token=' + req.session.token,
     headers: {'User-Agent': req.user.username}
   },
     function(err, resp, body) {
@@ -220,8 +222,8 @@ app.post('/api/getUpdatedFile', function (req, res) {
       // docs.sendDoc(db, file, fileId, fileSha);
       var salt = '$2a$10$JX4yfb1a6c0Ec6yYxkleie' //same as salt in tree
       
-      file.id = '0'+bcrypt.hashSync(repo+'/'+item.path+'Code-Colab-Extra-Salt',salt)
-      file.url = 'https://api.github.com/repos/' + ownerAndRepo + '/contents/' + item.path
+      file.id = '0'+bcrypt.hashSync(ownerAndRepo+'/'+filePath+'Code-Colab-Extra-Salt',salt)
+      file.url = 'https://api.github.com/repos/' + ownerAndRepo + '/contents/' + filePath
 
       res.status(200).send({file:file, fileSha:fileSha});
     })
@@ -556,6 +558,8 @@ app.post('/api/files/newFile', function(req, res) {
     // console.log('newFile body: ',body)
     // var file = atob(JSON.parse(body).content);
     // docs.sendDoc(db, file, fileId, fileSha);
+    var fileSha = JSON.parse(body).sha
+
     var salt = '$2a$10$JX4yfb1a6c0Ec6yYxkleie' //same as salt in tree
     
     fileId = '0'+bcrypt.hashSync(req.body.ownerAndRepo+'/'+req.body.fullPath+'Code-Colab-Extra-Salt',salt)
@@ -563,7 +567,7 @@ app.post('/api/files/newFile', function(req, res) {
 
     // console.log(body)
     //will use response to get url and id of newly created file, and return it to our client-side function
-    res.status(200).send({fileId:fileId,fileUrl:fileUrl})
+    res.status(200).send({fileId:fileId,fileUrl:fileUrl,fileSha:fileSha})
   })
 })
 
