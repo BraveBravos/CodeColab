@@ -342,7 +342,7 @@ app.post('/api/deploy', function(req, res) {
       name = req.body.name,
       token = req.session.herokuToken,
       apiToken = process.env.HEROKU_API_TOKEN || keys.herokuAPIToken
-
+      console.log('token', token)
   request.post({
     url: "https://api.heroku.com/app-setups",
     headers: {
