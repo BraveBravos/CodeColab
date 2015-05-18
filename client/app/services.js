@@ -315,6 +315,24 @@ angular.module('codeColab.services', [])
       })
   }
 
+  var showLog = function (name, repo, buildId) {
+    var appURL ='https://'+name+'.herokuapp.com';
+    var buildId = buildId? '/'+buildId : '';
+    return $http({
+      method: "GET",
+      url: 'api/deploy/'+ repo + buildId
+    })
+    .then (function (response){
+      $location.path('/');
+      var re = /\n/g;
+      var log = response.data.replace(re, '<br>')
+      bootbox.alert("Heroku Build Log<br>"+ log, function () {
+        return;
+      });
+      $window.open(appURL)
+    })
+  }
+
   var deployApp = function($scope, name){
     var repo = localStorage.repo;
     var that = this;
@@ -344,23 +362,6 @@ angular.module('codeColab.services', [])
     })
   }
 
-  function showLog (name, repo, buildId) {
-    var appURL ='https://'+name+'.herokuapp.com';
-    var buildId = buildId? '/'+buildId : '';
-    return $http({
-      method: "GET",
-      url: 'api/deploy/'+ repo + buildId
-    })
-    .then (function (response){
-      $location.path('/');
-      var re = /\n/g;
-      var log = response.data.replace(re, '<br>')
-      bootbox.alert("Heroku Build Log<br>"+ log, function () {
-        return;
-      });
-      $window.open(appURL)
-    })
-  }
 
   var rebuild = function($scope, repo) {
     var that = this;
