@@ -362,6 +362,8 @@ app.post('/api/deploy', function(req, res) {
         console.log('response', body)
         if (body.message === "Name is already taken") {
           res.status(200).send({name: 'taken'})
+        } else if (body.message === "You\'ve reached the limit of 5 apps for unverified accounts. Delete some apps or add a credit card to verify your account.") {
+          res.status(200).send({name: 'creditLimit'})
         } else {
           console.log('deploy body', body)
           var name = body.app.name;
