@@ -3,10 +3,10 @@ describe('Share factory tests',function(){
   
   // beforeEach(angular.module('codeColab.services'));
 
-  beforeEach(inject(function($rootScope){
-    scope = $rootScope.$new();
-    $scope: scope;
-  }));
+  // beforeEach(inject(function($rootScope){
+  //   scope = $rootScope.$new();
+  //   $scope: scope;
+  // }));
 
   // describe('Share factory methods are functions', function(){
 
