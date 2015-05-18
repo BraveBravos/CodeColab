@@ -5,7 +5,8 @@ module.exports = function(config) {
   config.set({
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
-    basePath: '',
+    // basePath: '',
+    basePath : './',
 
 
     // frameworks to use
@@ -77,15 +78,22 @@ module.exports = function(config) {
       // 'karma-requirejs',
       'karma-mocha',
       'karma-jasmine',
+      'karma-firefox-launcher',
       'karma-phantomjs-launcher',
       'karma-chrome-launcher',
       'karma-nyan-reporter',
       'karma-unicorn-reporter',
       'karma-mocha-reporter',
+      'karma-junit-reporter',
       // 'should'
       'mocha-report',
       'karma-sinon'
       ],
+
+    junitReporter : {
+      outputFile: 'test_out/unit.xml',
+      suite: 'unit'
+    },
 
     // web server port
     port: 9876,
@@ -101,13 +109,13 @@ module.exports = function(config) {
 
 
     // enable / disable watching file and executing tests whenever any file changes
-    autoWatch: false,
+    autoWatch: true,
 
   
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
     // browsers: ['PhantomJS'],
-    browsers : ['Chrome', 'PhantomJS'],
+    browsers : ['PhantomJS', 'Chrome'],
 
 
     // Continuous Integration mode
