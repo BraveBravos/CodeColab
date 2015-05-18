@@ -50,11 +50,13 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 						'<i class="collapsed fa fa-folder" data-ng-show="node.' + nodeChildren + '.length && node.collapsed" data-ng-click="' + treeId + '.selectNodeHead(node)"></i>' +
 						'<i class="expanded fa fa-folder-open" data-ng-show="node.' + nodeChildren + '.length && !node.collapsed" data-ng-click="' + treeId + '.selectNodeHead(node)"></i>' +
 						'<i class="normal fa fa-file-o" data-ng-hide="node.' + nodeChildren + '.length"></i> ' +
-						'<span data-ng-class="node.selected" data-ng-click="' + treeId + '.selectNodeHead(node)">{{node.' + nodeLabel + '}}</span>' + //changed from .selectNodeLabel(node) to .selectNodeHead(node)
+						'<span data-ng-class="node.selected" data-ng-click="' + treeId + '.selectNodeLabel(node)">{{node.' + nodeLabel + '}}</span>' + //changed from .selectNodeLabel(node) to .selectNodeHead(node)
 						'<div data-ng-hide="node.collapsed" data-tree-id="' + treeId + '" data-tree-model="node.' + nodeChildren + '" data-node-id=' + nodeId + ' data-node-label=' + nodeLabel + ' data-node-children=' + nodeChildren + '></div>' +
 					'</li>' +
 				'</ul>';
 
+
+				
 
 			//check tree id, tree model
 			if( treeId && treeModel ) {
@@ -87,6 +89,8 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 						scope[treeId].currentNode = selectedNode;
 						if (scope[treeId].currentNode.type !== 'folder') {
 							scope.loadFile(scope[treeId].currentNode)
+						} else {
+							selectedNode.collapsed = !selectedNode.collapsed;
 						}
 					};
 				}
