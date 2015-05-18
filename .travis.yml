@@ -6,6 +6,8 @@ before_install:
    - "export DISPLAY=:99.0"
    - "sh -e /etc/init.d/xvfb start"
 before_script:
+    - "npm install -g bower karma grunt-cli jshint"
     - "npm install"
     - "bower install"
-script: node_modules/karma/bin/karma start karma.conf.js --single-run
+script: 
+	- "node_modules/karma/bin/karma start karma.conf.js --single-run"
