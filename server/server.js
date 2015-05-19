@@ -550,7 +550,8 @@ app.post('/api/files/newFile', function(req, res) {
   }, 
   function(err, resp, body) {
     // docs.sendDoc(db, file, fileId, fileSha);
-    // console.log('content',body.content.sha)
+    // console.log('content: ',body)
+    // need error handling here
     var fileSha = body.content.sha
 
     var salt = '$2a$10$JX4yfb1a6c0Ec6yYxkleie' //same as salt in tree
