@@ -267,10 +267,14 @@ angular.module('codeColab.services', [])
       console.log('tree update')
       //had to use timeout so that angular knows to render the scope change next chance it gets
       $timeout(function() {
-        console.log('actual tree update', JSON.parse($scope.treeStructure.get()[0]))
         $scope.$parent.tree = JSON.parse($scope.treeStructure.get()[0])
-        $scope.$apply() //- not needed for now
-      })
+        console.log('actual tree update', $scope.$parent.tree)
+        // $scope.$parent.$apply() //- not needed for now
+        // $scope.$apply()
+        // $scope.$digest()
+        // $scope.$parent.$digest()
+        // $rootScope.$apply()
+      )
     })
 
     //more work needed here
