@@ -1,6 +1,6 @@
 angular.module('codeColab.deploy', [])
 
-.controller('deployCtrl', function ($scope, Share) {
+.controller('deployCtrl', function ($scope, $location, Share, $q) {
 
 
   $scope.deploy = 'deploying';
@@ -11,32 +11,42 @@ angular.module('codeColab.deploy', [])
     Share.checkForApp($scope, localStorage.repo)
   }
 
+
   $scope.deployApp = function(){
+    var modalDismissed = false;
     var validName = false;
     var name;
-
       if ($scope.first) {
         bootbox.prompt("What would you like to name your app?", function (enterName) {
-          name = enterName
-          $scope.first = false;
-          validName = Share.checkName(name)
-          if (validName) {
-            $scope.deploying = true;
-            Share.deployApp($scope, name);
+          if (enterName === null) {
+            modalDismissed = true;
+            return;
           } else {
-            $scope.deployApp();
+            name = enterName
+            $scope.first = false;
+            validName = Share.checkName(name)
+            if (validName) {
+              $scope.deploying = true;
+              Share.deployApp($scope, name);
+            } else {
+              $scope.deployApp();
+            }
           }
        })
       } else {
         bootbox.prompt("Valid Heroku app names must start with a letter and can only contain lowercase letters, numbers,\
          and dashes. Please enter a valid name.", function (enterName) {
-          name = enterName;
-          validName = Share.checkName(name)
-          if (validName) {
-            $scope.deploying=true;
-            Share.deployApp($scope, name);
+          if (enterName === null) {
+            $location.path('/');
           } else {
-            $scope.deployApp();
+            name = enterName;
+            validName = Share.checkName(name)
+            if (validName) {
+              $scope.deploying=true;
+              Share.deployApp($scope, name);
+            } else {
+              $scope.deployApp();
+            }
           }
         })
       }
