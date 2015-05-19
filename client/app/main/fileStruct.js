@@ -83,7 +83,7 @@ angular.module('codeColab.fileStruct', [])
 
   // console.log('final tree',results)
   $scope.tree = results;
-  // return results;
+
   }) // end of .then(function(bigTree))
 }  // end of getTree function
 
@@ -102,17 +102,12 @@ angular.module('codeColab.fileStruct', [])
   }
 
   $scope.triggerShareTreeChange = function() {
-    console.log('parent: ',$scope.$parent.right)
-    // console.log('change: ',$scope.$parent.right.rDoc.snapshot.treeStructure[0],$scope.tree)
     $scope.$parent.repoShare.rDoc.submitOp([
       {p:['treeStructure',0],ld:$scope.$parent.repoShare.rDoc.snapshot.treeStructure[0],li:JSON.stringify($scope.tree)}
     ])
-    // console.log('new Value: ',$scope.$parent.right.rDoc.snapshot.treeStructure[0])
   }
 
   $scope.addFile = function(file,arr){
-    // console.log('addFile tree: ',$scope.tree)
-    // console.log('selected repo: ',$scope.selected, $scope.selected.slice($scope.selected.lastIndexOf('/')+1), $scope.selected.slice(0,$scope.selected.lastIndexOf('/')))
     return $http({
       method: 'POST',
       url: '/api/files/newFile',
@@ -122,8 +117,7 @@ angular.module('codeColab.fileStruct', [])
       }
     })
     .then(function(data) {
-      // console.log('new file data: ',data)
-      //set file.id and file.url here - data.data.whatever
+      //set file.id and file.url here
       //might need to get sha from server
       file.id = data.data.fileId
       file.url = data.data.fileUrl

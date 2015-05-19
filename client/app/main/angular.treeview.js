@@ -46,29 +46,6 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 
 			//need to mess with z-indices
 			var menuStartDiv = "<div context-menu class=\"position-fixed\" data-target=\"{{node."+nodeId+"}}-menu\" ng-class=\"{ 'highlight': highlight, 'expanded' : expanded }\">"
-			var testDiv = '<div>{{node.'+nodeId+'}}</div>'
-			var menuEndDiv0 = '<div class="dropdown position-fixed" id="{{node.'+nodeId+'}}-menu">'+
-			  '<ul class="dropdown-menu" role="menu">'+
-			    '<li>'+
-			    	'test'+
-			    '</li>'+
-			    '<li>'+
-			    	'test0'+
-			    '</li>'+
-			    '<li>'+
-			    	'test1'+
-			    '</li>'+
-			    '<li>'+
-			      'test2'+
-			    '</li>'+
-			    '<li>'+
-			    	'test3'+
-			    '</li>'+
-			    '<li>'+
-			      'test4'+
-			    '</li>'+
-			  '</ul>'+
-			'</div>'
 
 			//need to change this based on whether node is file or folder, top or not - probably use ng-show
 			var menuEndDiv = '<div class="dropdown position-fixed" id="{{node.'+nodeId+'}}-menu" style="position:fixed">'+
@@ -172,30 +149,26 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 								id:'',
 							}
 							scope.addFile(newFile,node.children)
-				// 			    scope.$parent.right.rDoc.submitOp([
-    //   {p:['treeStructure',0],ld:$scope.$parent.right.rDoc.snapshot.treeStructure[0],li:$scope.tree}
-    // ])
-							// node.children.push(newFile)
+
 						} else {
 							var newFile = {
 								children: [],
 								fullPath: fileName,
 								label:fileName,
-								//probably need to update url and id after GitHub API call
+								//need to update url and id after GitHub API call
 								url:'',
 								id:'',
 								top:true,
 								type:'file'
 							}
 							scope.addFile(newFile,scope.tree)
-							// scope.tree.push(newFile)
 
 						}
 
-						// scope.treeChange()
+						// the update of other users' tree is trigger in the controller
 					}
 
-					//newFolder function
+					//newFolder function - still needs a lot of work
 					scope[treeId].newFolder = scope[treeId].newFolder || function(node) {
 						var folderName = prompt('Enter the name of your new folder.')
 						if(node) {

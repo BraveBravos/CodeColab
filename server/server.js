@@ -8,7 +8,6 @@ var express = require('express'),
     monk =require ('monk'),
     docs = require('./documents/documents.js'),
     fileStruct = require('./fileStruct.js'),
-    // db = monk('mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810'),
     db = monk('mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810'),
     cookieParser = require('cookie-parser'),
     session = require('express-session'),
@@ -25,7 +24,6 @@ var express = require('express'),
     http    = require( 'http' ),
     server  = http.createServer( app ),
     liveDBMongoClient = require('livedb-mongo'),
-    // dbClient =liveDBMongoClient('mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810',
     dbClient =liveDBMongoClient('mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810',
       {safe: true}),
     backend = livedb.client(dbClient),
@@ -195,7 +193,6 @@ app.post('/api/files', function (req, res) {
   },
     function (err, resp, body) {
       var fileSha=JSON.parse(body).sha
-      // console.log('content: ',JSON.parse(body).content)
       var file = atob(JSON.parse(body).content);
       // docs.sendDoc(db, file, fileId, fileSha);
       res.status(200).send({file:file, fileSha:fileSha});
@@ -207,7 +204,7 @@ app.post('/api/files', function (req, res) {
 //https://api.github.com/repos/adamlg/chatitude/contents/ff.html?ref=CODECOLAB
 app.post('/api/getUpdatedFile', function (req, res) {
   var filePath = req.body.filePath
-  var ownerAndRepo = req.body.ownerAndRepo //need to get this from $scope.selected
+  var ownerAndRepo = req.body.ownerAndRepo //we get this from $scope.selected
   var branch = req.body.branch
 
   request({
@@ -217,9 +214,7 @@ app.post('/api/getUpdatedFile', function (req, res) {
     headers: {'User-Agent': req.user.username}
   },
     function(err, resp, body) {
-      console.log('request: ',filePath,ownerAndRepo,branch)
       var fileSha=JSON.parse(body).sha;
-      // console.log('file: ',JSON.parse(body))
       var file = atob(JSON.parse(body).content);
       // docs.sendDoc(db, file, fileId, fileSha);
       var salt = '$2a$10$JX4yfb1a6c0Ec6yYxkleie' //same as salt in tree
@@ -545,7 +540,6 @@ app.post('/api/merge', function (req, res) {
 
 app.post('/api/files/newFile', function(req, res) {
   console.log('newFile path: ','https://api.github.com/repos/' + req.body.ownerAndRepo + '/contents/' + req.body.fullPath + '?access_token=' + req.session.token)
-  // res.sendStatus(200)
   request.put({
     url: 'https://api.github.com/repos/' + req.body.ownerAndRepo + '/contents/' + req.body.fullPath + '?access_token=' + req.session.token,
     headers: {'User-Agent': req.session.username},
@@ -557,8 +551,6 @@ app.post('/api/files/newFile', function(req, res) {
     }
   }, 
   function(err, resp, body) {
-    // console.log('newFile body: ',body)
-    // var file = atob(JSON.parse(body).content);
     // docs.sendDoc(db, file, fileId, fileSha);
     var fileSha = JSON.parse(body).sha
 
@@ -567,7 +559,6 @@ app.post('/api/files/newFile', function(req, res) {
     fileId = '0'+bcrypt.hashSync(req.body.ownerAndRepo+'/'+req.body.fullPath+'Code-Colab-Extra-Salt',salt)
     fileUrl = 'https://api.github.com/repos/' + req.body.ownerAndRepo + '/contents/' + req.body.fullPath
 
-    // console.log(body)
     //will use response to get url and id of newly created file, and return it to our client-side function
     res.status(200).send({fileId:fileId,fileUrl:fileUrl,fileSha:fileSha})
   })
@@ -585,7 +576,6 @@ app.use(browserChannel( function(client) {
   };
 
   client.on('message', function(data) {
-    console.log(data)
     stream.push(data);
   });
 

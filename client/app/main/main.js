@@ -39,7 +39,6 @@ angular.module('codeColab.main', [])
       FileStructDo.getTree($scope, repo, 'CODECOLAB')
     });
     Share.loadRepoShare($scope)
-    // Share.addRepoEventListeners($scope)
   }
 
   $scope.mergeModal = function(){
