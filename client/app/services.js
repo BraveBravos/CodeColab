@@ -96,7 +96,6 @@ angular.module('codeColab.services', [])
   }
 
   var loadRepoShare = function($scope) {
-    // console.log('right: ',id)
     if($scope.repoShare) {
       $scope.repoShare.rDoc.unsubscribe()
       $scope.repoShare.rSjs.disconnect()
@@ -111,9 +110,11 @@ angular.module('codeColab.services', [])
 
     var rSocket = new BCSocket(null, {reconnect: true});
     var rSjs = new sharejs.Connection(rSocket);
+
     //need to hash this in the server in some way, for unique encrypted storage
+    //need to switch this to origDocs eventually
     var rDoc = rSjs.get('adamShareTest', $scope.selected);
-    // var rDoc = rSjs.get('adamShareTest', 'testDoc');
+    
     $scope.repoShare = {rDoc: rDoc, rSjs: rSjs}
 
     rDoc.subscribe()
