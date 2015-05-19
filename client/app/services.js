@@ -230,7 +230,8 @@ angular.module('codeColab.services', [])
         // probably some more efficient way to do this, but it works for now - if doc exists in
         // origDocs database but not in regular Docs database, this will copy the string into the editor immediately after
         // the subscription takes hold, which also copies it into the Docs database.
-        // need to verify that this part still works
+        // this ordering works for now, but ideally we would promisify this in some way; if the GitHub call is too slow, 
+        // this logic might not work correctly
         if(doc.getSnapshot()==='') {
           $scope.CM.editor().setValue($scope.CM.rightOriginal().getValue())
         }
@@ -303,8 +304,8 @@ angular.module('codeColab.services', [])
       $scope.$parent.fileLoaded = true;
       $scope.$parent.currentFile.sha = data.data.fileSha;
       // console.log('fileSha: ',data.data.fileSha)
-      loadShare($scope, file.id, data.data.file)
       updateRightOrigValue($scope,'master')
+      loadShare($scope, file.id, data.data.file)
     });
   }
 
