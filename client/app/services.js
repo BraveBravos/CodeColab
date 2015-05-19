@@ -139,52 +139,16 @@ angular.module('codeColab.services', [])
       $scope.commitInd = $scope.commitAndMergeIndicators.get().commit
       $scope.mergeInd = $scope.commitAndMergeIndicators.get().merge
 
-      //create event listeners for each of the above variables/contexts
-      $scope.treeStructure.on('replace', function() { 
-        console.log('replace entered',$scope.treeStructure.get()[0])
 
-        //had to use timeout so that angular knows to render the scope change next chance it gets
-        $timeout(function() {
-          $scope.$parent.tree = JSON.parse($scope.treeStructure.get()[0])
-          // $scope.$apply() - not needed for now
-        })
-        // console.log('tree replaced: ',$scope.$parent.tree,$scope.tree,$scope.treeStructure.get()[0])
-      })
-
-      // $scope.treeStructure.on('child op', function(path,op) {
-      //   console.log('child op',path,op)
-      // })
-      
-      // $scope.treeStructure.on('insert', function() {
-      //   console.log('inserted')
-      // })
-      
-      // $scope.treeStructure.on('delete', function() {
-      //   console.log('deleted')
-      // })
-
-      $scope.commitAndMergeIndicators.on('replace', function() {
-        console.log('c/m replaced')
-        $timeout(function() {
-          $scope.commitInd = $scope.commitAndMergeIndicators.get().commit
-          $scope.mergeInd = $scope.commitAndMergeIndicators.get().merge
-        })
-      })
-
-      $scope.origTextTrigger.on('replace', function() {
-        console.log('fetching original text')
-        //somehow trigger fetching original text from master branch in GitHub, then setting right value to that text
-
-      })
 
       //I used this stuff all for testing - delete it 
 
       // setInterval(function() {
-      //   console.log('interval: ',rDoc.snapshot.treeStructure[0],$scope.tree)
+      //   // console.log('interval: ',rDoc.snapshot.treeStructure[0],$scope.tree)
       //   rDoc.submitOp([
-      //     {p:['treeStructure',0],ld:rDoc.snapshot.treeStructure[0],li:JSON.stringify($scope.tree)}
+      //     {p:['origTextTrigger',0],ld:0,li:0}
       //   ])
-      // },4500)
+      // },10000)
       
       // setTimeout(function() {
       //   // console.log($scope.treeStructure.get())
@@ -265,10 +229,8 @@ angular.module('codeColab.services', [])
       }
     })
     .then (function (data) {
-      // need to change all of this stuff
-
-      // console.log(data)
-      var newRight = CodeMirror.Doc(data.data.file,'javascript')
+      console.log('new right value: ',data.data.file)
+      // var newRight = CodeMirror.Doc(data.data.file,'javascript')
       // $scope.CM.rightOriginal().swapDoc(newRight)
       $scope.CM.rightOriginal().setValue(data.data.file)
     });
@@ -336,6 +298,36 @@ angular.module('codeColab.services', [])
         $scope.CM.editor().setOption('readOnly',false)
         // console.log('after subscribed',doc.getSnapshot(),codeEditor.editor().getValue())
         ce = $scope.CM
+
+        //create event listeners for each of the variables/contexts set upon repo selection/change
+        $scope.treeStructure.on('replace', function() { 
+          console.log('replace entered',$scope.treeStructure.get()[0])
+
+          //had to use timeout so that angular knows to render the scope change next chance it gets
+          $timeout(function() {
+            $scope.$parent.tree = JSON.parse($scope.treeStructure.get()[0])
+            // $scope.$apply() - not needed for now
+          })
+          // console.log('tree replaced: ',$scope.$parent.tree,$scope.tree,$scope.treeStructure.get()[0])
+        })
+
+        $scope.commitAndMergeIndicators.on('replace', function() {
+          console.log('c/m replaced')
+          $timeout(function() {
+            $scope.commitInd = $scope.commitAndMergeIndicators.get().commit
+            $scope.mergeInd = $scope.commitAndMergeIndicators.get().merge
+          })
+        })
+
+        $scope.origTextTrigger.on('replace', function() {
+          console.log('fetching original text')
+          //somehow trigger fetching original text from master branch in GitHub, then setting right value to that text
+          // $timeout(function() {
+            if($scope.selectedFile) {
+              updateRightOrigValue($scope,'master')
+            }
+          // })
+        })
 
         //below is for the text editor spinner
         $scope.$parent.$apply(function () {
@@ -485,7 +477,8 @@ angular.module('codeColab.services', [])
         }else {
           bootbox.alert("Merge Successful")
           that.checkForApp($scope, repo)
-          //rightOrig value update is triggered in the controller
+          updateRightOrigValue($scope,'master')
+          $scope.triggerRightShareUpdate()
         }
       }
     })

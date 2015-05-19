@@ -101,11 +101,11 @@ angular.module('codeColab.fileStruct', [])
     Share.loadFile($scope.$parent,file);
   }
 
-  $scope.treeChange = function() {
+  $scope.triggerShareTreeChange = function() {
     console.log('parent: ',$scope.$parent.right)
     // console.log('change: ',$scope.$parent.right.rDoc.snapshot.treeStructure[0],$scope.tree)
-    $scope.$parent.right.rDoc.submitOp([
-      {p:['treeStructure',0],ld:$scope.$parent.right.rDoc.snapshot.treeStructure[0],li:JSON.stringify($scope.tree)}
+    $scope.$parent.repoShare.rDoc.submitOp([
+      {p:['treeStructure',0],ld:$scope.$parent.repoShare.rDoc.snapshot.treeStructure[0],li:JSON.stringify($scope.tree)}
     ])
     // console.log('new Value: ',$scope.$parent.right.rDoc.snapshot.treeStructure[0])
   }
@@ -130,7 +130,7 @@ angular.module('codeColab.fileStruct', [])
       arr.push(file)
       // console.log('new file: ',file)
 
-      $scope.treeChange()
+      $scope.triggerShareTreeChange()
     })
   }
 

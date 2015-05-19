@@ -217,8 +217,10 @@ app.post('/api/getUpdatedFile', function (req, res) {
     headers: {'User-Agent': req.user.username}
   },
     function(err, resp, body) {
-      var fileSha=JSON.parse(body).sha,
-          file = atob(JSON.parse(body).content);
+      console.log('request: ',filePath,ownerAndRepo,branch)
+      var fileSha=JSON.parse(body).sha;
+      // console.log('file: ',JSON.parse(body))
+      var file = atob(JSON.parse(body).content);
       // docs.sendDoc(db, file, fileId, fileSha);
       var salt = '$2a$10$JX4yfb1a6c0Ec6yYxkleie' //same as salt in tree
       

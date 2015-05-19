@@ -62,7 +62,7 @@ angular.module('codeColab.main', [])
         bootbox.confirm("Are you sure you want to merge your changes into your master branch?", function (result) {
           if (result) {
             Share.mergeBranch($scope.selected, values.pullTitle, values.comments, $scope)
-            Share.updateRightOrigValue($scope,'CODECOLAB')
+            // had to put some of the editor updates in the .then of mergeBranch
           }
         })
       }
@@ -78,6 +78,14 @@ angular.module('codeColab.main', [])
 
   $scope.rebuild = function() {
     Share.rebuild($scope.selected);
+  }
+
+
+  $scope.triggerRightShareUpdate = function() {
+    console.log('update: ',$scope.repoShare.rDoc)
+    $scope.repoShare.rDoc.submitOp([
+      {p:['origTextTrigger',0],ld:0,li:0}
+    ])
   }
 
   $scope.init();
