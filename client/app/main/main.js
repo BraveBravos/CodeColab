@@ -29,6 +29,7 @@ angular.module('codeColab.main', [])
   }
 
   $scope.saveRepo = function(repo) {
+    $scope.currentFile = '';
     $scope.fileLoaded = false;
     Share.resetCM($scope)
     $scope.selected = repo.name;
@@ -37,6 +38,7 @@ angular.module('codeColab.main', [])
     promise.then(function(result) {
       FileStructDo.getTree($scope, repo, 'CODECOLAB')
     });
+    Share.loadRepoShare($scope)
   }
 
   $scope.mergeModal = function(){
@@ -61,7 +63,7 @@ angular.module('codeColab.main', [])
         bootbox.confirm("Are you sure you want to merge your changes into your master branch?", function (result) {
           if (result) {
             Share.mergeBranch($scope.selected, values.pullTitle, values.comments, $scope)
-            Share.updateRightOrigValue($scope)
+            // had to put some of the editor updates in the .then of mergeBranch
           }
         })
       }
@@ -77,6 +79,14 @@ angular.module('codeColab.main', [])
 
   $scope.rebuild = function() {
     Share.rebuild($scope.selected);
+  }
+
+
+  $scope.triggerRightShareUpdate = function() {
+    console.log('update: ',$scope.repoShare.rDoc)
+    $scope.repoShare.rDoc.submitOp([
+      {p:['origTextTrigger',0],ld:0,li:0}
+    ])
   }
 
   $scope.init();

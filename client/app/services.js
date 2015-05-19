@@ -1,7 +1,8 @@
 angular.module('codeColab.services', [])
 
 
-.factory('Share', function ($http, $window, $location, $q) {
+.factory('Share', function ($http, $window, $location, $q, $timeout) {
+  var path;
   var ce;
 
   var getRepos = function ($scope) {
@@ -94,65 +95,82 @@ angular.module('codeColab.services', [])
     })
   }
 
-  var resetRightOrig = function($scope, id, data) {
-    if($scope.right) {
-      $scope.right.rDoc.unsubscribe()
-      $scope.right.rSjs.disconnect()
-      $scope.CM.rightOriginal().detachShareJsDoc()
+  var loadRepoShare = function($scope) {
+    if($scope.repoShare) {
+      $scope.repoShare.rDoc.unsubscribe()
+      $scope.repoShare.rSjs.disconnect()
+
+      //probably should move these context destroy operations into a separate function.
+      $scope.repoShare.editingCxt.destroy()
+      $scope.origTextTrigger.destroy()
+      $scope.treeStructure.destroy()
+      $scope.commitAndMergeIndicators.destroy()
+      // $scope.CM.rightOriginal().detachShareJsDoc()
     }
 
-    var rSocket = new BCSocket(null, {reconnect: true}),
-        rSjs = new sharejs.Connection(rSocket),
-        rDoc = rSjs.get('origDocuments', id);
+    var rSocket = new BCSocket(null, {reconnect: true});
+    var rSjs = new sharejs.Connection(rSocket);
 
-    $scope.right = {rDoc: rDoc, rSjs: rSjs}
+    //need to hash this in the server in some way, for unique encrypted storage
+    //need to switch this to origDocs eventually
+    var rDoc = rSjs.get('adamShareTest', $scope.selected);
+    
+    $scope.repoShare = {rDoc: rDoc, rSjs: rSjs}
 
     rDoc.subscribe()
 
     rDoc.whenReady(function() {
-      if (!rDoc.type) { rDoc.create('text') }
+
+      if (!rDoc.type) {
+        //create json instead of text
+        rDoc.create('json0')
+
+        //need to do a submit op to 'seed' the json structure - this line will be changed if we want to add more stuff
+        rDoc.submitOp([{p:[],od:null,oi:{origTextTrigger:[0],treeStructure:[0],commitAndMergeIndicators:{'commit':false,'merge':false}}}]) // might use set here instead
+        
+      }
 
       rDoc.subscribe(function(err) {
 
-        //if doc is new, set value based on GH master so we can update origDocuments collection
+        //create new context for editor, tree, commit, and merge (maybe cursors and user list later on) to listen to
+        //we could probably create indicators to display which files have been changed/not committed, or are being worked in
+        $scope.repoShare.editingCxt = rDoc.createContext()
+        $scope.origTextTrigger = $scope.repoShare.editingCxt.createContextAt('origTextTrigger')
+        $scope.treeStructure = $scope.repoShare.editingCxt.createContextAt('treeStructure')
+        $scope.commitAndMergeIndicators = $scope.repoShare.editingCxt.createContextAt('commitAndMergeIndicators')
 
-        // var newRight = rDoc.getSnapshot()==='' ? CodeMirror.Doc('testing some stuff','javascript') : CodeMirror.Doc('testing some stuff','javascript')
-        // console.log('newRight value: ',newRight.getValue())
+        //set variables that we will eventually watch for displaying commit/merge buttons
+        $scope.commitInd = $scope.commitAndMergeIndicators.get().commit
+        $scope.mergeInd = $scope.commitAndMergeIndicators.get().merge
 
-        // $scope.CM.rightOriginal().swapDoc(newRight)
-        // console.log('rightOriginal value: ',$scope.CM.rightOriginal().getValue())
-
-        rDoc.attachCodeMirror($scope.CM.rightOriginal())
-        // console.log('rDoc attached: ',rDoc)
-
-        //should we run updaterightOrigValue here?
-        if(rDoc.getSnapshot()==='') { $scope.CM.rightOriginal().setValue(data) }
+        addRepoEventListeners($scope)
 
       })
-      //so that this only runs after the comp value is retrieved
-      loadShare($scope,id,data)
+
     })
 
   }
 
-  var updateRightOrigValue = function($scope) {
+  var updateRightOrigValue = function($scope, branch) {
 
-    if($scope.right) {
-      $scope.right.rDoc.unsubscribe()
-      $scope.right.rSjs.disconnect()
-      $scope.CM.rightOriginal().detachShareJsDoc()
-    }
+    // if($scope.right) {
+    //   $scope.right.rDoc.unsubscribe()
+    //   $scope.right.rSjs.disconnect()
+      // $scope.CM.rightOriginal().detachShareJsDoc()
+    // }
+
     //just set value of rightOrig
     return $http ({
       method:'POST',
       url: '/api/getUpdatedFile',
       data: {
         filePath: $scope.currentFile.fullPath,
-        ownerAndRepo: $scope.selected
+        ownerAndRepo: $scope.selected,
+        branch: branch
       }
     })
     .then (function (data) {
-      var newRight = CodeMirror.Doc(data.data.file,'javascript')
+      // var newRight = CodeMirror.Doc(data.data.file,'javascript')
       // $scope.CM.rightOriginal().swapDoc(newRight)
       $scope.CM.rightOriginal().setValue(data.data.file)
     });
@@ -162,10 +180,10 @@ angular.module('codeColab.services', [])
     if($scope.share) {
       $scope.share.doc.unsubscribe()
       $scope.share.sjs.disconnect()
-      $scope.right.rDoc.unsubscribe()
-      $scope.right.rSjs.disconnect()
       $scope.CM.editor().detachShareJsDoc()
-      $scope.CM.rightOriginal().detachShareJsDoc()
+      // $scope.repoShare.rDoc.unsubscribe()
+      // $scope.repoShare.rSjs.disconnect()
+      // $scope.CM.rightOriginal().detachShareJsDoc()
     }
 
     // $scope.CM.rightOriginal().setValue('')
@@ -185,7 +203,6 @@ angular.module('codeColab.services', [])
       $scope.share.doc.unsubscribe()
       $scope.share.sjs.disconnect()
       $scope.CM.editor().detachShareJsDoc()
-      //add stuff for other connection and rightOriginal() here
     }
 
     var socket = new BCSocket(null, {reconnect: true});
@@ -213,6 +230,8 @@ angular.module('codeColab.services', [])
         // probably some more efficient way to do this, but it works for now - if doc exists in
         // origDocs database but not in regular Docs database, this will copy the string into the editor immediately after
         // the subscription takes hold, which also copies it into the Docs database.
+        // this ordering works for now, but ideally we would promisify this in some way; if the GitHub call is too slow, 
+        // this logic might not work correctly
         if(doc.getSnapshot()==='') {
           $scope.CM.editor().setValue($scope.CM.rightOriginal().getValue())
         }
@@ -221,6 +240,7 @@ angular.module('codeColab.services', [])
         // console.log('after subscribed',doc.getSnapshot(),codeEditor.editor().getValue())
         ce = $scope.CM
 
+        
         //below is for the text editor spinner
         $scope.$parent.$apply(function () {
           $scope.$parent.editorHasLoaded()
@@ -238,8 +258,35 @@ angular.module('codeColab.services', [])
 
     // return connection and doc, so that we can disconnect from them later if needed
     // otherwise, the connection or doc subscription or both build up and make us unable to fetch other documents
-
     $scope.share = {sjs:sjs,doc:doc}
+  }
+
+  var addRepoEventListeners = function($scope) {
+    //create event listeners for each of the variables/contexts set upon repo selection/change
+    $scope.treeStructure.on('replace', function() { 
+      //had to use timeout so that angular knows to render the scope change next chance it gets
+      $timeout(function() {
+        $scope.$parent.tree = JSON.parse($scope.treeStructure.get()[0])
+        // $scope.$apply() - not needed for now
+      })
+    })
+
+    //more work needed here
+    $scope.commitAndMergeIndicators.on('replace', function() {
+      // console.log('c/m replaced')
+      $timeout(function() {
+        $scope.commitInd = $scope.commitAndMergeIndicators.get().commit
+        $scope.mergeInd = $scope.commitAndMergeIndicators.get().merge
+      })
+    })
+
+    $scope.origTextTrigger.on('replace', function() {
+      //$scope.currentFile is only set when a file is picked - if a repo is chosen but no file is entered, this was causing errors before
+      if(!!$scope.currentFile) {
+        updateRightOrigValue($scope,'master')
+      }
+    })
+
   }
 
   var loadFile = function ($scope, file) {
@@ -256,7 +303,9 @@ angular.module('codeColab.services', [])
     .then (function (data) {
       $scope.$parent.fileLoaded = true;
       $scope.$parent.currentFile.sha = data.data.fileSha;
-      resetRightOrig($scope, file.id, data.data.file)
+      // console.log('fileSha: ',data.data.fileSha)
+      updateRightOrigValue($scope,'master')
+      loadShare($scope, file.id, data.data.file)
     });
   }
 
@@ -366,9 +415,8 @@ angular.module('codeColab.services', [])
         }else {
           bootbox.alert("Merge Successful")
           that.checkForApp($scope, repo)
-          // $scope.saveRepo({name: $scope.selected})
-          // that.loadFile($scope, this.fileUrl, this.fileId , this.filePath)
-          // updateRightOrigValue($scope)
+          updateRightOrigValue($scope,'master')
+          $scope.triggerRightShareUpdate()
         }
       }
     })
@@ -393,8 +441,9 @@ angular.module('codeColab.services', [])
     showLog: showLog,
     checkName: checkName,
     mergeBranch: mergeBranch,
-    resetRightOrig: resetRightOrig,
-    updateRightOrigValue: updateRightOrigValue
+    loadRepoShare: loadRepoShare,
+    updateRightOrigValue: updateRightOrigValue,
+    addRepoEventListeners: addRepoEventListeners
   }
 })
 

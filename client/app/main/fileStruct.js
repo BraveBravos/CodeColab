@@ -83,7 +83,7 @@ angular.module('codeColab.fileStruct', [])
 
   // console.log('final tree',results)
   $scope.tree = results;
-  // return results;
+
   }) // end of .then(function(bigTree))
 }  // end of getTree function
 
@@ -100,6 +100,34 @@ angular.module('codeColab.fileStruct', [])
     $scope.$parent.editorWillLoad()
     Share.loadFile($scope.$parent,file);
   }
+
+  $scope.triggerShareTreeChange = function() {
+    $scope.$parent.repoShare.rDoc.submitOp([
+      {p:['treeStructure',0],ld:$scope.$parent.repoShare.rDoc.snapshot.treeStructure[0],li:JSON.stringify($scope.tree)}
+    ])
+  }
+
+  $scope.addFile = function(file,arr){
+    return $http({
+      method: 'POST',
+      url: '/api/files/newFile',
+      data: {
+        ownerAndRepo: $scope.selected,
+        fullPath : file.fullPath
+      }
+    })
+    .then(function(data) {
+      //set file.id and file.url here
+      //might need to get sha from server
+      file.id = data.data.fileId
+      file.url = data.data.fileUrl
+      arr.push(file)
+      // console.log('new file: ',file)
+
+      $scope.triggerShareTreeChange()
+    })
+  }
+
 })
 
 
