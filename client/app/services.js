@@ -274,7 +274,7 @@ angular.module('codeColab.services', [])
         // $scope.$digest()
         // $scope.$parent.$digest()
         // $rootScope.$apply()
-      )
+      })
     })
 
     //more work needed here
