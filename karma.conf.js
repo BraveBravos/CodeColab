@@ -109,13 +109,29 @@ module.exports = function(config) {
 
 
     // enable / disable watching file and executing tests whenever any file changes
-    autoWatch: false,
+    autoWatch: true,
 
   
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
     // browsers: ['PhantomJS'],
-    browsers : [ 'Firefox'],
+    browsers : [ 'Chrome', 'Firefox'],
+
+    customLaunchers: {
+      Chrome_travis_ci: {
+        base: 'Chrome',
+        flags: ['--no-sandbox']
+      }
+    },
+
+    if(process.env.TRAVIS){
+      configuration.browsers = ['Chrome_travis_ci'];
+      // configuration.reporters = configuration.reporters.concat(['coverage', 'coveralls']);
+      // configuration.coverageReporter = {
+      //   type : 'lcovonly',
+      //   dir : 'coverage/'
+      // };
+    }
 
 
     // Continuous Integration mode
