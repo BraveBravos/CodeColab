@@ -186,7 +186,7 @@ app.post ('/api/orgs/repos', function (req, res) {
 
 app.post('/api/files', function (req, res) {
   request ({
-    // changed this to refer to the CODECOLAB branch by default.  This is what the code used to be.
+    // changed this to refer to the CODECOLAB branch by default.  Here is what the code used to be:
     // url: req.body.url+'?access_token='+req.session.token,
     url: req.body.url+'?ref=CODECOLAB&access_token='+req.session.token,
     headers: {'User-Agent': req.user.username}
@@ -205,8 +205,7 @@ app.post('/api/files', function (req, res) {
 app.post('/api/getUpdatedFile', function (req, res) {
   var filePath = req.body.filePath
   var ownerAndRepo = req.body.ownerAndRepo //we get this from $scope.selected
-  var branch = req.body.branch
-
+  var branch = req.body.branch //Is there any situation where we need to pull from master, rather than the CODECOLAB branch?
   request({
     // on merge, we get them from the CODECOLAB branch so we don't have to wait for the pull request to go through -
     // watch this for bugs, and switch to master if needed
@@ -542,17 +541,17 @@ app.post('/api/files/newFile', function(req, res) {
   console.log('newFile path: ','https://api.github.com/repos/' + req.body.ownerAndRepo + '/contents/' + req.body.fullPath + '?access_token=' + req.session.token)
   request.put({
     url: 'https://api.github.com/repos/' + req.body.ownerAndRepo + '/contents/' + req.body.fullPath + '?access_token=' + req.session.token,
-    headers: {'User-Agent': req.session.username},
+    headers: {"User-Agent": req.user.username},
     json: {
-      'path': req.body.fullPath,
-      'message': 'File created.',
-      'content': '',
-      'branch': 'CODECOLAB'
+      "message": "File created.",
+      "content": "",
+      "branch": "CODECOLAB"
     }
   }, 
   function(err, resp, body) {
     // docs.sendDoc(db, file, fileId, fileSha);
-    var fileSha = JSON.parse(body).sha
+    // console.log('content',body.content.sha)
+    var fileSha = body.content.sha
 
     var salt = '$2a$10$JX4yfb1a6c0Ec6yYxkleie' //same as salt in tree
     
