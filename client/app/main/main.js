@@ -29,6 +29,7 @@ angular.module('codeColab.main', [])
   }
 
   $scope.saveRepo = function(repo) {
+    $scope.currentFile = '';
     $scope.fileLoaded = false;
     Share.resetCM($scope)
     $scope.selected = repo.name;
@@ -38,6 +39,7 @@ angular.module('codeColab.main', [])
       FileStructDo.getTree($scope, repo, 'CODECOLAB')
     });
     Share.loadRepoShare($scope)
+    // Share.addRepoEventListeners($scope)
   }
 
   $scope.mergeModal = function(){

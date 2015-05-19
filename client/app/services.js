@@ -100,7 +100,12 @@ angular.module('codeColab.services', [])
     if($scope.repoShare) {
       $scope.repoShare.rDoc.unsubscribe()
       $scope.repoShare.rSjs.disconnect()
+
+      //probably should move these context destroy operations into a separate function.
       $scope.repoShare.editingCxt.destroy()
+      $scope.origTextTrigger.destroy()
+      $scope.treeStructure.destroy()
+      $scope.commitAndMergeIndicators.destroy()
       // $scope.CM.rightOriginal().detachShareJsDoc()
     }
 
@@ -139,7 +144,7 @@ angular.module('codeColab.services', [])
       $scope.commitInd = $scope.commitAndMergeIndicators.get().commit
       $scope.mergeInd = $scope.commitAndMergeIndicators.get().merge
 
-
+      addRepoEventListeners($scope)
 
       //I used this stuff all for testing - delete it 
 
@@ -299,36 +304,7 @@ angular.module('codeColab.services', [])
         // console.log('after subscribed',doc.getSnapshot(),codeEditor.editor().getValue())
         ce = $scope.CM
 
-        //create event listeners for each of the variables/contexts set upon repo selection/change
-        $scope.treeStructure.on('replace', function() { 
-          console.log('replace entered',$scope.treeStructure.get()[0])
-
-          //had to use timeout so that angular knows to render the scope change next chance it gets
-          $timeout(function() {
-            $scope.$parent.tree = JSON.parse($scope.treeStructure.get()[0])
-            // $scope.$apply() - not needed for now
-          })
-          // console.log('tree replaced: ',$scope.$parent.tree,$scope.tree,$scope.treeStructure.get()[0])
-        })
-
-        $scope.commitAndMergeIndicators.on('replace', function() {
-          console.log('c/m replaced')
-          $timeout(function() {
-            $scope.commitInd = $scope.commitAndMergeIndicators.get().commit
-            $scope.mergeInd = $scope.commitAndMergeIndicators.get().merge
-          })
-        })
-
-        $scope.origTextTrigger.on('replace', function() {
-          console.log('fetching original text')
-          //somehow trigger fetching original text from master branch in GitHub, then setting right value to that text
-          // $timeout(function() {
-            if($scope.selectedFile) {
-              updateRightOrigValue($scope,'master')
-            }
-          // })
-        })
-
+        
         //below is for the text editor spinner
         $scope.$parent.$apply(function () {
           $scope.$parent.editorHasLoaded()
@@ -349,6 +325,39 @@ angular.module('codeColab.services', [])
     $scope.share = {sjs:sjs,doc:doc}
   }
 
+  var addRepoEventListeners = function($scope) {
+    //create event listeners for each of the variables/contexts set upon repo selection/change
+    $scope.treeStructure.on('replace', function() { 
+      console.log('replace entered',$scope.treeStructure.get()[0])
+
+      //had to use timeout so that angular knows to render the scope change next chance it gets
+      $timeout(function() {
+        $scope.$parent.tree = JSON.parse($scope.treeStructure.get()[0])
+        // $scope.$apply() - not needed for now
+      })
+      // console.log('tree replaced: ',$scope.$parent.tree,$scope.tree,$scope.treeStructure.get()[0])
+    })
+
+    $scope.commitAndMergeIndicators.on('replace', function() {
+      console.log('c/m replaced')
+      $timeout(function() {
+        $scope.commitInd = $scope.commitAndMergeIndicators.get().commit
+        $scope.mergeInd = $scope.commitAndMergeIndicators.get().merge
+      })
+    })
+
+    $scope.origTextTrigger.on('replace', function() {
+      console.log('fetching original text')
+      //somehow trigger fetching original text from master branch in GitHub, then setting right value to that text
+      // $timeout(function() {
+        if(!!$scope.currentFile) {
+        //for some reason this isn't firing anymore
+          updateRightOrigValue($scope,'master')
+        }
+    })
+
+  }
+
   var loadFile = function ($scope, file) {
     $scope.$parent.currentFile = file;
 
@@ -363,10 +372,10 @@ angular.module('codeColab.services', [])
     .then (function (data) {
       $scope.$parent.fileLoaded = true;
       $scope.$parent.currentFile.sha = data.data.fileSha;
-      console.log('fileSha: ',that.fileSha,data.data.fileSha)
+      console.log('fileSha: ',data.data.fileSha)
       // this function doesn't exist anymore
       // resetRightOrig($scope, id, data.data.file)
-      loadShare($scope, id, data.data.file)
+      loadShare($scope, file.id, data.data.file)
       updateRightOrigValue($scope,'master')
     });
   }
@@ -504,7 +513,8 @@ angular.module('codeColab.services', [])
     checkName: checkName,
     mergeBranch: mergeBranch,
     loadRepoShare: loadRepoShare,
-    updateRightOrigValue: updateRightOrigValue
+    updateRightOrigValue: updateRightOrigValue,
+    addRepoEventListeners: addRepoEventListeners
   }
 })
 
