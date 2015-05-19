@@ -264,10 +264,12 @@ angular.module('codeColab.services', [])
   var addRepoEventListeners = function($scope) {
     //create event listeners for each of the variables/contexts set upon repo selection/change
     $scope.treeStructure.on('replace', function() { 
+      console.log('tree update')
       //had to use timeout so that angular knows to render the scope change next chance it gets
       $timeout(function() {
+        console.log('actual tree update', JSON.parse($scope.treeStructure.get()[0]))
         $scope.$parent.tree = JSON.parse($scope.treeStructure.get()[0])
-        // $scope.$apply() - not needed for now
+        $scope.$apply() //- not needed for now
       })
     })
 
@@ -281,8 +283,10 @@ angular.module('codeColab.services', [])
     })
 
     $scope.origTextTrigger.on('replace', function() {
+      console.log('replaced')
       //$scope.currentFile is only set when a file is picked - if a repo is chosen but no file is entered, this was causing errors before
       if(!!$scope.currentFile) {
+        console.log('actually replaced')
         updateRightOrigValue($scope,'master')
       }
     })
@@ -304,7 +308,7 @@ angular.module('codeColab.services', [])
       $scope.$parent.fileLoaded = true;
       $scope.$parent.currentFile.sha = data.data.fileSha;
       // console.log('fileSha: ',data.data.fileSha)
-      updateRightOrigValue($scope,'master')
+      updateRightOrigValue($scope,'CODECOLAB')
       loadShare($scope, file.id, data.data.file)
     });
   }
