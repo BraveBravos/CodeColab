@@ -9,4 +9,3 @@ before_script:
     - "npm install -g bower karma grunt-cli jshint"
     - "npm install"
     - "bower install"
-script: "node_modules/karma/bin/karma start karma.conf.js --single-run"
