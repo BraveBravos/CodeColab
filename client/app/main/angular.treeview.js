@@ -53,13 +53,13 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 			    '<li data-ng-show="!node.top">'+
 			    	'<a class="pointer" role="menuitem" tabindex="1"'+
 			    		'ng-click="'+treeId+'.newFile(node)">'+
-			    			'Add file in folder {{node.type==="folder" ? node.label : node.parent.label}}'+
+			    			'Add file in folder {{node.type==="folder" ? node.label : node.parentLabel}}'+
 			    	'</a>'+
 			    '</li>'+
 			    '<li data-ng-show="!node.top">'+
 			    	'<a class="pointer" role="menuitem" tabindex="2"'+
 			    		'ng-click="'+treeId+'.newFolder(node)">'+
-			    			'Add subfolder in folder {{node.type==="folder" ? node.label : node.parent.label}}'+
+			    			'Add subfolder in folder {{node.type==="folder" ? node.label : node.parentLabel}}'+
 			    	'</a>'+
 			    '</li>'+
 			    '<li data-ng-show="node.top">'+
@@ -137,20 +137,59 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 						}
 					};
 
-					scope[treeId].deleteFile = scope[treeId].deleteFile || function(node) {
-						console.log('selected node: ',node)
-						if (node.top) {
-							console.log('root - index: ',scope.tree.indexOf(node))
+					function findParent(path,searchNode,origFullPath) {
+						var searchArr = searchNode ? searchNode.children : scope.tree
+
+						if(path.indexOf('/') > -1) {
+							var divider = path.indexOf('/')
+							var newDirectory = path.slice(0,divider)
+							var newPath = path.slice(divider+1)
+
+							for (var i = 0; i < searchArr.length; i++) {
+								if(searchArr[i].label === newDirectory && searchArr[i].type === 'folder') {
+									return findParent(newPath,searchArr[i],path)
+								}
+							}
 						} else {
-							console.log('index: ',node.parent.children.indexOf(node))
-							// console.log('index - scope.tree: ',scope.tree.indexOf(node))
+							return searchNode
+							//should be able to return searchNode out here, though the for loop might be a good final confirmation
+							// for (var i = 0; i < searchArr.length; i++) {
+							// 	if(searchArr[i].fullPath === origFullPath && searchArr[i].type !== 'folder') {
+							// 		return searchNode
+							// 	}
+							// }
 						}
+					}
+
+					scope[treeId].deleteFile = scope[treeId].deleteFile || function(node) {
+
+						console.log('selected node: ',node)
+						return
+						//should we put the right-click directive menu on the entire dom element, in case there are no files?
+						if (node.top) {
+							scope.tree.splice(scope.tree.indexOf(node),1)
+							console.log('after root - index: ',scope.tree)
+							// console.log('root parent: ',node.parent)
+						} else {
+							// node.parent.children.splice(node.parent.children.indexOf(node),1)
+							var parentNode = findParent(node.fullPath)
+							parentNode.children.splice(parentNode.children.indexOf(node),1)
+							console.log('after remove - index: ',scope.tree)
+							// console.log('elem parent: ',findParent(node.fullPath))
+							// console.log('index - scope.tree: ',scope.tree.indexOf(node))
+							// console.log('after index: ',node.parent.children)
+							// console.log('tree after index: ',node.parent.children)
+						}
+
+						//do stuff with node path
+						scope.deleteFile(node)
 					}
 
 					//need to set the treeId
 					//newFile function
 					scope[treeId].newFile = scope[treeId].newFile || function(node) {
 						var fileName = prompt('Enter the name of your new file (including the file extension, such as .js or .html).')
+						console.log('node: ',node)
 						if(node) {
 							var newFile = {
 								children: [],
@@ -159,8 +198,11 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 								//probably need to update url and id after GitHub API call
 								url:'',
 								id:'',
+								parentLabel: node.label
 							}
-							scope.addFile(newFile,node.children)
+							var parentNode = node.type === 'folder' ? node : findParent(node.fullPath)
+							console.log('parent node: ',parentNode)
+							// scope.addFile(newFile,parentNode.children)
 
 						} else {
 							var newFile = {
@@ -173,11 +215,12 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 								top:true,
 								type:'file'
 							}
-							scope.addFile(newFile,scope.tree)
+							console.log('added to root scope')
+							// scope.addFile(newFile,scope.tree)
 
 						}
 
-						// the update of other users' tree is trigger in the controller
+						// the update of other users' tree is triggered in the controller
 					}
 
 					//newFolder function - still needs a lot of work

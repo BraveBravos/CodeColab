@@ -564,6 +564,33 @@ app.post('/api/files/newFile', function(req, res) {
   })
 })
 
+app.post('/api/files/deleteFile', function(req, res) {
+  console.log('deleteFile path: ','https://api.github.com/repos/' + req.body.ownerAndRepo + '/contents/' + req.body.fullPath + '?access_token=' + req.session.token)
+  request.del({
+    url: 'https://api.github.com/repos/' + req.body.ownerAndRepo + '/contents/' + req.body.fullPath + '?access_token=' + req.session.token,
+    headers: {"User-Agent": req.user.username},
+    json: {
+      "message": req.body.message,
+      "sha" : req.body.sha,
+      "branch": "CODECOLAB"
+    }
+  }, 
+  function(err, resp, body) {
+    // docs.sendDoc(db, file, fileId, fileSha);
+    console.log('content: ',body)
+    // need error handling here
+    // var fileSha = body.content.sha
+
+    // var salt = '$2a$10$JX4yfb1a6c0Ec6yYxkleie' //same as salt in tree
+    
+    // fileId = '0'+bcrypt.hashSync(req.body.ownerAndRepo+'/'+req.body.fullPath+'Code-Colab-Extra-Salt',salt)
+    // fileUrl = 'https://api.github.com/repos/' + req.body.ownerAndRepo + '/contents/' + req.body.fullPath
+
+    //will use response to get url and id of newly created file, and return it to our client-side function
+    res.status(200).send({})
+  })
+})
+
 app.use(browserChannel( function(client) {
   var stream = new Duplex({objectMode: true});
 
