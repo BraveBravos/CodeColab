@@ -53,25 +53,25 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 			    '<li data-ng-show="!node.top">'+
 			    	'<a class="pointer" role="menuitem" tabindex="1"'+
 			    		'ng-click="'+treeId+'.newFile(node)">'+
-			    			'Add file in this folder'+
+			    			'Add file in folder {{node.type==="folder" ? node.label : node.parent.label}}'+
 			    	'</a>'+
 			    '</li>'+
 			    '<li data-ng-show="!node.top">'+
 			    	'<a class="pointer" role="menuitem" tabindex="2"'+
 			    		'ng-click="'+treeId+'.newFolder(node)">'+
-			    			'Add subfolder in this folder'+
+			    			'Add subfolder in folder {{node.type==="folder" ? node.label : node.parent.label}}'+
 			    	'</a>'+
 			    '</li>'+
 			    '<li data-ng-show="node.top">'+
 			    	'<a class="pointer" role="menuitem" tabindex="3" '+
 			         'ng-click="'+treeId+'.newFile()">' +
-			         'Add file in root folder' +
+			         'Add file in {{node.type==="folder" ? "folder "+node.label : "root folder"}}' +
 			      '</a>' +
 			    '</li>'+
 			    '<li data-ng-show="node.top">'+
 			      '<a class="pointer" role="menuitem" tabindex="4" '+
 			         'ng-click="'+treeId+'.newFolder()">'+
-			        'Add folder in root folder'+
+			        'Add folder in {{node.type==="folder" ? "folder "+node.label : "root folder"}}'+
 			      '</a>' +
 			    '</li>'+
 			    '<li>'+
@@ -139,6 +139,12 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 
 					scope[treeId].deleteFile = scope[treeId].deleteFile || function(node) {
 						console.log('selected node: ',node)
+						if (node.top) {
+							console.log('root - index: ',scope.tree.indexOf(node))
+						} else {
+							console.log('index: ',node.parent.children.indexOf(node))
+							// console.log('index - scope.tree: ',scope.tree.indexOf(node))
+						}
 					}
 
 					//need to set the treeId
