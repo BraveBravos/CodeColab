@@ -550,7 +550,7 @@ app.post('/api/files/newFile', function(req, res) {
   }, 
   function(err, resp, body) {
     // docs.sendDoc(db, file, fileId, fileSha);
-    // console.log('content: ',body)
+    console.log('content: ',body)
     // need error handling here
     var fileSha = body.content.sha
 

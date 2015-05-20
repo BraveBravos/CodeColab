@@ -50,25 +50,25 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 			//need to change this based on whether node is file or folder, top or not - probably use ng-show
 			var menuEndDiv = '<div class="dropdown position-fixed" id="{{node.'+nodeId+'}}-menu" style="position:fixed">'+
 			  '<ul class="dropdown-menu" role="menu">'+
-			    '<li>'+
+			    '<li data-ng-show="!node.top">'+
 			    	'<a class="pointer" role="menuitem" tabindex="1"'+
 			    		'ng-click="'+treeId+'.newFile(node)">'+
 			    			'Add file in this folder'+
 			    	'</a>'+
 			    '</li>'+
-			    '<li>'+
+			    '<li data-ng-show="!node.top">'+
 			    	'<a class="pointer" role="menuitem" tabindex="2"'+
 			    		'ng-click="'+treeId+'.newFolder(node)">'+
 			    			'Add subfolder in this folder'+
 			    	'</a>'+
 			    '</li>'+
-			    '<li>'+
+			    '<li data-ng-show="node.top">'+
 			    	'<a class="pointer" role="menuitem" tabindex="3" '+
 			         'ng-click="'+treeId+'.newFile()">' +
 			         'Add file in root folder' +
 			      '</a>' +
 			    '</li>'+
-			    '<li>'+
+			    '<li data-ng-show="node.top">'+
 			      '<a class="pointer" role="menuitem" tabindex="4" '+
 			         'ng-click="'+treeId+'.newFolder()">'+
 			        'Add folder in root folder'+
@@ -76,6 +76,7 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 			    '</li>'+
 			    '<li>'+
 			      '<a class="pointer" role="menuitem" tabindex="5" '+
+			         // 'ng-click="'+treeId+'.deleteFile(node)">'+
 			         'ng-click="'+treeId+'.deleteFile(node)">'+
 			        'Delete {{node.'+nodeLabel+'}}'+
 			      '</a>' +
@@ -135,6 +136,11 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 							selectedNode.collapsed = !selectedNode.collapsed;
 						}
 					};
+
+					scope[treeId].deleteFile = scope[treeId].deleteFile || function(node) {
+						console.log('selected node: ',node)
+					}
+
 					//need to set the treeId
 					//newFile function
 					scope[treeId].newFile = scope[treeId].newFile || function(node) {
