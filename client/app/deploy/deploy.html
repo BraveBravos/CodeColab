@@ -1,9 +1,9 @@
 <link rel="stylesheet" href="../../styles/styles.css">
 
-<div class='deployContainer'>
+<div ng-show="deploying" class='deployContainer'>
   <!-- <h1>{{deploy}}</h1> -->
-  <div ng-show="deploying">
-    <p ng-show = "deploying">Your app is {{deploy}}</p>
+  <div >
+    <p>Your app is {{deploy}}</p>
     <i class="fa fa-spinner fa-pulse fa-5x"></i>
     <!-- <img src='../../styles/img/waiting.gif'> -->
   </div>

@@ -345,30 +345,30 @@ angular.module('codeColab.services', [])
   var deployApp = function($scope, name){
     var repo = localStorage.repo,
         that = this;
-    return $http({
-      method: 'POST',
-      url: '/api/deploy',
-      data: {
-        repo: repo,
-        name: name
-      }
-    })
-    .then (function(response){
-      var name = response.data.name;
-      if (name === 'taken') {
-        bootbox.alert("That name is already taken.", function () {
-          $scope.first = true;
-          $scope.deployApp()
-        })
-      } else if (name === 'creditLimit') {
-        bootbox.alert("Heroku will not let you create any more apps without a credit card number. Please resolve with Heroku and try again.", function() {
-          $scope.first = true;
-          $location.path('/');
-        })
-      } else {
-        that.showLog(name, repo);
-      }
-    })
+      return $http({
+        method: 'POST',
+        url: '/api/deploy',
+        data: {
+          repo: repo,
+          name: name
+        }
+      })
+      .then (function(response){
+        var name = response.data.name;
+        if (name === 'taken') {
+          bootbox.alert("That name is already taken.", function () {
+            $scope.first = true;
+            $scope.deployApp()
+          })
+        } else if (name === 'creditLimit') {
+          bootbox.alert("Heroku will not let you create any more apps without a credit card number. Please resolve with Heroku and try again.", function() {
+            $scope.first = true;
+            $location.path('/');
+          })
+        } else {
+          that.showLog(name, repo);
+        }
+      })
   }
 
 
