@@ -566,6 +566,7 @@ app.post('/api/files/newFile', function(req, res) {
 
 app.post('/api/files/deleteFile', function(req, res) {
   console.log('deleteFile path: ','https://api.github.com/repos/' + req.body.ownerAndRepo + '/contents/' + req.body.fullPath + '?access_token=' + req.session.token)
+  console.log(req.body.fullPath+' sha: ',req.body.sha)
   request.del({
     url: 'https://api.github.com/repos/' + req.body.ownerAndRepo + '/contents/' + req.body.fullPath + '?access_token=' + req.session.token,
     headers: {"User-Agent": req.user.username},

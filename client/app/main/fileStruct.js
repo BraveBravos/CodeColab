@@ -130,6 +130,7 @@ angular.module('codeColab.fileStruct', [])
   }
 
   $scope.deleteFile = function(file) {
+    //need to make sure sha is supplied when deleting newly-created files
     return $http({
       method: 'POST',
       url: '/api/files/deleteFile',
