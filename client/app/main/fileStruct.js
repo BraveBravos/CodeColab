@@ -46,10 +46,11 @@ angular.module('codeColab.fileStruct', [])
       if (item.type === 'tree') {
         tree[path].children.push(tree[item.path])
         tree[item.path].top=false
+        tree[item.path].parentLabel=tree[path].label
       } else {
         var fullPath = item.path
         item.path=item.path.slice(divider+1)
-        tree[path].children.push({label:item.path, sha: item.sha, fullPath: fullPath, url:item.url, id:item.id, children:[]})
+        tree[path].children.push({label:item.path, sha: item.sha, fullPath: fullPath, url:item.url, id:item.id, children:[], parentLabel:tree[path].label})
       }
 
     })
@@ -121,9 +122,27 @@ angular.module('codeColab.fileStruct', [])
       //might need to get sha from server
       file.id = data.data.fileId
       file.url = data.data.fileUrl
+      file.sha = data.data.fileSha
       arr.push(file)
       // console.log('new file: ',file)
 
+      $scope.triggerShareTreeChange()
+    })
+  }
+
+  $scope.deleteFile = function(file) {
+    //need to make sure sha is supplied when deleting newly-created files
+    return $http({
+      method: 'POST',
+      url: '/api/files/deleteFile',
+      data: {
+        ownerAndRepo: $scope.selected,
+        fullPath: file.fullPath,
+        message: 'Deleted '+file.label + '.',
+        sha: file.sha
+      }
+    })
+    .then (function() {
       $scope.triggerShareTreeChange()
     })
   }

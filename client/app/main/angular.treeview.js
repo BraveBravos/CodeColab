@@ -50,32 +50,33 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 			//need to change this based on whether node is file or folder, top or not - probably use ng-show
 			var menuEndDiv = '<div class="dropdown position-fixed" id="{{node.'+nodeId+'}}-menu" style="position:fixed">'+
 			  '<ul class="dropdown-menu" role="menu">'+
-			    '<li>'+
+			    '<li data-ng-show="!node.top || node.type===\'folder\'">'+
 			    	'<a class="pointer" role="menuitem" tabindex="1"'+
 			    		'ng-click="'+treeId+'.newFile(node)">'+
-			    			'Add file in this folder'+
+			    			'Add file in folder {{node.type==="folder" ? node.label : node.parentLabel}}'+
 			    	'</a>'+
 			    '</li>'+
-			    '<li>'+
+			    '<li data-ng-show="!node.top || node.type===\'folder\'">'+
 			    	'<a class="pointer" role="menuitem" tabindex="2"'+
 			    		'ng-click="'+treeId+'.newFolder(node)">'+
-			    			'Add subfolder in this folder'+
+			    			'Add subfolder in folder {{node.type==="folder" ? node.label : node.parentLabel}}'+
 			    	'</a>'+
 			    '</li>'+
-			    '<li>'+
+			    '<li data-ng-show="node.top && node.type!==\'folder\'">'+
 			    	'<a class="pointer" role="menuitem" tabindex="3" '+
 			         'ng-click="'+treeId+'.newFile()">' +
-			         'Add file in root folder' +
+			         'Add file in {{node.type==="folder" ? "folder "+node.label : "root folder"}}' +
 			      '</a>' +
 			    '</li>'+
-			    '<li>'+
+			    '<li data-ng-show="node.top && node.type!==\'folder\'">'+
 			      '<a class="pointer" role="menuitem" tabindex="4" '+
 			         'ng-click="'+treeId+'.newFolder()">'+
-			        'Add folder in root folder'+
+			        'Add folder in {{node.type==="folder" ? "folder "+node.label : "root folder"}}'+
 			      '</a>' +
 			    '</li>'+
-			    '<li>'+
+			    '<li data-ng-show="node.type!==\'folder\'">'+
 			      '<a class="pointer" role="menuitem" tabindex="5" '+
+			         // 'ng-click="'+treeId+'.deleteFile(node)">'+
 			         'ng-click="'+treeId+'.deleteFile(node)">'+
 			        'Delete {{node.'+nodeLabel+'}}'+
 			      '</a>' +
@@ -83,16 +84,15 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 			  '</ul>'+
 			'</div>'
 
-			//need separate templates for files and folders, I think -AG
-			//tree template
+			//should we put the right-click directive menu on the entire dom element, in case the directory is empty?
 			var template =
 				'<ul>' +
 					'<li data-ng-repeat="node in ' + treeModel + '">' + 
 						menuStartDiv + 
-						'<i class="collapsed fa fa-folder" data-ng-show="node.' + nodeChildren + '.length && node.collapsed" data-ng-click="' + treeId + '.selectNodeHead(node)"></i>' +
-						'<i class="expanded fa fa-folder-open" data-ng-show="node.' + nodeChildren + '.length && !node.collapsed" data-ng-click="' + treeId + '.selectNodeHead(node)"></i>' +
-						'<i class="normal fa fa-file-o" data-ng-hide="node.' + nodeChildren + '.length"></i> ' +
-						'<span data-ng-class="node.selected" data-ng-click="' + treeId + '.selectNodeLabel(node)">{{node.' + nodeLabel + '}}</span>' + //changed from .selectNodeLabel(node) to .selectNodeHead(node)
+						'<i class="collapsed fa fa-folder" data-ng-show="node.type===\'folder\' && node.collapsed && node.' + nodeChildren + '.length>0" data-ng-click="' + treeId + '.selectNodeHead(node)"></i>' +
+						'<i class="expanded fa fa-folder-open" data-ng-show="node.type===\'folder\' && !node.collapsed && node.' + nodeChildren + '.length>0" data-ng-click="' + treeId + '.selectNodeHead(node)"></i>' +
+						'<i class="normal fa fa-file-o" data-ng-show="node.type!==\'folder\'"></i> ' +
+						'<span data-ng-class="node.selected" data-ng-hide="node.type===\'folder\' && node.' + nodeChildren + '.length===0" data-ng-click="' + treeId + '.selectNodeLabel(node)">{{node.' + nodeLabel + '}}</span>' + //changed from .selectNodeLabel(node) to .selectNodeHead(node)
 						'<div data-ng-hide="node.collapsed" data-tree-id="' + treeId + '" data-tree-model="node.' + nodeChildren + '" data-node-id=' + nodeId + ' data-node-label=' + nodeLabel + ' data-node-children=' + nodeChildren + '></div>' +
 						"</div>"+
 						menuEndDiv +
@@ -135,61 +135,140 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 							selectedNode.collapsed = !selectedNode.collapsed;
 						}
 					};
+
+					function findParent(path,searchNode,origFullPath) {
+						var searchArr = searchNode ? searchNode.children : scope.tree
+
+						if(path.indexOf('/') > -1) {
+							var divider = path.indexOf('/')
+							var newDirectory = path.slice(0,divider)
+							var newPath = path.slice(divider+1)
+
+							for (var i = 0; i < searchArr.length; i++) {
+								if(searchArr[i].label === newDirectory && searchArr[i].type === 'folder') {
+									return findParent(newPath,searchArr[i],path)
+								}
+							}
+						} else {
+							return searchNode
+							//should be able to return searchNode out here, though the for loop might be a good final confirmation
+							// for (var i = 0; i < searchArr.length; i++) {
+							// 	if(searchArr[i].fullPath === origFullPath && searchArr[i].type !== 'folder') {
+							// 		return searchNode
+							// 	}
+							// }
+						}
+					}
+
+					scope[treeId].deleteFile = scope[treeId].deleteFile || function deleteNode(node) {
+						//add confirmation popup - Are you sure you want to delete {{node.label}}?
+
+						// console.log('selected node: ',node)
+						
+						//basically run this function on each of this node's children - might finish this some other time
+						// if(node.type==='folder') {
+						// 	//need to work backwards since items are constantly removed from the array
+						// 	for (var i = node.children.length-1; i >= 0; i--) {
+						// 		deleteNode(node.children[i])
+						// 	}
+						// }
+
+						if (node.top) {
+							scope.tree.splice(scope.tree.indexOf(node),1)
+							console.log('after root - index: ',scope.tree)
+							// console.log('root parent: ',node.parent)
+						} else {
+							var parentNode = findParent(node.fullPath)
+							parentNode.children.splice(parentNode.children.indexOf(node),1)
+							// console.log('after remove - index: ',scope.tree)
+						}
+
+						scope.deleteFile(node)
+					}
+
 					//need to set the treeId
 					//newFile function
 					scope[treeId].newFile = scope[treeId].newFile || function(node) {
 						var fileName = prompt('Enter the name of your new file (including the file extension, such as .js or .html).')
+						
+						//if the field is empty or if they hit cancel, just don't run any more of the function
+						if(!fileName) return;
+
+						// console.log('node: ',node)
 						if(node) {
+							//basic error handling - if clicked-on element is a file, instead of a folder
+							var fullPath = node.type==='folder' ? node.fullPath : node.fullPath.slice(0,node.fullPath.lastIndexOf('/'))
+
 							var newFile = {
 								children: [],
-								fullPath: node.fullPath+'/'+fileName,
+								fullPath: fullPath+'/'+fileName,
 								label:fileName,
-								//probably need to update url and id after GitHub API call
+								//probably need to update url, sha, and id after GitHub API call
 								url:'',
 								id:'',
+								parentLabel: node.label
 							}
-							scope.addFile(newFile,node.children)
+							var parentNode = node.type === 'folder' ? node : findParent(node.fullPath)
+							// console.log('parent node: ',parentNode)
+							scope.addFile(newFile,parentNode.children)
 
 						} else {
 							var newFile = {
 								children: [],
 								fullPath: fileName,
 								label:fileName,
-								//need to update url and id after GitHub API call
+								//need to update url, sha, and id after GitHub API call
 								url:'',
 								id:'',
 								top:true,
 								type:'file'
 							}
+							// console.log('added to root scope')
 							scope.addFile(newFile,scope.tree)
 
 						}
 
-						// the update of other users' tree is trigger in the controller
+						// the update of other users' tree is triggered in the controller
 					}
 
 					//newFolder function - still needs a lot of work
 					scope[treeId].newFolder = scope[treeId].newFolder || function(node) {
 						var folderName = prompt('Enter the name of your new folder.')
+
+						//if the field is empty or if they hit cancel, just don't run any more of the function
+						if(!folderName) return;
+
 						if(node) {
+							//basic error handling - if clicked-on element is a file, instead of a folder
+							var fullPath = node.type==='folder' ? node.fullPath : node.fullPath.slice(0,node.fullPath.lastIndexOf('/'))
+
 							var placeholderFile = {
 								children: [],
-								fullPath: node.fullPath+'/'+folderName + '/placeholder.txt',
+								fullPath: fullPath+'/'+folderName + '/placeholder.txt',
 								label:'placeholder.txt',
-								//probably need to update url and id after GitHub API call
+								//probably need to update url, sha, and id after GitHub API call
 								url:'',
 								id:''
 							}
 
 							var newFolder = {
 								children:[placeholderFile],
-								fullPath: node.fullPath+'/'+folderName,
+								fullPath: fullPath+'/'+folderName,
 								label:folderName,
 								url:'',
 								id:'',
 								type:'folder'
 							}
-							node.children.push(newFolder)
+							// node.children.push(newFolder)
+							var parentNode = node.type === 'folder' ? node : findParent(node.fullPath)
+							// console.log('parent node: ',parentNode)
+
+							//need to adjust this to account for child file in passed folder
+							// scope.addFile(newFile,parentNode.children)
+
+
+
+
 						} else {
 							var placeholderFile = {
 								children: [],
