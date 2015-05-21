@@ -103,9 +103,9 @@ angular.module('codeColab.videochat',[])
       }
   };
 
-  //document.getElementById('setup-new-meeting').onclick = function(){
   $scope.joinChat = function(){  
     // setup signaling channel
+    console.log('$scope.joinChat');
     var roomFirebase = new Firebase(firebaseURL + connection.channel + '-session');
     roomFirebase.once('value', function (data) {
       var sessionDescription = data.val();
@@ -119,7 +119,7 @@ angular.module('codeColab.videochat',[])
           onMediaCaptured: function() {
               // storing room on server
               roomFirebase.set(connection.sessionDescription);
-              
+              console.log('$scope.joinChat connection.open onMediaCaptured');
               // if room owner leaves; remove room from the server
               roomFirebase.onDisconnect().remove();
           }
@@ -133,13 +133,13 @@ angular.module('codeColab.videochat',[])
         // pure "sessionDescription" object is passed over "join" method
         // 2nd parameter is optional which allows you customize how to join the session
         connection.join(sessionDescription, joinWith);
+        console.log('$scope.joinChat connection.join');
       }
     });
     ctrlJoin.className = 'hidden';
     ctrlLeave.className = 'shown';
   }
 
-  //document.getElementById('leave-current-meeting').onclick = function(){
   $scope.leaveChat = function(){  
     connection.leave();
     connection.close();
