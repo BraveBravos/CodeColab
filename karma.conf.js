@@ -115,7 +115,7 @@ module.exports = function(config) {
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
     // browsers: ['PhantomJS'],
-    browsers : [ 'Chrome', 'Firefox'],
+    browsers : [ 'PhantomJS', 'Chrome', 'Firefox'],
 
     customLaunchers: {
       Chrome_travis_ci: {
@@ -124,14 +124,14 @@ module.exports = function(config) {
       }
     },
 
-    if(process.env.TRAVIS){
-      configuration.browsers = ['Chrome_travis_ci'];
-      // configuration.reporters = configuration.reporters.concat(['coverage', 'coveralls']);
-      // configuration.coverageReporter = {
-      //   type : 'lcovonly',
-      //   dir : 'coverage/'
-      // };
-    }
+    // if(process.env.TRAVIS){
+    //   configuration.browsers = ['Chrome_travis_ci'];
+    //   // configuration.reporters = configuration.reporters.concat(['coverage', 'coveralls']);
+    //   // configuration.coverageReporter = {
+    //   //   type : 'lcovonly',
+    //   //   dir : 'coverage/'
+    //   // };
+    // }
 
 
     // Continuous Integration mode
