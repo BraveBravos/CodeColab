@@ -19,7 +19,7 @@ module.exports = function(config) {
 
       // dependencies
       'client/bower_components/angular/angular.js',
-      'client/bower_components/angular-mocks/angular-mocks.js',
+      'node_modules/angular-mocks/angular-mocks.js',
       'client/bower_components/angular-route/angular-route.js',
       'client/bower_components/jquery/dist/jquery.js',
       'client/bower_components/bootstrap/dist/js/bootstrap.js',
@@ -67,9 +67,9 @@ module.exports = function(config) {
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     reporters: [
-    // 'mocha'
-    'unicorn', 
-    'nyan' 
+    'mocha'
+    // 'unicorn', 
+    // 'nyan' 
     ],
     nyanReporter: { suppressErrorReport: false }, 
 
@@ -115,7 +115,23 @@ module.exports = function(config) {
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
     // browsers: ['PhantomJS'],
-    browsers : ['PhantomJS', 'Chrome', 'Firefox'],
+    browsers : [ 'PhantomJS', 'Chrome', 'Firefox'],
+
+    customLaunchers: {
+      Chrome_travis_ci: {
+        base: 'Chrome',
+        flags: ['--no-sandbox']
+      }
+    },
+
+    // if(process.env.TRAVIS){
+    //   configuration.browsers = ['Chrome_travis_ci'];
+    //   // configuration.reporters = configuration.reporters.concat(['coverage', 'coveralls']);
+    //   // configuration.coverageReporter = {
+    //   //   type : 'lcovonly',
+    //   //   dir : 'coverage/'
+    //   // };
+    // }
 
 
     // Continuous Integration mode
