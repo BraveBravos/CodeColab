@@ -40,7 +40,7 @@ if (!process.env.CLIENT_ID) {
 
 app.set('port', (process.env.PORT || 3000));
 app.use(express.static('./client'));
-app.use(express.static(sharejs.scriptsDir));
+// app.use(express.static(sharejs.scriptsDir));
 app.use(express.static(shareCodeMirror.scriptsDir));
 
 app.use(bodyParser.json());
