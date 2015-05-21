@@ -84,8 +84,7 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 			  '</ul>'+
 			'</div>'
 
-			//need separate templates for files and folders, I think -AG
-			//tree template
+			//should we put the right-click directive menu on the entire dom element, in case the directory is empty?
 			var template =
 				'<ul>' +
 					'<li data-ng-repeat="node in ' + treeModel + '">' + 
@@ -162,9 +161,9 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 					}
 
 					scope[treeId].deleteFile = scope[treeId].deleteFile || function deleteNode(node) {
+						//add confirmation popup - Are you sure you want to delete {{node.label}}?
 
-						console.log('selected node: ',node)
-						//should we put the right-click directive menu on the entire dom element, in case there are no files?
+						// console.log('selected node: ',node)
 						
 						//basically run this function on each of this node's children - might finish this some other time
 						// if(node.type==='folder') {

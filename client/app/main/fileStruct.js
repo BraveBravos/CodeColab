@@ -122,6 +122,7 @@ angular.module('codeColab.fileStruct', [])
       //might need to get sha from server
       file.id = data.data.fileId
       file.url = data.data.fileUrl
+      file.sha = data.data.fileSha
       arr.push(file)
       // console.log('new file: ',file)
 
