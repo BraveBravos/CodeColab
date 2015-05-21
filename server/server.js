@@ -68,23 +68,28 @@ app.listen(app.get('port'), function() {
 });
 
 
-app.get('/auth/github/callback', function (req, res, next) {
-  if (req.session) console.log('session');
-  else { console.log('no session') }
-  next();
-});
+// app.get('/auth/github/callback', function (req, res, next) {
+//   if (req.session) console.log('session');
+//   else { console.log('no session') }
+//   next();
+// });
 
 passport.serializeUser(function(user, done) {
   var users = db.get('Users');
+  console.log(user)
+  console.log('db',users)
+
   if (user.provider === 'github') {
     users.find({githubId: user.id}, function (err, result) {
-      if(result.length === 0){ //User isn't in DB (FIRST TIMER!)
+      console.log('result', result, 'err', err, 'length', result.length)
+      if(result === undefined || result.length === 0){ //User isn't in DB (FIRST TIMER!)
         var insertData = [{githubId: user.id, username: user.username, apps: {}}]
         var promise = users.insert(insertData);
         promise.success(function(doc) {
           done(null, doc[0]._id);
         })
       } else { //User is already in DB, just return their data
+        console.log('after result',result)
         done(null, result[0]._id);
       }
     });
@@ -217,7 +222,7 @@ app.post('/api/getUpdatedFile', function (req, res) {
       var file = atob(JSON.parse(body).content);
       // docs.sendDoc(db, file, fileId, fileSha);
       var salt = '$2a$10$JX4yfb1a6c0Ec6yYxkleie' //same as salt in tree
-      
+
       file.id = '0'+bcrypt.hashSync(ownerAndRepo+'/'+filePath+'Code-Colab-Extra-Salt',salt)
       file.url = 'https://api.github.com/repos/' + ownerAndRepo + '/contents/' + filePath
 
@@ -312,7 +317,7 @@ app.get('/api/apps/*', function (req, res) {
 app.post('/api/builds', function (req, res) {
   var repo = req.body.repo,
       token = req.session.herokuToken,
-      apiToken = process.env.HEROKU_API_TOKEN || keys.herokuAPIToken 
+      apiToken = process.env.HEROKU_API_TOKEN || keys.herokuAPIToken
 
   docs.getApp(req, repo, function (userApp){
     request({
@@ -430,9 +435,9 @@ app.get('/api/deploy/*', function (req, res) {
   });
 })
 
-app.get('/auth/heroku/fail', function(req, res) {
-  console.log('Heroku fail!')
-});
+// app.get('/auth/heroku/fail', function(req, res) {
+//   console.log('Heroku fail!')
+// });
 
 app.get('/api/auth', function(req, res){
   res.status(200).json(req.isAuthenticated());
@@ -547,7 +552,7 @@ app.post('/api/files/newFile', function(req, res) {
       "content": "",
       "branch": "CODECOLAB"
     }
-  }, 
+  },
   function(err, resp, body) {
     // docs.sendDoc(db, file, fileId, fileSha);
     console.log('content: ',body)
@@ -555,7 +560,7 @@ app.post('/api/files/newFile', function(req, res) {
     var fileSha = body.content.sha
 
     var salt = '$2a$10$JX4yfb1a6c0Ec6yYxkleie' //same as salt in tree
-    
+
     fileId = '0'+bcrypt.hashSync(req.body.ownerAndRepo+'/'+req.body.fullPath+'Code-Colab-Extra-Salt',salt)
     fileUrl = 'https://api.github.com/repos/' + req.body.ownerAndRepo + '/contents/' + req.body.fullPath
 
