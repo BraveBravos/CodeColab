@@ -70,7 +70,7 @@
     "karma-cli": "0.0.4"
   },
   "engines": {
-    "node": "0.10"
+    "node": "0.12.2"
   },
   "repository": {
     "type": "git",
