@@ -145,6 +145,11 @@ angular.module('codeColab.videochat',[])
     connection.close();
     connection.disconnect();
     locMedStream.stop();
+    connection = new RTCMultiConnection();
+    connection.sessionid = SESSION_ID;
+    CHANNEL_ID = $scope.selectRepo.name;
+    CHANNEL_ID = CHANNEL_ID.replace("/","")
+    connection.channel = CHANNEL_ID;
     ctrlJoin.className = 'shown';
     ctrlLeave.className = 'hidden';
   }
