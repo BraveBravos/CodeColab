@@ -143,7 +143,7 @@ angular.module('codeColab.services', [])
         $scope.commitInd = $scope.commitAndMergeIndicators.get().commit
         $scope.mergeInd = $scope.commitAndMergeIndicators.get().merge
 
-        //tried separating these out into a separate function - did not work well
+        //tried separating these listeners out into a separate function - did not work well
         $scope.treeStructure.on('replace', function() { 
           //had to use timeout so that angular knows to render the scope change next chance it gets
           $timeout(function() {
@@ -151,7 +151,7 @@ angular.module('codeColab.services', [])
           })
         })
 
-        //more work needed here
+        //more work needed here - might split these into separate contexts and write them like the origTextTrigger
         $scope.commitAndMergeIndicators.on('replace', function() {
           // console.log('c/m replaced')
           $timeout(function() {
@@ -161,10 +161,8 @@ angular.module('codeColab.services', [])
         })
 
         $scope.origTextTrigger.on('replace', function() {
-          console.log('replaced')
           //$scope.currentFile is only set when a file is picked - if a repo is chosen but no file is entered, this was causing errors before
           if(!!$scope.currentFile) {
-            console.log('actually replaced')
             updateRightOrigValue($scope,'master')
           }
         })
