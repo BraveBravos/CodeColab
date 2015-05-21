@@ -50,25 +50,25 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 			//need to change this based on whether node is file or folder, top or not - probably use ng-show
 			var menuEndDiv = '<div class="dropdown position-fixed" id="{{node.'+nodeId+'}}-menu" style="position:fixed">'+
 			  '<ul class="dropdown-menu" role="menu">'+
-			    '<li data-ng-show="!node.top">'+
+			    '<li data-ng-show="!node.top || node.type===\'folder\'">'+
 			    	'<a class="pointer" role="menuitem" tabindex="1"'+
 			    		'ng-click="'+treeId+'.newFile(node)">'+
 			    			'Add file in folder {{node.type==="folder" ? node.label : node.parentLabel}}'+
 			    	'</a>'+
 			    '</li>'+
-			    '<li data-ng-show="!node.top">'+
+			    '<li data-ng-show="!node.top || node.type===\'folder\'">'+
 			    	'<a class="pointer" role="menuitem" tabindex="2"'+
 			    		'ng-click="'+treeId+'.newFolder(node)">'+
 			    			'Add subfolder in folder {{node.type==="folder" ? node.label : node.parentLabel}}'+
 			    	'</a>'+
 			    '</li>'+
-			    '<li data-ng-show="node.top">'+
+			    '<li data-ng-show="node.top && node.type!==\'folder\'">'+
 			    	'<a class="pointer" role="menuitem" tabindex="3" '+
 			         'ng-click="'+treeId+'.newFile()">' +
 			         'Add file in {{node.type==="folder" ? "folder "+node.label : "root folder"}}' +
 			      '</a>' +
 			    '</li>'+
-			    '<li data-ng-show="node.top">'+
+			    '<li data-ng-show="node.top && node.type!==\'folder\'">'+
 			      '<a class="pointer" role="menuitem" tabindex="4" '+
 			         'ng-click="'+treeId+'.newFolder()">'+
 			        'Add folder in {{node.type==="folder" ? "folder "+node.label : "root folder"}}'+
@@ -164,7 +164,6 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 					scope[treeId].deleteFile = scope[treeId].deleteFile || function(node) {
 
 						console.log('selected node: ',node)
-						return
 						//should we put the right-click directive menu on the entire dom element, in case there are no files?
 						if (node.top) {
 							scope.tree.splice(scope.tree.indexOf(node),1)
@@ -191,9 +190,12 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 						var fileName = prompt('Enter the name of your new file (including the file extension, such as .js or .html).')
 						console.log('node: ',node)
 						if(node) {
+							//basic error handling - if clicked-on element is a file, instead of a folder
+							var fullPath = node.type==='folder' ? node.fullPath : node.fullPath.slice(0,node.fullPath.lastIndexOf('/'))
+
 							var newFile = {
 								children: [],
-								fullPath: node.fullPath+'/'+fileName,
+								fullPath: fullPath+'/'+fileName,
 								label:fileName,
 								//probably need to update url and id after GitHub API call
 								url:'',
@@ -202,7 +204,7 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 							}
 							var parentNode = node.type === 'folder' ? node : findParent(node.fullPath)
 							console.log('parent node: ',parentNode)
-							// scope.addFile(newFile,parentNode.children)
+							scope.addFile(newFile,parentNode.children)
 
 						} else {
 							var newFile = {
@@ -216,7 +218,7 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 								type:'file'
 							}
 							console.log('added to root scope')
-							// scope.addFile(newFile,scope.tree)
+							scope.addFile(newFile,scope.tree)
 
 						}
 
