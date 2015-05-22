@@ -1,7 +1,6 @@
 var express = require('express'),
     connect = require('connect'),
     bodyParser = require ('body-parser'),
-    atob = require('atob'),
     btoa = require('btoa'),
     app = express(),
      cookieParser = require('cookie-parser'),
@@ -20,8 +19,7 @@ var express = require('express'),
     backend = livedb.client(dbClient),
     share = sharejs.server.createClient({
       backend: backend
-    }),
-    bcrypt = require('bcrypt');
+    });
 
 
 

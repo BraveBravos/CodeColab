@@ -38,7 +38,7 @@ angular.module('codeColab.services', [])
     var deferred = $q.defer();
       deferred.resolve( $http({
           method: 'GET',
-          url: '/api/branch/' + repo
+          url: '/api/repos/branch/' + repo
       })
       .then (function(exists){
         if (exists.data === false) {
@@ -187,10 +187,10 @@ angular.module('codeColab.services', [])
     //just set value of rightOrig
     return $http ({
       method:'POST',
-      url: '/api/getUpdatedFile',
+      url: '/api/files',
       data: {
         filePath: $scope.currentFile.fullPath,
-        ownerAndRepo: $scope.selected,
+        repo: $scope.selected,
         branch: branch
       }
     })
@@ -286,16 +286,12 @@ angular.module('codeColab.services', [])
     $scope.share = {sjs:sjs,doc:doc}
   }
 
-  var loadFile = function ($scope, file) {
+  var loadFile = function ($scope, file, repo) {
     $scope.$parent.currentFile = file;
-
+    var filePath = file.fullPath;
     return $http ({
-      method:'POST',
-      url: '/api/files',
-      data: {
-        url: file.url,
-        fileId: file.id
-      }
+      method:'GET',
+      url: '/api/files/'+repo+'/'+ filePath,
     })
     .then (function (data) {
       $scope.$parent.fileLoaded = true;

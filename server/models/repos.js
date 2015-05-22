@@ -1,4 +1,5 @@
-var request = require('request');
+var request = require('request'),
+    bcrypt = require('bcrypt');
 
 module.exports = {
 
@@ -41,6 +42,49 @@ module.exports = {
         });
         res.status(200).json(data)
       });
+  },
+  getBranch: function(req, res) {
+  var repo = req.url.split('/').slice(2).join('/');
+  request({
+    url: 'https://api.github.com/repos/'+repo+'/branches?access_token=' + req.session.token,
+    headers: {'User-Agent': req.user.username}
+  },
+    function(err, resp, body) {
+      var exists= false,
+          branches = JSON.parse(body);
+
+      branches.forEach(function(branch) {
+        if (branch.name==="CODECOLAB") exists ='true';
+      })
+      res.send(exists);
+    })
+  },
+  getTree: function (req, res) {
+  var repo = req.url.split('/').slice(2).join('/');
+    request({
+      url: 'https://api.github.com/repos/' +repo+ '/git/refs/heads/CODECOLAB?access_token='+ req.session.token,
+      headers: {'User-Agent': req.user.username}
+    },
+    function (err, resp, body) {
+      var data = JSON.parse(body);
+      var sha = data.object.sha;
+
+      request({
+        url: 'https://api.github.com/repos/'+repo+'/git/trees/'+sha+'?recursive=1&access_token='+req.session.token,
+        headers: {'User-Agent': req.user.username}
+        },
+        function (err, resp, body){
+          var data = JSON.parse(body)
+          var salt = '$2a$10$JX4yfb1a6c0Ec6yYxkleie'
+          var newTree = data.tree.map(function(item) {
+            item.id = '0'+bcrypt.hashSync(repo+'/'+item.path+'Code-Colab-Extra-Salt',salt)
+            item.url = 'https://api.github.com/repos/'+repo+ '/contents/' + item.path
+            return item
+          })
+          res.status(200).send(newTree)
+        }
+      )   // this is a request inside of a request, so the ) may need to move
+    });
   }
 }
 
@@ -72,59 +116,6 @@ module.exports = {
 //       res.status(200).send(body.content.sha);
 //     }
 //   });
-// })
-
-// app.post ('/api/fileStruct/tree', function (req, res) {
-//   var owner = req.body.repo[0],
-//       repo = req.body.repo[1],
-//       branch = req.body.branch;
-
-//   request({
-//     url: 'https://api.github.com/repos/' +owner+ '/' +repo+ '/git/refs/heads/' + branch+'?access_token='+ req.session.token,
-//     headers: {'User-Agent': req.user.username}
-//   },
-//   function (err, resp, body) {
-//     var data = JSON.parse(body);
-//     var sha = data.object.sha;
-//     var base = 'https://api.github.com/repos',
-//         more = '/git/trees/',
-//         last = '?recursive=1&access_token=',
-//         concat = base + '/' +owner+ '/' + repo + more + sha + last + req.session.token
-
-//     request({
-//       url: concat,
-//       headers: {'User-Agent': req.user.username}
-//       },
-//       function (err, resp, body){
-//         var data = JSON.parse(body)
-//         var salt = '$2a$10$JX4yfb1a6c0Ec6yYxkleie'
-//         var newTree = data.tree.map(function(item) {
-//           item.id = '0'+bcrypt.hashSync(repo+'/'+item.path+'Code-Colab-Extra-Salt',salt)
-//           item.url = base+'/'+ owner + '/' + repo + '/contents/' + item.path
-//           return item
-//         })
-//         res.status(200).send(newTree)
-//       }
-//     )   // this is a request inside of a request, so the ) may need to move
-//   });
-// });
-
-
-// app.get('/api/branch/*', function(req, res) {
-//   var repo = req.url.split('/').slice(3).join('/');
-//   request({
-//     url: 'https://api.github.com/repos/'+repo+'/branches?access_token=' + req.session.token,
-//     headers: {'User-Agent': req.user.username}
-//   },
-//     function(err, resp, body) {
-//       var exists= false,
-//           branches = JSON.parse(body);
-
-//       branches.forEach(function(branch) {
-//         if (branch.name==="CODECOLAB") exists ='true';
-//       })
-//       res.send(exists);
-//     })
 // })
 
 // app.post('/api/branch', function(req, res){

@@ -10,19 +10,14 @@ angular.module('codeColab.fileStruct', [])
   }
 
   //gets file/folder names from GitHub for the selected repository
-  var getTree = function ($scope, repoName, branch) {
+  var getTree = function ($scope, repo) {
     $scope.spinner = this.toggleSpinner($scope.spinner)
 
-    var that = this,
-        repo = repoName.name.split('/');
+    var that = this;
 
     return $http({
-      method: 'POST',
-      url: '/api/fileStruct/tree',
-      data: {
-        repo: repo,
-        branch: branch
-      }
+      method: 'GET',
+      url: '/api/repos/tree/'+repo
     })
     .then(function (data) {
 
@@ -99,7 +94,7 @@ angular.module('codeColab.fileStruct', [])
   //load file to editor
   $scope.loadFile = function(file){
     $scope.$parent.editorWillLoad()
-    Share.loadFile($scope.$parent,file);
+    Share.loadFile($scope.$parent,file, $scope.$parent.selected);
   }
 
   $scope.triggerShareTreeChange = function() {
