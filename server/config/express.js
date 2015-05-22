@@ -21,7 +21,6 @@ var express = require('express'),
     share = sharejs.server.createClient({
       backend: backend
     }),
-    request = require('request'),
     bcrypt = require('bcrypt');
 
 

@@ -1,48 +1,51 @@
-// module.exports = {
-// }
-// app.get('/api/repos', function (req, res) {
-//   request({
-//     url: 'https://api.github.com/user/repos?access_token='+ req.session.token+ '&type=all',
-//     headers: {'User-Agent': req.user.username}
-//   },
-//   function(err,resp,body) {
-//     var data = JSON.parse(body).map(function (repo) {
-//       return {name: repo.full_name, id: repo.id};
-//     })
-//     res.status(200).json(data)
-//   });
-// });
+var request = require('request');
 
-// app.get('/api/orgs', function (req, res) {
-//   request({
-//     url: 'https://api.github.com/user/orgs?access_token='+ req.session.token+ '&type=all',
-//     headers: {'User-Agent': req.user.username}
-//   },
-//   function (err, resp, body) {
-//     var orgList = JSON.parse(body).map(function (org) {
-//       return org.login;
-//     })
-//     res.status(200).json(orgList);
-//   });
+module.exports = {
 
-// });
+  getRepos: function(req, res) {
+   request({
+      url: 'https://api.github.com/user/repos?access_token='+ req.session.token+ '&type=all',
+      headers: {'User-Agent': req.user.username}
+    },
+    function(err,resp,body) {
+      var data = JSON.parse(body).map(function (repo) {
+        return {name: repo.full_name, id: repo.id};
+      })
+      res.status(200).json(data)
+    });
+  },
+  getOrgs: function(req, res){
+    request({
+      url: 'https://api.github.com/user/orgs?access_token='+ req.session.token+ '&type=all',
+      headers: {'User-Agent': req.user.username}
+    },
+    function (err, resp, body) {
+      var orgList = JSON.parse(body).map(function (org) {
+        return org.login;
+      })
+      res.status(200).json(orgList);
+    });
+  },
+  getOrgRepos: function(req, res) {
+    var org = req.body.org;
+    request({
+      url: 'https://api.github.com/orgs/'+ org + '/repos?access_token='+ req.session.token,
+      headers: {'User-Agent': req.user.username}
+    },
+      function (err, resp, body) {
+        var data = [];
+          JSON.parse(body).forEach(function (repo) {
+          if (repo.permissions.push === true) {
+            data.push({name: repo.full_name, id: repo.id});
+          }
+        });
+        res.status(200).json(data)
+      });
+  }
+}
 
-// app.post ('/api/orgs/repos', function (req, res) {
-//   var org = req.body.org;
-//   request({
-//     url: 'https://api.github.com/orgs/'+ org + '/repos?access_token='+ req.session.token,
-//     headers: {'User-Agent': req.user.username}
-//   },
-//     function (err, resp, body) {
-//       var data = [];
-//         JSON.parse(body).forEach(function (repo) {
-//         if (repo.permissions.push === true) {
-//           data.push({name: repo.full_name, id: repo.id});
-//         }
-//       });
-//       res.status(200).json(data)
-//     });
-// });
+
+
 
 
 // app.post('/api/repos', function(req, res){

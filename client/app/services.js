@@ -14,13 +14,13 @@ angular.module('codeColab.services', [])
       $scope.repos = $scope.repos.concat(repos.data);
       return $http({
         method: 'GET',
-        url: '/api/orgs'
+        url: '/api/repos/orgs'
       })
       .then(function (orgs) {
         orgs.data.forEach(function (org) {
           return $http({
             method: 'POST',
-            url: '/api/orgs/repos',
+            url: '/api/repos/orgs',
             data: {org: org}
           })
           .then(function (orgRepos){
@@ -114,7 +114,7 @@ angular.module('codeColab.services', [])
     //need to hash this in the server in some way, for unique encrypted storage
     //need to switch this to origDocs eventually
     var rDoc = rSjs.get('adamShareTest', $scope.selected);
-    
+
     $scope.repoShare = {rDoc: rDoc, rSjs: rSjs}
 
     rDoc.subscribe()
@@ -127,7 +127,7 @@ angular.module('codeColab.services', [])
 
         //need to do a submit op to 'seed' the json structure - this line will be changed if we want to add more stuff
         rDoc.submitOp([{p:[],od:null,oi:{origTextTrigger:[0],treeStructure:[0],commitAndMergeIndicators:{'commit':false,'merge':false}}}]) // might use set here instead
-        
+
       }
 
       rDoc.subscribe(function(err) {
@@ -144,7 +144,7 @@ angular.module('codeColab.services', [])
         $scope.mergeInd = $scope.commitAndMergeIndicators.get().merge
 
         //tried separating these out into a separate function - did not work well
-        $scope.treeStructure.on('replace', function() { 
+        $scope.treeStructure.on('replace', function() {
           //had to use timeout so that angular knows to render the scope change next chance it gets
           $timeout(function() {
             $scope.tree = JSON.parse($scope.treeStructure.get()[0])
@@ -255,7 +255,7 @@ angular.module('codeColab.services', [])
         // probably some more efficient way to do this, but it works for now - if doc exists in
         // origDocs database but not in regular Docs database, this will copy the string into the editor immediately after
         // the subscription takes hold, which also copies it into the Docs database.
-        // this ordering works for now, but ideally we would promisify this in some way; if the GitHub call is too slow, 
+        // this ordering works for now, but ideally we would promisify this in some way; if the GitHub call is too slow,
         // this logic might not work correctly
         if(doc.getSnapshot()==='') {
           $scope.CM.editor().setValue($scope.CM.rightOriginal().getValue())
@@ -265,7 +265,7 @@ angular.module('codeColab.services', [])
         // console.log('after subscribed',doc.getSnapshot(),codeEditor.editor().getValue())
         ce = $scope.CM
 
-        
+
         //below is for the text editor spinner
         $scope.$parent.$apply(function () {
           $scope.$parent.editorHasLoaded()
