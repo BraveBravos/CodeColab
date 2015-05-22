@@ -79,6 +79,10 @@ angular.module('codeColab.services', [])
         $scope.currentFile.sha = response.data;
         bootbox.alert("Commit Successful")
         $scope.commitMade = true;
+        //if the merge button was not previously displayed, change it now
+        if (!$scope.showMergeButton) {
+          $scope.triggerMergeButtonShareUpdate()
+        }
       }
     })
   }
@@ -126,7 +130,7 @@ angular.module('codeColab.services', [])
         rDoc.create('json0')
 
         //need to do a submit op to 'seed' the json structure - this line will be changed if we want to add more stuff
-        rDoc.submitOp([{p:[],od:null,oi:{origTextTrigger:[0],treeStructure:[0],commitAndMergeIndicators:{'commit':false,'merge':false}}}]) // might use set here instead
+        rDoc.submitOp([{p:[],od:null,oi:{origTextTrigger:[0],treeStructure:[0],mergeIndicator:[false]}}]) // might use set here instead
         
       }
 
@@ -137,11 +141,12 @@ angular.module('codeColab.services', [])
         $scope.repoShare.editingCxt = rDoc.createContext()
         $scope.origTextTrigger = $scope.repoShare.editingCxt.createContextAt('origTextTrigger')
         $scope.treeStructure = $scope.repoShare.editingCxt.createContextAt('treeStructure')
-        $scope.commitAndMergeIndicators = $scope.repoShare.editingCxt.createContextAt('commitAndMergeIndicators')
+        $scope.mergeIndicator = $scope.repoShare.editingCxt.createContextAt('mergeIndicator')
 
         //set variables that we will eventually watch for displaying commit/merge buttons
-        $scope.commitInd = $scope.commitAndMergeIndicators.get().commit
-        $scope.mergeInd = $scope.commitAndMergeIndicators.get().merge
+        // the commit indicator must be per file, not per repo
+        // $scope.commitInd = $scope.commitIndicator.get().commit
+        $scope.showMergeButton = $scope.mergeIndicator.get()[0]
 
         //tried separating these out into a separate function - did not work well
         $scope.treeStructure.on('replace', function() { 
@@ -152,11 +157,12 @@ angular.module('codeColab.services', [])
         })
 
         //more work needed here
-        $scope.commitAndMergeIndicators.on('replace', function() {
+        $scope.mergeIndicator.on('replace', function() {
           // console.log('c/m replaced')
           $timeout(function() {
-            $scope.commitInd = $scope.commitAndMergeIndicators.get().commit
-            $scope.mergeInd = $scope.commitAndMergeIndicators.get().merge
+            // commit has to be per file, not per repo
+            // $scope.commitInd = $scope.commitAndMergeIndicators.get().commit
+            $scope.showMergeButton = $scope.mergeIndicator.get()[0]
           })
         })
 
@@ -414,6 +420,7 @@ angular.module('codeColab.services', [])
           that.checkForApp($scope, repo)
           updateRightOrigValue($scope,'master')
           $scope.triggerRightShareUpdate()
+          $scope.triggerMergeButtonShareUpdate()
         }
       }
     })
