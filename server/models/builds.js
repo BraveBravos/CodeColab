@@ -69,99 +69,98 @@ module.exports = {
         else { res.send({name: userApp.name, buildId: body.id}) }
       })
     })
+  },
+  deployApp: function(req, res) {
+    var repo = req.body.repo,
+        name = req.body.name,
+        token = req.session.herokuToken,
+        apiToken = process.env.HEROKU_API_TOKEN || keys.herokuAPIToken
+
+    request.post({
+      url: "https://api.heroku.com/app-setups",
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/vnd.heroku+json; version=3',
+        'Authorization': 'Bearer '+ token
+      },
+      json: {
+        app: {name: name},
+        source_blob : {"url" : "https://github.com/" + repo + "/tarball/master?token="+apiToken}
+      }
+    },
+      function (err, resp, body) {
+        if (err) console.log('err', err)
+        else {
+          if (body.message === "Name is already taken") {
+            res.status(200).send({name: 'taken'})
+          } else if (body.message === "You\'ve reached the limit of 5 apps for unverified accounts. Delete some apps or add a credit card to verify your account.") {
+            res.status(200).send({name: 'creditLimit'})
+          } else {
+            var name = body.app.name;
+              module.exports.addApp(req, name, body.id, repo)
+            res.status(200).send({name: name})
+          }
+        }
+    })
+  },
+  showLog: function (req, res) {
+    console.log('req.url', req.url)
+    var params = req.url.split('/').slice(2);
+    console.log('params', params)
+    if (params.length>2) { var buildId = params.pop() }
+    var repo =   params.join('/'),
+        token = req.session.herokuToken;
+
+    module.exports.getApp(req, repo, function (userApp) {
+    var name = userApp.name;
+    var appId = userApp.id;
+
+    function checkBuild () {
+      //Gets App setup info(including BuildID) from heroku for app name sent
+      request({
+        url: "https://api.heroku.com/app-setups/"+ appId,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/vnd.heroku+json; version=3',
+          'Authorization': 'Bearer '+ token
+        }
+      }, function (err, resp, body) {
+        //Gets build log for given buildID
+        console.log('buildbody', JSON.parse(body))
+          var buildId = JSON.parse(body).build.id;
+          if (buildId !==null) {
+              successBuild(buildId);
+            } else {
+          checkBuild();
+        }
+      })
+    }
+
+    function successBuild(buildId) {
+      request({
+      url: "https://api.heroku.com/apps/"+name+"/builds/" + buildId + "/result",
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/vnd.heroku+json; version=3',
+        'Authorization': 'Bearer '+ token
+      }
+      }, function (err,resp, body) {
+          if (JSON.parse(body).build.status === "pending" ){
+            setTimeout(function () {
+              successBuild(buildId);
+            }, 3000);
+          } else {
+            var log = '';
+            JSON.parse(body).lines.forEach(function(line) {
+              log+=line.line;
+            })
+            res.send(log);
+          }
+        })
+      }
+
+    if (!buildId) { setTimeout(checkBuild, 3000) }
+    else { successBuild(buildId) }
+    });
   }
 }
-
-// app.post('/api/deploy', function(req, res) {
-//   var repo = req.body.repo,
-//       name = req.body.name,
-//       token = req.session.herokuToken,
-//       apiToken = process.env.HEROKU_API_TOKEN || keys.herokuAPIToken
-
-//   request.post({
-//     url: "https://api.heroku.com/app-setups",
-//     headers: {
-//       'Content-Type': 'application/json',
-//       'Accept': 'application/vnd.heroku+json; version=3',
-//       'Authorization': 'Bearer '+ token
-//     },
-//     json: {
-//       app: {name: name},
-//       source_blob : {"url" : "https://github.com/" + repo + "/tarball/master?token="+apiToken}
-//     }
-//   },
-//     function (err, resp, body) {
-//       if (err) console.log('err', err)
-//       else {
-//         if (body.message === "Name is already taken") {
-//           res.status(200).send({name: 'taken'})
-//         } else if (body.message === "You\'ve reached the limit of 5 apps for unverified accounts. Delete some apps or add a credit card to verify your account.") {
-//           res.status(200).send({name: 'creditLimit'})
-//         } else {
-//           var name = body.app.name;
-//             docs.addApp(req, name, body.id, repo)
-//           res.status(200).send({name: name})
-//         }
-//       }
-//   })
-
-// });
-
-// app.get('/api/deploy/*', function (req, res) {
-//   var params = req.url.split('/').slice(3);
-//   if (params.length>2) { var buildId = params.pop() }
-//   var repo =   params.join('/'),
-//       token = req.session.herokuToken;
-
-//   docs.getApp(req, repo, function (userApp) {
-//   var name = userApp.name;
-//   var appId = userApp.id;
-
-//   function checkBuild () {
-//     //Gets App setup info(including BuildID) from heroku for app name sent
-//     request({
-//       url: "https://api.heroku.com/app-setups/"+ appId,
-//       headers: {
-//         'Content-Type': 'application/json',
-//         'Accept': 'application/vnd.heroku+json; version=3',
-//         'Authorization': 'Bearer '+ token
-//       }
-//     }, function (err, resp, body) {
-//       //Gets build log for given buildID
-//         var buildId = JSON.parse(body).build.id;
-//         if (buildId !==null) {
-//             successBuild(buildId);
-//           } else {
-//         checkBuild();
-//       }
-//     })
-//   }
-
-//   function successBuild(buildId) {
-//     request({
-//     url: "https://api.heroku.com/apps/"+name+"/builds/" + buildId + "/result",
-//     headers: {
-//       'Content-Type': 'application/json',
-//       'Accept': 'application/vnd.heroku+json; version=3',
-//       'Authorization': 'Bearer '+ token
-//     }
-//     }, function (err,resp, body) {
-//         if (JSON.parse(body).build.status === "pending" ){
-//           setTimeout(function () {
-//             successBuild(buildId);
-//           }, 3000);
-//         } else {
-//           var log = '';
-//           JSON.parse(body).lines.forEach(function(line) {
-//             log+=line.line;
-//           })
-//           res.send(log);
-//         }
-//       })
-//     }
-
-//   if (!buildId) { setTimeout(checkBuild, 3000) }
-//   else { successBuild(buildId) }
-//   });
-// })
-// }
