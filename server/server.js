@@ -49,7 +49,7 @@ app.use(bodyParser.urlencoded({extended: true,limit: 1000000}));
 app.use(session({
   secret: 'oursecret',
   saveUninitialized: true,
-  resave: true,
+  resave: false,
   store: new MongoStore({
     url: 'mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810',
     ttl: 60*60*8,
@@ -297,7 +297,7 @@ app.get('/auth/github/callback', passport.authenticate(
 ));
 
 
-app.get('/auth/heroku', passport.authenticate('heroku'));
+app.get('/auth/heroku', passport.authenticate('heroku', {session: false}));
 
 app.get('/auth/heroku/callback',
   passport.authenticate('heroku', {successRedirect: '/#/deploy', failureRedirect: '/auth/heroku/fail' })
