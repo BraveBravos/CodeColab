@@ -154,13 +154,7 @@ angular.module('codeColab.services', [])
           })
         })
 
-        //more work needed here
-<<<<<<< HEAD
-        $scope.commitAndMergeIndicators.on('replace', function() {
-=======
         $scope.mergeIndicator.on('replace', function() {
-          // console.log('c/m replaced')
->>>>>>> toggle merge button across users
           $timeout(function() {
             // commit has to be per file, not per repo
             // $scope.commitInd = $scope.commitAndMergeIndicators.get().commit
