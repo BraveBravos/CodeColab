@@ -36,7 +36,7 @@ angular.module('codeColab.main', [])
     localStorage.repo = repo.name;
     var promise = Share.createBranch($scope.selected);
     promise.then(function(result) {
-      FileStructDo.getTree($scope, repo, 'CODECOLAB')
+      FileStructDo.getTree($scope, $scope.selected)
     });
     Share.loadRepoShare($scope)
   }
