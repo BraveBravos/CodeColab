@@ -26,7 +26,7 @@ var express = require('express'),
     app.use(session({
       secret: 'oursecret',
       saveUninitialized: true,
-      resave: true,
+      resave: false,
       store: new MongoStore({
         url: 'mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810',
         ttl: 60*60*8,
