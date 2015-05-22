@@ -21,14 +21,14 @@ var mongo = require('mongodb'),
       backend: backend
     });
 
-require('./config/express')(app);
-require('./routes.js')(app);
-app.use('browserChannel', require('./models/browserChannel.js'));
-
 app.use(function (req, res, next) {
   req.db = db;
   next();
 })
+require('./config/express')(app);
+require('./routes.js')(app);
+app.use('browserChannel', require('./models/browserChannel.js'));
+
 if (!process.env.CLIENT_ID) {
   var keys = require('../keys.js');
   }
