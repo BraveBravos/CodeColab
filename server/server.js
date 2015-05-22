@@ -7,9 +7,19 @@ var mongo = require('mongodb'),
     db = monk('mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810'),
     bodyParser = require ('body-parser'),
     passport = require('passport'),
+    Duplex = require( 'stream' ).Duplex,
     oauth = require('./passport.js'),
     GitHubStrategy = require('passport-github').Strategy,
- HerokuStrategy = require('passport-heroku').Strategy;
+    HerokuStrategy = require('passport-heroku').Strategy,
+    livedb = require( 'livedb' ),
+    sharejs = require( 'share' ),
+    liveDBMongoClient = require('livedb-mongo'),
+    dbClient =liveDBMongoClient('mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810',
+      {safe: true}),
+    backend = livedb.client(dbClient),
+    share = sharejs.server.createClient({
+      backend: backend
+    });
 
 require('./config/express')(app);
 require('./routes.js')(app);
@@ -115,6 +125,33 @@ app.listen(app.get('port'), function() {
     return done(null, profile);
   }));
 
+app.use(browserChannel(function(client) {
+
+    var stream = new Duplex({objectMode: true});
+
+    stream._read = function() {};
+    stream._write = function(chunk, encoding, callback) {
+      if (client.state !== 'closed') {
+        client.send(chunk);
+      }
+      callback();
+    };
+
+    client.on('message', function(data) {
+      stream.push(data);
+    });
+
+    client.on('close', function(reason) {
+      stream.push(null);
+      stream.emit('close');
+    });
+
+    stream.on('end', function() {
+      client.close();
+    });
+
+    return share.listen(stream);
+  }));
 
 
 
