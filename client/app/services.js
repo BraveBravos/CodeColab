@@ -143,7 +143,6 @@ angular.module('codeColab.services', [])
 
         //set variables that we will eventually watch for displaying commit/merge buttons
         // the commit indicator must be per file, not per repo
-        // $scope.commitInd = $scope.commitIndicator.get().commit
         $scope.showMergeButton = $scope.mergeIndicator.get()[0]
 
         //tried separating these out into a separate function - did not work well
@@ -157,7 +156,6 @@ angular.module('codeColab.services', [])
         $scope.mergeIndicator.on('replace', function() {
           $timeout(function() {
             // commit has to be per file, not per repo
-            // $scope.commitInd = $scope.commitAndMergeIndicators.get().commit
             $scope.showMergeButton = $scope.mergeIndicator.get()[0]
           })
         })
@@ -175,12 +173,6 @@ angular.module('codeColab.services', [])
   }
 
   var updateRightOrigValue = function($scope, branch) {
-
-    // if($scope.right) {
-    //   $scope.right.rDoc.unsubscribe()
-    //   $scope.right.rSjs.disconnect()
-      // $scope.CM.rightOriginal().detachShareJsDoc()
-    // }
 
     //just set value of rightOrig
     return $http ({
