@@ -29,28 +29,6 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 	return {
 		restrict: 'A',
 
-    findParent: function (path,searchNode,origFullPath) {
-			var searchArr = searchNode ? searchNode.children : scope.tree
-			if(path.indexOf('/') > -1) {
-				var divider = path.indexOf('/')
-				var newDirectory = path.slice(0,divider)
-				var newPath = path.slice(divider+1)
-
-				for (var i = 0; i < searchArr.length; i++) {
-					if(searchArr[i].label === newDirectory && searchArr[i].type === 'folder') {
-						return findParent(newPath,searchArr[i],path)
-					}
-				}
-			} else {
-				return searchNode
-				//should be able to return searchNode out here, though the for loop might be a good final confirmation
-				// for (var i = 0; i < searchArr.length; i++) {
-				// 	if(searchArr[i].fullPath === origFullPath && searchArr[i].type !== 'folder') {
-				// 		return searchNode
-				// 	}
-				// }
-			}
-		},
 
 		link: function ( scope, element, attrs ) {
 			//tree id
@@ -139,6 +117,29 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 						selectedNode.collapsed = !selectedNode.collapsed;
 					};
 
+				    scope[treeId].findParent = scope[treeId].findParent || function findParent(path,searchNode,origFullPath) {
+							var searchArr = searchNode ? searchNode.children : scope.tree
+							if(path.indexOf('/') > -1) {
+								var divider = path.indexOf('/')
+								var newDirectory = path.slice(0,divider)
+								var newPath = path.slice(divider+1)
+
+								for (var i = 0; i < searchArr.length; i++) {
+									if(searchArr[i].label === newDirectory && searchArr[i].type === 'folder') {
+										return scope[treeId].findParent(newPath,searchArr[i],path)
+									}
+								}
+							} else {
+								return searchNode
+								//should be able to return searchNode out here, though the for loop might be a good final confirmation
+								// for (var i = 0; i < searchArr.length; i++) {
+								// 	if(searchArr[i].fullPath === origFullPath && searchArr[i].type !== 'folder') {
+								// 		return searchNode
+								// 	}
+								// }
+							}
+						};
+
 					//if node label clicks,
 					scope[treeId].selectNodeLabel = scope[treeId].selectNodeLabel || function( selectedNode ){
 
@@ -178,7 +179,7 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 							console.log('after root - index: ',scope.tree)
 							// console.log('root parent: ',node.parent)
 						} else {
-							var parentNode = findParent(node.fullPath)
+							var parentNode = scope[treeId].findParent(node.fullPath)
 							parentNode.children.splice(parentNode.children.indexOf(node),1)
 							// console.log('after remove - index: ',scope.tree)
 						}
@@ -208,7 +209,7 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 								id:'',
 								parentLabel: node.label
 							}
-							var parentNode = node.type === 'folder' ? node : findParent(node.fullPath)
+							var parentNode = node.type === 'folder' ? node : scope[treeId].findParent(node.fullPath)
 							// console.log('parent node: ',parentNode)
 							scope.addFile(newFile,parentNode.children)
 
@@ -260,7 +261,7 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 								type:'folder'
 							}
 							// node.children.push(newFolder)
-							var parentNode = node.type === 'folder' ? node : findParent(node.fullPath)
+							var parentNode = node.type === 'folder' ? node : scope[treeId].findParent(node.fullPath)
 							// console.log('parent node: ',parentNode)
 
 							//need to adjust this to account for child file in passed folder
