@@ -121,7 +121,7 @@ app.listen(app.get('port'), function() { console.log('Node app running on port',
 
 
 app.get('/logout', function (req, res){
-  req.session.destroy()
+  // req.session.destroy()
   req.logout();
   res.redirect('/');
 })
