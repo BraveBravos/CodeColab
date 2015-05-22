@@ -8,18 +8,11 @@ var express = require('express'),
     MongoStore = require ('connect-mongo')(session),
     path = require('path'),
     passport = require('passport'),
-    livedb = require( 'livedb' ),
-    Duplex = require( 'stream' ).Duplex,
-    sharejs = require( 'share' ),
-    shareCodeMirror = require( 'share-codemirror' ),
     http    = require( 'http' ),
-    liveDBMongoClient = require('livedb-mongo'),
-    dbClient =liveDBMongoClient('mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810',
-      {safe: true}),
-    backend = livedb.client(dbClient),
-    share = sharejs.server.createClient({
-      backend: backend
-    });
+    sharejs = require( 'share' ),
+    shareCodeMirror = require( 'share-codemirror' );
+
+
 
 
 
