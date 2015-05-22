@@ -135,7 +135,9 @@ passport.use(new HerokuStrategy({
   passReqToCallback: true
 },
 function(req, accessToken, refreshToken, profile, done) {
+  console.log('heroku',profile)
   req.session.herokuToken = accessToken;
+  console.log('session in heroku strategy',req.session)
   profile.codeColabId = req.user._id;
   return done(null, profile);
 }));
@@ -217,7 +219,7 @@ app.post('/api/getUpdatedFile', function (req, res) {
       var file = atob(JSON.parse(body).content);
       // docs.sendDoc(db, file, fileId, fileSha);
       var salt = '$2a$10$JX4yfb1a6c0Ec6yYxkleie' //same as salt in tree
-      
+
       file.id = '0'+bcrypt.hashSync(ownerAndRepo+'/'+filePath+'Code-Colab-Extra-Salt',salt)
       file.url = 'https://api.github.com/repos/' + ownerAndRepo + '/contents/' + filePath
 
@@ -255,7 +257,7 @@ app.post ('/api/fileStruct/tree', function (req, res) {
   var owner = req.body.repo[0],
       repo = req.body.repo[1],
       branch = req.body.branch;
-
+      console.log('session in tree', req.session)
   request({
     url: 'https://api.github.com/repos/' +owner+ '/' +repo+ '/git/refs/heads/' + branch+'?access_token='+ req.session.token,
     headers: {'User-Agent': req.user.username}
@@ -312,7 +314,7 @@ app.get('/api/apps/*', function (req, res) {
 app.post('/api/builds', function (req, res) {
   var repo = req.body.repo,
       token = req.session.herokuToken,
-      apiToken = process.env.HEROKU_API_TOKEN || keys.herokuAPIToken 
+      apiToken = process.env.HEROKU_API_TOKEN || keys.herokuAPIToken
 
   docs.getApp(req, repo, function (userApp){
     request({
@@ -342,6 +344,8 @@ app.post('/api/deploy', function(req, res) {
       name = req.body.name,
       token = req.session.herokuToken,
       apiToken = process.env.HEROKU_API_TOKEN || keys.herokuAPIToken
+      console.log('session in deploy', req.session)
+      console.log('repo',repo,'name',name,'token',token,'apitoken',apiToken)
 
   request.post({
     url: "https://api.heroku.com/app-setups",
@@ -356,6 +360,7 @@ app.post('/api/deploy', function(req, res) {
     }
   },
     function (err, resp, body) {
+      console.log('body', body)
       if (err) console.log('err', err)
       else {
         if (body.message === "Name is already taken") {
@@ -547,7 +552,7 @@ app.post('/api/files/newFile', function(req, res) {
       "content": "",
       "branch": "CODECOLAB"
     }
-  }, 
+  },
   function(err, resp, body) {
     // docs.sendDoc(db, file, fileId, fileSha);
     console.log('content: ',body)
@@ -555,7 +560,7 @@ app.post('/api/files/newFile', function(req, res) {
     var fileSha = body.content.sha
 
     var salt = '$2a$10$JX4yfb1a6c0Ec6yYxkleie' //same as salt in tree
-    
+
     fileId = '0'+bcrypt.hashSync(req.body.ownerAndRepo+'/'+req.body.fullPath+'Code-Colab-Extra-Salt',salt)
     fileUrl = 'https://api.github.com/repos/' + req.body.ownerAndRepo + '/contents/' + req.body.fullPath
 
@@ -575,7 +580,7 @@ app.post('/api/files/deleteFile', function(req, res) {
       "sha" : req.body.sha,
       "branch": "CODECOLAB"
     }
-  }, 
+  },
   function(err, resp, body) {
     // docs.sendDoc(db, file, fileId, fileSha);
     console.log('content: ',body)
@@ -583,7 +588,7 @@ app.post('/api/files/deleteFile', function(req, res) {
     // var fileSha = body.content.sha
 
     // var salt = '$2a$10$JX4yfb1a6c0Ec6yYxkleie' //same as salt in tree
-    
+
     // fileId = '0'+bcrypt.hashSync(req.body.ownerAndRepo+'/'+req.body.fullPath+'Code-Colab-Extra-Salt',salt)
     // fileUrl = 'https://api.github.com/repos/' + req.body.ownerAndRepo + '/contents/' + req.body.fullPath
 
