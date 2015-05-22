@@ -1,11 +1,11 @@
-var express = require('express');
-var bodyParser  = require('body-parser');
+var express = require('express'),
+    bodyParser  = require('body-parser');
 
 module.exports = function (app) {
-  var userRouter = express.Router();
-  var repoRouter = express.Router();
-  var fileRouter = express.Router();
-  var buildRouter = express.Router();
+  var userRouter = express.Router(),
+      repoRouter = express.Router(),
+      fileRouter = express.Router(),
+      buildRouter = express.Router();
 
   app.use(bodyParser.urlencoded({extended: true}));
   app.use(bodyParser.json());

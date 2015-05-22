@@ -2,8 +2,8 @@ angular.module('codeColab.services', [])
 
 
 .factory('Share', function ($http, $window, $location, $q, $timeout) {
-  var path;
-  var ce;
+  var path, 
+      ce;
 
   var getRepos = function ($scope) {
     return $http({
@@ -108,8 +108,8 @@ angular.module('codeColab.services', [])
       // $scope.CM.rightOriginal().detachShareJsDoc()
     }
 
-    var rSocket = new BCSocket(null, {reconnect: true});
-    var rSjs = new sharejs.Connection(rSocket);
+    var rSocket = new BCSocket(null, {reconnect: true}),
+        rSjs = new sharejs.Connection(rSocket);
 
     //need to hash this in the server in some way, for unique encrypted storage
     //need to switch this to origDocs eventually
@@ -120,14 +120,12 @@ angular.module('codeColab.services', [])
     rDoc.subscribe()
 
     rDoc.whenReady(function() {
-
       if (!rDoc.type) {
         //create json instead of text
         rDoc.create('json0')
 
         //need to do a submit op to 'seed' the json structure - this line will be changed if we want to add more stuff
         rDoc.submitOp([{p:[],od:null,oi:{origTextTrigger:[0],treeStructure:[0],commitAndMergeIndicators:{'commit':false,'merge':false}}}]) // might use set here instead
-
       }
 
       rDoc.subscribe(function(err) {
@@ -153,7 +151,6 @@ angular.module('codeColab.services', [])
 
         //more work needed here
         $scope.commitAndMergeIndicators.on('replace', function() {
-          // console.log('c/m replaced')
           $timeout(function() {
             $scope.commitInd = $scope.commitAndMergeIndicators.get().commit
             $scope.mergeInd = $scope.commitAndMergeIndicators.get().merge
@@ -168,12 +165,8 @@ angular.module('codeColab.services', [])
             updateRightOrigValue($scope,'master')
           }
         })
-
-
       })
-
     })
-
   }
 
   var updateRightOrigValue = function($scope, branch) {
@@ -213,13 +206,12 @@ angular.module('codeColab.services', [])
 
     // $scope.CM.rightOriginal().setValue('')
 
-    var placeholderDoc = CodeMirror.Doc('Select a file to start editing.  You will make your changes in this editor.','javascript')
+    var placeholderDoc = CodeMirror.Doc('Select a file to start editing. You will make your changes in this editor.','javascript')
     $scope.CM.editor().swapDoc(placeholderDoc)
     $scope.CM.editor().setOption('readOnly', true)
 
     var placeholderRight = CodeMirror.Doc('This will display the original text.', 'javascript')
     $scope.CM.rightOriginal().swapDoc(placeholderRight)
-
   }
 
   var loadShare = function ($scope, id, data) {
@@ -230,16 +222,14 @@ angular.module('codeColab.services', [])
       $scope.CM.editor().detachShareJsDoc()
     }
 
-    var socket = new BCSocket(null, {reconnect: true});
-    var sjs = new sharejs.Connection(socket);
-    var doc = sjs.get('documents', id);
+    var socket = new BCSocket(null, {reconnect: true}),
+        sjs = new sharejs.Connection(socket),
+        doc = sjs.get('documents', id);
 
     doc.subscribe()
 
     doc.whenReady(function() {
-      if (!doc.type) {
-        doc.create('text');
-      }
+      if (!doc.type) doc.create('text');
 
       doc.subscribe(function(err) {
 
@@ -271,7 +261,6 @@ angular.module('codeColab.services', [])
           $scope.$parent.editorHasLoaded()
         })
       });
-
     });
 
     //need to finish importing all of the sublime shortcuts and whatnot: http://codemirror.net/doc/manual.html#addons
@@ -296,7 +285,6 @@ angular.module('codeColab.services', [])
     .then (function (data) {
       $scope.$parent.fileLoaded = true;
       $scope.$parent.currentFile.sha = data.data.fileSha;
-      // console.log('fileSha: ',data.data.fileSha)
       updateRightOrigValue($scope,'CODECOLAB')
       loadShare($scope, file.id, data.data.file)
     });
@@ -321,8 +309,9 @@ angular.module('codeColab.services', [])
   }
 
   var showLog = function (name, repo, buildId) {
-    var appURL ='https://'+name+'.herokuapp.com';
-    var buildId = buildId? '/'+buildId : '';
+    var appURL ='https://'+name+'.herokuapp.com',
+        buildId = buildId? '/'+buildId : '';
+
     return $http({
       method: "GET",
       url: 'api/builds/deploy/'+ repo + buildId
@@ -341,35 +330,35 @@ angular.module('codeColab.services', [])
   var deployApp = function($scope, name){
     var repo = localStorage.repo,
         that = this;
-      return $http({
-        method: 'POST',
-        url: '/api/builds/deploy',
-        data: {
-          repo: repo,
-          name: name
-        }
-      })
-      .then (function(response){
-        var name = response.data.name;
-        if (name === 'taken') {
-          bootbox.alert("That name is already taken.", function () {
-            $scope.first = true;
-            $scope.deployApp()
-          })
-        } else if (name === 'creditLimit') {
-          bootbox.alert("Heroku will not let you create any more apps without a credit card number. Please resolve with Heroku and try again.", function() {
-            $scope.first = true;
-            $location.path('/');
-          })
-        } else {
-          that.showLog(name, repo);
-        }
-      })
+
+    return $http({
+      method: 'POST',
+      url: '/api/builds/deploy',
+      data: {
+        repo: repo,
+        name: name
+      }
+    })
+    .then (function(response){
+      var name = response.data.name;
+      if (name === 'taken') {
+        bootbox.alert("That name is already taken.", function () {
+          $scope.first = true;
+          $scope.deployApp()
+        })
+      } else if (name === 'creditLimit') {
+        bootbox.alert("Heroku will not let you create any more apps without a credit card number. Please resolve with Heroku and try again.", function() {
+          $scope.first = true;
+          $location.path('/');
+        })
+      } else { that.showLog(name, repo) }
+    })
   }
 
 
   var rebuild = function($scope, repo) {
     var that = this;
+
     return $http({
       method: 'POST',
       url: '/api/builds',
@@ -390,6 +379,7 @@ angular.module('codeColab.services', [])
 
   var mergeBranch = function(repo, title, comments, $scope) {
     var that = this;
+    
     return $http({
       method: 'PUT',
       url: '/api/repos/branches',

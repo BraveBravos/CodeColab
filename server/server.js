@@ -1,8 +1,8 @@
 var express = require('express');
-var app = express();
-var server  = require('http').createServer(app);
-var  browserChannel = require('browserchannel').server;
-var mongo = require('mongodb'),
+    app = express(),
+    server  = require('http').createServer(app),
+    browserChannel = require('browserchannel').server,
+    mongo = require('mongodb'),
     monk =require ('monk'),
     db = monk('mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810'),
     bodyParser = require ('body-parser'),
@@ -25,14 +25,12 @@ app.use(function (req, res, next) {
   req.db = db;
   next();
 })
+
 require('./config/express')(app);
 require('./routes.js')(app);
 app.use('browserChannel', require('./models/browserChannel.js'));
 
-if (!process.env.CLIENT_ID) {
-  var keys = require('../keys.js');
-  }
-
+if (!process.env.CLIENT_ID) var keys = require('../keys.js');
 
 app.get('/auth/github',
   passport.authenticate('github', {scope: ['repo', 'user', 'admin:public_key']})
@@ -48,47 +46,43 @@ app.get('/auth/heroku', passport.authenticate('heroku'));
 app.get('/auth/heroku/callback',
   passport.authenticate('heroku', {successRedirect: '/#/deploy', failureRedirect: '/auth/heroku/fail' })
 );
+
 app.set('port', (process.env.PORT || 3000));
-app.listen(app.get('port'), function() {
-  console.log('Node app running on port', app.get('port'));
-});
+app.listen(app.get('port'), function() { console.log('Node app running on port', app.get('port')) });
 
   passport.serializeUser(function(user, done) {
     var users = db.get('Users');
-    console.log(user)
-    console.log('db',users)
 
     if (user.provider === 'github') {
       users.find({githubId: user.id}, function (err, result) {
-        console.log('result', result, 'err', err, 'length', result.length)
         if(result === undefined || result.length === 0){ //User isn't in DB (FIRST TIMER!)
-          var insertData = [{githubId: user.id, username: user.username, apps: {}}]
-          var promise = users.insert(insertData);
+          var insertData = [{githubId: user.id, username: user.username, apps: {}}],
+              promise = users.insert(insertData);
+
           promise.success(function(doc) {
             done(null, doc[0]._id);
           })
         } else { //User is already in DB, just return their data
-          console.log('after result',result)
           done(null, result[0]._id);
         }
       });
     } else {//for Heroku OAuth
         users.find({herokuId: user.id}, function (err, result) {
-            if(result.length === 0){ //User hasn't authorized heroku yet
-              users.find({_id: user.codeColabId}, function (err, result) {
-                users.update(result[0]._id,
-                  {$set:
-                    {herokuId: user.id}
-                  },
-                  function (err) {
-                    if (err) console.log('error adding heroku token');
-                  });
-              done(null, result[0]._id);
-              });
-            } else { //Heroku ID is already in DB, just return their data
-              done(null, result[0]._id);
-            }
-          });
+          if(result.length === 0){ //User hasn't authorized heroku yet
+            users.find({_id: user.codeColabId}, function (err, result) {
+              users.update(result[0]._id,
+                {$set:
+                  {herokuId: user.id}
+                },
+                function (err) {
+                  if (err) console.log('error adding heroku token');
+                });
+            done(null, result[0]._id);
+            });
+          } else { //Heroku ID is already in DB, just return their data
+            done(null, result[0]._id);
+          }
+        });
     }
   });
 
@@ -133,7 +127,6 @@ app.get('/logout', function (req, res){
 })
 
 app.use(browserChannel(function(client) {
-
     var stream = new Duplex({objectMode: true});
 
     stream._read = function() {};
