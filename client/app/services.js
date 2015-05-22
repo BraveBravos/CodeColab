@@ -38,13 +38,13 @@ angular.module('codeColab.services', [])
     var deferred = $q.defer();
       deferred.resolve( $http({
           method: 'GET',
-          url: '/api/repos/branch/' + repo
+          url: '/api/repos/branches/' + repo
       })
       .then (function(exists){
         if (exists.data === false) {
           return $http({
             method: 'POST',
-            url: '/api/branch',
+            url: '/api/branches',
             data: {
               repo: repo
             }
@@ -64,7 +64,7 @@ angular.module('codeColab.services', [])
         path = file.fullPath,
         sha = file.sha;
     return $http({
-      method: 'POST',
+      method: 'PUT',
       url: '/api/repos',
       data: {
         message: message,
@@ -391,8 +391,8 @@ angular.module('codeColab.services', [])
   var mergeBranch = function(repo, title, comments, $scope) {
     var that = this;
     return $http({
-      method: 'POST',
-      url: '/api/merge',
+      method: 'PUT',
+      url: '/api/repos/branches',
       data: {
         repo: repo,
         title: title,
