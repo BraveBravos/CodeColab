@@ -64,9 +64,13 @@ angular.module('codeColab.videochat',[])
     } 
   };
 
+  connection.onstreamended = function(e) {
+    e.mediaElement.parentNode.removeChild(e.mediaElement);
+  }
+
   connection.openSignalingChannel = function (config) {
     config.channel = config.channel || this.channel;  
-    console.log('connection.openSignalingChannel config.channel',config.channel)
+    //console.log('connection.openSignalingChannel config.channel',config.channel)
     var socket = new Firebase(firebaseURL + config.channel);
     socket.channel = config.channel;
     socket.on('child_added', function (data) {
@@ -114,7 +118,7 @@ angular.module('codeColab.videochat',[])
 
   $scope.joinChat = function(){  
     // setup signaling channel
-    console.log('$scope.joinChat connection.channel',connection.channel);
+    //console.log('$scope.joinChat connection.channel',connection.channel);
     var roomFirebase = new Firebase(firebaseURL + connection.channel + '-session');
     tempChannel = connection.channel;
     roomFirebase.once('value', function (data) {
@@ -130,7 +134,7 @@ angular.module('codeColab.videochat',[])
               // storing room on server
               tempSession = connection.sessionid;
               roomFirebase.set(connection.sessionDescription);
-              console.log('$scope.joinChat connection.open onMediaCaptured');
+              //console.log('$scope.joinChat connection.open onMediaCaptured');
               // if room owner leaves; remove room from the server
               roomFirebase.onDisconnect().remove();
           }
@@ -144,7 +148,7 @@ angular.module('codeColab.videochat',[])
         // pure "sessionDescription" object is passed over "join" method
         // 2nd parameter is optional which allows you customize how to join the session
         connection.join(sessionDescription, joinWith);
-        console.log('$scope.joinChat connection.join');
+        //console.log('$scope.joinChat connection.join');
       }
     });
     ctrlJoin.className = 'hidden';
@@ -153,10 +157,8 @@ angular.module('codeColab.videochat',[])
 
   $scope.leaveChat = function(){
     connection.leave();
-    //connection.close();
-    //connection.disconnect();
-    locMedStream.stop();
-    //connection = new RTCMultiConnection();
+    connection.streams.stop();
+    //connection.refresh();
     connection.sessionid = tempSession;
     connection.channel = tempChannel;
     ctrlJoin.className = 'shown';
