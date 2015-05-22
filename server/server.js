@@ -21,10 +21,10 @@ var express = require('express');
       backend: backend
     });
 
-app.use(function (req, res, next) {
-  req.db = db;
-  next();
-})
+// app.use(function (req, res, next) {
+//   req.db = db;
+//   next();
+// })
 
 require('./config/express')(app);
 require('./routes.js')(app);
@@ -41,7 +41,7 @@ app.get('/auth/github/callback', passport.authenticate(
 ));
 
 
-app.get('/auth/heroku', passport.authenticate('heroku'));
+app.get('/auth/heroku', passport.authenticate('heroku', {session: false}));
 
 app.get('/auth/heroku/callback',
   passport.authenticate('heroku', {successRedirect: '/#/deploy', failureRedirect: '/auth/heroku/fail' })
@@ -99,7 +99,6 @@ app.listen(app.get('port'), function() { console.log('Node app running on port',
       passReqToCallback: true
     },
     function(req, accessToken, refreshToken, profile, done) {
-      console.log('strategy')
       req.session.token = accessToken;
       req.session.cookie.expires = new Date(Date.now() + 8*60*60*1000)
 

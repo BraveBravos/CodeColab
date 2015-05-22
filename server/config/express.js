@@ -25,7 +25,7 @@ var express = require('express'),
     app.use(bodyParser.urlencoded({extended: true,limit: 1000000}));
     app.use(session({
       secret: 'oursecret',
-      saveUninitialized: true,
+      saveUninitialized: false,
       resave: false,
       store: new MongoStore({
         url: 'mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810',
