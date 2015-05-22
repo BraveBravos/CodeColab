@@ -58,7 +58,7 @@ angular.module('codeColab', [
   var checkAuth = function(){
     return $http({
       method: 'GET',
-      url: '/api/auth'
+      url: '/auth/check'
     }).then(function(res){
       return JSON.parse(res.data);
     });

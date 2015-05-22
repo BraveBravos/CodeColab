@@ -36,35 +36,5 @@ module.exports = {
         })
       }
     })
-  },
-
-  addApp : function (req, name, id, repo) {
-    var db = req.db;
-    var githubId = req.user.githubId;
-    var collection = db.get('Users');
-    collection.find({githubId: githubId}, function (err, user) {
-      var userApps = user[0].apps;
-      userApps[repo] = {name:name, id:id}
-      collection.update(user[0]._id,
-        {$set:
-          {apps: userApps}
-        }, function (err) { if (err) console.log('error adding app') }
-      );
-    })
-  },
-
-  getApp: function(req, repo, cb) {
-    var db = req.db;
-    var githubId = req.user.githubId;
-    var collection = db.get('Users');
-    collection.find({githubId:githubId}, function (err, user) {
-      var apps = user[0].apps;
-      if (apps[repo]) {
-        var userApp = apps[repo];
-        cb(userApp);
-      } else { cb(false) }
-    })
   }
 }
-
-
