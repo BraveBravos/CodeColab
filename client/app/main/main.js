@@ -83,9 +83,16 @@ angular.module('codeColab.main', [])
 
 
   $scope.triggerRightShareUpdate = function() {
-    console.log('update: ',$scope.repoShare.rDoc)
+    // console.log('update: ',$scope.repoShare.rDoc)
     $scope.repoShare.rDoc.submitOp([
       {p:['origTextTrigger',0],ld:0,li:0}
+    ])
+  }
+
+  $scope.triggerMergeButtonShareUpdate = function() {
+    console.log('update: ',$scope.repoShare.rDoc)
+    $scope.repoShare.rDoc.submitOp([
+      {p:['mergeIndicator',0],ld:$scope.showMergeButton,li:!$scope.showMergeButton}
     ])
   }
 
