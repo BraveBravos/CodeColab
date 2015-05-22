@@ -325,7 +325,7 @@ angular.module('codeColab.services', [])
     var buildId = buildId? '/'+buildId : '';
     return $http({
       method: "GET",
-      url: 'api/deploy/'+ repo + buildId
+      url: 'api/builds/deploy/'+ repo + buildId
     })
     .then (function (response){
       $location.path('/');
@@ -343,7 +343,7 @@ angular.module('codeColab.services', [])
         that = this;
       return $http({
         method: 'POST',
-        url: '/api/deploy',
+        url: '/api/builds/deploy',
         data: {
           repo: repo,
           name: name
