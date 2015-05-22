@@ -108,7 +108,7 @@ angular.module('codeColab.fileStruct', [])
       method: 'POST',
       url: '/api/files/newFile',
       data: {
-        ownerAndRepo: $scope.selected,
+        repo: $scope.selected,
         fullPath : file.fullPath
       }
     })
@@ -131,7 +131,7 @@ angular.module('codeColab.fileStruct', [])
       method: 'POST',
       url: '/api/files/deleteFile',
       data: {
-        ownerAndRepo: $scope.selected,
+        repo: $scope.selected,
         fullPath: file.fullPath,
         message: 'Deleted '+file.label + '.',
         sha: file.sha
