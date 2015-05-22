@@ -144,6 +144,11 @@ angular.module('codeColab.fileStruct', [])
     })
     .then (function() {
       $scope.triggerShareTreeChange()
+      
+      //if the current file is the one that gets deleted, reset the editor
+      if (file===$scope.$parent.currentFile) {
+        Share.resetCM($scope.$parent)
+      }
     })
   }
 
