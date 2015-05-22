@@ -16,8 +16,12 @@ angular.module('codeColab.videochat',[])
   };
   var EXTRA      = {};       // empty extra-data
 
+  var tempSession = null;
+  var tempChannel = null;  
+
   var connection = new RTCMultiConnection();
   connection.sessionid = SESSION_ID;
+  //connection.transmitRoomOnce = true;
 
   $scope.$watch('selectRepo', function(){
     if(typeof $scope.selectRepo.name != 'undefined'){
@@ -25,6 +29,7 @@ angular.module('codeColab.videochat',[])
       CHANNEL_ID = $scope.selectRepo.name;
       CHANNEL_ID = CHANNEL_ID.replace("/","")
       connection.channel = CHANNEL_ID;
+      tempChannel = connection.channel;
       ctrlJoin.className = 'shown';
       ctrlLeave.className = 'hidden';
     }
@@ -39,6 +44,8 @@ angular.module('codeColab.videochat',[])
       ctrlLeave = document.getElementById('leave-current-meeting'),
       locMedStream = null;
 
+  var remMedStreams = [];    
+
   connection.session = {
       audio: true,
       video: true
@@ -52,12 +59,14 @@ angular.module('codeColab.videochat',[])
       e.mediaElement.className = 'my-video';
     }else if(e.type === 'remote'){
       remoteMediaStreams.insertBefore(e.mediaElement, remoteMediaStreams.firstChild);
+      //remMedStreams.push(e.stream);
       e.mediaElement.className = 'their-video';
     } 
   };
 
   connection.openSignalingChannel = function (config) {
     config.channel = config.channel || this.channel;  
+    console.log('connection.openSignalingChannel config.channel',config.channel)
     var socket = new Firebase(firebaseURL + config.channel);
     socket.channel = config.channel;
     socket.on('child_added', function (data) {
@@ -105,8 +114,9 @@ angular.module('codeColab.videochat',[])
 
   $scope.joinChat = function(){  
     // setup signaling channel
-    console.log('$scope.joinChat');
+    console.log('$scope.joinChat connection.channel',connection.channel);
     var roomFirebase = new Firebase(firebaseURL + connection.channel + '-session');
+    tempChannel = connection.channel;
     roomFirebase.once('value', function (data) {
       var sessionDescription = data.val();
 
@@ -118,6 +128,7 @@ angular.module('codeColab.videochat',[])
           dontTransmit: true,
           onMediaCaptured: function() {
               // storing room on server
+              tempSession = connection.sessionid;
               roomFirebase.set(connection.sessionDescription);
               console.log('$scope.joinChat connection.open onMediaCaptured');
               // if room owner leaves; remove room from the server
@@ -140,16 +151,14 @@ angular.module('codeColab.videochat',[])
     ctrlLeave.className = 'shown';
   }
 
-  $scope.leaveChat = function(){  
+  $scope.leaveChat = function(){
     connection.leave();
-    connection.close();
-    connection.disconnect();
+    //connection.close();
+    //connection.disconnect();
     locMedStream.stop();
-    connection = new RTCMultiConnection();
-    connection.sessionid = SESSION_ID;
-    CHANNEL_ID = $scope.selectRepo.name;
-    CHANNEL_ID = CHANNEL_ID.replace("/","")
-    connection.channel = CHANNEL_ID;
+    //connection = new RTCMultiConnection();
+    connection.sessionid = tempSession;
+    connection.channel = tempChannel;
     ctrlJoin.className = 'shown';
     ctrlLeave.className = 'hidden';
   }
