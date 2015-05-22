@@ -1,6 +1,5 @@
-module.exports = {
+module.exports = function(client) {
 
-  app.use(browserChannel( function(client) {
     var stream = new Duplex({objectMode: true});
 
     stream._read = function() {};
@@ -25,6 +24,4 @@ module.exports = {
     });
 
     return share.listen(stream);
-
-  }));
 }

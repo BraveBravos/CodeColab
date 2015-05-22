@@ -12,8 +12,8 @@ var mongo = require('mongodb'),
  HerokuStrategy = require('passport-heroku').Strategy;
 
 require('./config/express')(app);
-require('./routes.js')(app)
-require('./browserChannel.js')(client)
+require('./routes.js')(app);
+app.use('browserChannel', require('./models/browserChannel.js'));
 
 app.use(function (req, res, next) {
   req.db = db;
