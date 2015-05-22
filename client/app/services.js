@@ -44,7 +44,7 @@ angular.module('codeColab.services', [])
         if (exists.data === false) {
           return $http({
             method: 'POST',
-            url: '/api/branches',
+            url: '/api/repos/branches',
             data: {
               repo: repo
             }
@@ -306,7 +306,7 @@ angular.module('codeColab.services', [])
     var that = this;
     return $http({
       method : 'GET',
-      url: '/api/apps/'+repo
+      url: '/api/builds/'+repo
     })
       .then (function(response){
         if (response.data === false) {
