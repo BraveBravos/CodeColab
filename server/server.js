@@ -125,6 +125,13 @@ app.listen(app.get('port'), function() {
     return done(null, profile);
   }));
 
+
+app.get('/logout', function (req, res){
+  req.session.destroy()
+  req.logout();
+  res.redirect('/');
+})
+
 app.use(browserChannel(function(client) {
 
     var stream = new Duplex({objectMode: true});
