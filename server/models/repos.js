@@ -1,5 +1,6 @@
 var request = require('request'),
-    bcrypt = require('bcrypt');
+    bcrypt = require('bcrypt'),
+    btoa = require('btoa');
 
 module.exports = {
 
@@ -85,38 +86,82 @@ module.exports = {
         }
       )   // this is a request inside of a request, so the ) may need to move
     });
+  },
+
+  makeCommit: function(req, res){
+    var path = req.body.path,
+        message = req.body.message,
+        sha=req.body.sha,
+        repo=req.body.repo,
+        content = btoa(req.body.content);
+    request ({
+      method: "PUT",
+      url: 'https://api.github.com/repos/' + repo+ '/contents/' + path +'?access_token='+ req.session.token,
+      headers: {'User-Agent': req.user.username},
+      json: {
+        message: message,
+        content: content,
+        sha: sha,
+        branch: "CODECOLAB"
+      }
+    },
+    function (err, resp, body) {
+      if (err) console.log(err)
+      else {
+        res.status(200).send(body.content.sha);
+      }
+    });
+  },
+  mergeBranch: function (req, res) {
+    var repo = req.body.repo,
+        title = req.body.title,
+        comments = req.body.comments,
+        user = req.user.username;
+    request.post ({
+      url: 'https://api.github.com/repos/' + repo + '/pulls?access_token='+ req.session.token,
+      headers : {
+        'User-Agent' : user
+      },
+      json: {
+        title: title,
+        head: "CODECOLAB",
+        base: "master",
+        body: comments
+      }
+    },
+    function (err, resp, body) {
+      if (err) { console.log('merge err', err) }
+      else {
+        if (body.errors) { res.status(200).send(body.errors[0].message) }
+        else {
+          var sha = body.head.sha,
+              num = body.number
+          request({
+          method: 'PUT',
+          url: 'https://api.github.com/repos/' + repo + '/pulls/' + num + '/merge?access_token='+ req.session.token,
+          headers : {
+            'User-Agent' : user
+          },
+          json: {
+            message: "Merged CodeColab Branch to master",
+            sha: sha
+          }
+        },
+          function (err, resp, body) {
+            request({
+              method: "GET",
+              url: "https://api.github.com/repos/" + repo + "/pulls/" + num + "/files?access_token=" + req.session.token,
+              headers: { 'User-Agent': user}
+            }, function (err, resp, body) {
+              res.sendStatus(200);
+            })
+          })
+        }
+      }
+    })
   }
 }
 
-
-
-
-
-// app.post('/api/repos', function(req, res){
-
-//   var path = req.body.path,
-//       message = req.body.message,
-//       sha=req.body.sha,
-//       repo=req.body.repo,
-//       content = btoa(req.body.content);
-//   request ({
-//     method: "PUT",
-//     url: 'https://api.github.com/repos/' + repo+ '/contents/' + path +'?access_token='+ req.session.token,
-//     headers: {'User-Agent': req.user.username},
-//     json: {
-//       message: message,
-//       content: content,
-//       sha: sha,
-//       branch: "CODECOLAB"
-//     }
-//   },
-//   function (err, resp, body) {
-//     if (err) console.log(err)
-//     else {
-//       res.status(200).send(body.content.sha);
-//     }
-//   });
-// })
 
 // app.post('/api/branch', function(req, res){
 //   var owner=req.user.username,
@@ -144,53 +189,3 @@ module.exports = {
 //         })
 //       })
 //     });
-
-// app.post('/api/merge', function (req, res) {
-//   var repo = req.body.repo,
-//       title = req.body.title,
-//       comments = req.body.comments,
-//       user = req.user.username;
-//   request.post ({
-//     url: 'https://api.github.com/repos/' + repo + '/pulls?access_token='+ req.session.token,
-//     headers : {
-//       'User-Agent' : user
-//     },
-//     json: {
-//       title: title,
-//       head: "CODECOLAB",
-//       base: "master",
-//       body: comments
-//     }
-//   },
-//   function (err, resp, body) {
-//     if (err) { console.log('merge err', err) }
-//     else {
-//       if (body.errors) { res.status(200).send(body.errors[0].message) }
-//       else {
-//         var sha = body.head.sha,
-//             num = body.number
-//         request({
-//         method: 'PUT',
-//         url: 'https://api.github.com/repos/' + repo + '/pulls/' + num + '/merge?access_token='+ req.session.token,
-//         headers : {
-//           'User-Agent' : user
-//         },
-//         json: {
-//           message: "Merged CodeColab Branch to master",
-//           sha: sha
-//         }
-//       },
-//         function (err, resp, body) {
-//           request({
-//             method: "GET",
-//             url: "https://api.github.com/repos/" + repo + "/pulls/" + num + "/files?access_token=" + req.session.token,
-//             headers: { 'User-Agent': user}
-//           }, function (err, resp, body) {
-//             res.sendStatus(200);
-//           })
-//         })
-//       }
-//     }
-//   })
-// })
-

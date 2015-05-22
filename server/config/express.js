@@ -1,7 +1,6 @@
 var express = require('express'),
     connect = require('connect'),
     bodyParser = require ('body-parser'),
-    btoa = require('btoa'),
     app = express(),
      cookieParser = require('cookie-parser'),
     session = require('express-session'),
