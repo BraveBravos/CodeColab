@@ -28,6 +28,30 @@
 angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', function( $compile ) {
 	return {
 		restrict: 'A',
+
+    findParent: function (path,searchNode,origFullPath) {
+			var searchArr = searchNode ? searchNode.children : scope.tree
+			if(path.indexOf('/') > -1) {
+				var divider = path.indexOf('/')
+				var newDirectory = path.slice(0,divider)
+				var newPath = path.slice(divider+1)
+
+				for (var i = 0; i < searchArr.length; i++) {
+					if(searchArr[i].label === newDirectory && searchArr[i].type === 'folder') {
+						return findParent(newPath,searchArr[i],path)
+					}
+				}
+			} else {
+				return searchNode
+				//should be able to return searchNode out here, though the for loop might be a good final confirmation
+				// for (var i = 0; i < searchArr.length; i++) {
+				// 	if(searchArr[i].fullPath === origFullPath && searchArr[i].type !== 'folder') {
+				// 		return searchNode
+				// 	}
+				// }
+			}
+		},
+
 		link: function ( scope, element, attrs ) {
 			//tree id
 			var treeId = attrs.treeId;
@@ -135,30 +159,6 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 							selectedNode.collapsed = !selectedNode.collapsed;
 						}
 					};
-
-					function findParent(path,searchNode,origFullPath) {
-						var searchArr = searchNode ? searchNode.children : scope.tree
-
-						if(path.indexOf('/') > -1) {
-							var divider = path.indexOf('/')
-							var newDirectory = path.slice(0,divider)
-							var newPath = path.slice(divider+1)
-
-							for (var i = 0; i < searchArr.length; i++) {
-								if(searchArr[i].label === newDirectory && searchArr[i].type === 'folder') {
-									return findParent(newPath,searchArr[i],path)
-								}
-							}
-						} else {
-							return searchNode
-							//should be able to return searchNode out here, though the for loop might be a good final confirmation
-							// for (var i = 0; i < searchArr.length; i++) {
-							// 	if(searchArr[i].fullPath === origFullPath && searchArr[i].type !== 'folder') {
-							// 		return searchNode
-							// 	}
-							// }
-						}
-					}
 
 					scope[treeId].deleteFile = scope[treeId].deleteFile || function deleteNode(node) {
 						//add confirmation popup - Are you sure you want to delete {{node.label}}?
