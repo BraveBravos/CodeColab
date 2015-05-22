@@ -135,9 +135,7 @@ passport.use(new HerokuStrategy({
   passReqToCallback: true
 },
 function(req, accessToken, refreshToken, profile, done) {
-  console.log('heroku',profile)
   req.session.herokuToken = accessToken;
-  console.log('session in heroku strategy',req.session)
   profile.codeColabId = req.user._id;
   return done(null, profile);
 }));
@@ -257,7 +255,6 @@ app.post ('/api/fileStruct/tree', function (req, res) {
   var owner = req.body.repo[0],
       repo = req.body.repo[1],
       branch = req.body.branch;
-      console.log('session in tree', req.session)
   request({
     url: 'https://api.github.com/repos/' +owner+ '/' +repo+ '/git/refs/heads/' + branch+'?access_token='+ req.session.token,
     headers: {'User-Agent': req.user.username}
@@ -344,8 +341,6 @@ app.post('/api/deploy', function(req, res) {
       name = req.body.name,
       token = req.session.herokuToken,
       apiToken = process.env.HEROKU_API_TOKEN || keys.herokuAPIToken
-      console.log('session in deploy', req.session)
-      console.log('repo',repo,'name',name,'token',token,'apitoken',apiToken)
 
   request.post({
     url: "https://api.heroku.com/app-setups",
@@ -360,7 +355,6 @@ app.post('/api/deploy', function(req, res) {
     }
   },
     function (err, resp, body) {
-      console.log('body', body)
       if (err) console.log('err', err)
       else {
         if (body.message === "Name is already taken") {
