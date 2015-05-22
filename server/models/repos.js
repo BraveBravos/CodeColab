@@ -159,33 +159,31 @@ module.exports = {
         }
       }
     })
+  },
+  createBranch: function(req, res){
+    var owner=req.user.username,
+        repo = req.body.repo;
+
+    request({
+      url: 'https://api.github.com/repos/' + repo +'/git/refs/heads/master?access_token='+ req.session.token,
+      headers: {'User-Agent': owner}
+    },
+    function (err, resp, body) {
+      if (err) console.log(err);
+      var ref = JSON.parse(body).ref,
+          sha = JSON.parse(body).object.sha;
+      request.post({
+        url: 'https://api.github.com/repos/' + repo + '/git/refs?access_token='+ req.session.token,
+        headers: {'User-Agent': owner, 'Content-Type': 'application/json'},
+        json: {
+          ref: "refs/heads/CODECOLAB",
+          sha: sha
+        }
+    },
+      function(err, resp, body){
+        console.log('New Branch Created!')
+        res.send(body) //send back to client to use for commits
+      })
+    })
   }
 }
-
-
-// app.post('/api/branch', function(req, res){
-//   var owner=req.user.username,
-//       repo = req.body.repo;
-
-//   request({
-//     url: 'https://api.github.com/repos/' + repo +'/git/refs/heads/master?access_token='+ req.session.token,
-//     headers: {'User-Agent': owner}
-//   },
-//     function (err, resp, body) {
-//       if (err) console.log(err);
-//       var ref = JSON.parse(body).ref,
-//           sha = JSON.parse(body).object.sha;
-//       request.post({
-//         url: 'https://api.github.com/repos/' + repo + '/git/refs?access_token='+ req.session.token,
-//         headers: {'User-Agent': owner, 'Content-Type': 'application/json'},
-//         json: {
-//           ref: "refs/heads/CODECOLAB",
-//           sha: sha
-//         }
-//       },
-//         function(err, resp, body){
-//           console.log('New Branch Created!')
-//           res.send(body) //send back to client to use for commits
-//         })
-//       })
-//     });
