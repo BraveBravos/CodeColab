@@ -61,24 +61,30 @@
     <!-- /.container -->
 </nav>
 
-<div class = 'CodeMirror-fullscreen'>
-  <div id="files" style='height:50%; overflow:auto;'>
-    <ng-include src="fileStruct.url"></ng-include>
-  </div>
+  <!-- <div class="container"> -->
+  <!--     <div class="row">
+          <div class="col-lg-5 col-sm-6">
+ -->
+    <div class = 'CodeMirror-fullscreen'>
+      <div id="files" style='height:50%; overflow:auto;'>
+        <ng-include src="fileStruct.url"></ng-include>
+      </div>
 
-  <ng-include src="videochat.url"></ng-include>
-
-  <!-- #area : where the text editor will go -->
-  <div id="area">
-
-    <!-- spinner while file is loading into editor-->
-    <div class='spinner' ng-show='textSpinner'>
-      <i class="fa fa-spinner fa-pulse fa-5x"></i>
+      <ng-include src="videochat.url"></ng-include>
+      <!-- #area : where the text editor will go -->
+      <div id="area">
+        <!-- spinner while file is loading into editor-->
+        <div class='spinner' ng-show='textSpinner'>
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
     </div>
 
-  </div>
-</div>
+      <!-- </div>
+    </div>
+  </div> -->
 
+</div>
 
 
 
