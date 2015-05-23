@@ -1,7 +1,6 @@
 var request = require('request'),
     atob = require('atob'),
-    bcrypt = require('bcrypt'),
-    docs = require('./documents.js');
+    bcrypt = require('bcrypt');
 
 module.exports = {
   getContents: function (req, res) {

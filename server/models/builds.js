@@ -1,10 +1,10 @@
+if (!process.env.CLIENT_ID) {
+  var keys = require('../../keys.js');
+  }
 var mongo = require('mongodb'),
     monk =require ('monk'),
-    db = monk('mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810'),
+    db = monk(process.env.MONGOLAB_URI || keys.dbAddress),
     request = require('request');
-    if (!process.env.CLIENT_ID) {
-      var keys = require('../../keys.js');
-      }
 
 module.exports = {
 
