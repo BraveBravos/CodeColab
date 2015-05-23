@@ -108,7 +108,7 @@ angular.module('codeColab.services', [])
       $scope.repoShare.editingCxt.destroy()
       $scope.origTextTrigger.destroy()
       $scope.treeStructure.destroy()
-      $scope.commitAndMergeIndicators.destroy()
+      $scope.mergeIndicator.destroy()
       // $scope.CM.rightOriginal().detachShareJsDoc()
     }
 
