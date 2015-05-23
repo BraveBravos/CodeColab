@@ -13,7 +13,9 @@ var express = require('express'),
 
 
 
-
+if (!process.env.CLIENT_ID) {
+  var keys = require('../../keys.js');
+  }
 
     module.exports = function(app) {
     app.use(express.static('./client'));
@@ -28,7 +30,7 @@ var express = require('express'),
       saveUninitialized: false,
       resave: false,
       store: new MongoStore({
-        url: 'mongodb://heroku_app36344810:slkuae58qandst6sk9r58r57bl@ds031812.mongolab.com:31812/heroku_app36344810',
+        url: process.env.MONGOLAB_URI || keys.dbAddress,
         ttl: 60*60*8,
         })
     }));
