@@ -161,10 +161,8 @@ angular.module('codeColab.services', [])
         })
 
         $scope.origTextTrigger.on('replace', function() {
-          console.log('replaced')
           //$scope.currentFile is only set when a file is picked - if a repo is chosen but no file is entered, this was causing errors before
           if(!!$scope.currentFile) {
-            console.log('actually replaced')
             updateRightOrigValue($scope,'master')
           }
         })

@@ -102,7 +102,7 @@
 .CodeMirror-merge-r-chunk { background: #26466D; left:-32px;}
 /*.CodeMirror-merge-r-chunk-start { border-top: 1px solid #ee8; }*/
 /*.CodeMirror-merge-r-chunk-end { border-bottom: 1px solid #ee8; }*/
-.CodeMirror-merge-r-connect { fill: #26466D; stroke: #ee8; stroke-width: 1px; }
+.CodeMirror-merge-r-connect { fill: #26466D; stroke: #26466D; stroke-width: 1px; }
 
 .CodeMirror-merge-l-chunk { background: #c52d2d; right:2px;}
 /*.CodeMirror-merge-l-chunk-start { border-top: 1px solid #88e; }
