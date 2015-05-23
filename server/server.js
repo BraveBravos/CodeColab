@@ -21,10 +21,7 @@ var express = require('express');
       backend: backend
     });
 
-// app.use(function (req, res, next) {
-//   req.db = db;
-//   next();
-// })
+
 
 require('./config/express')(app);
 require('./routes.js')(app);
@@ -44,7 +41,7 @@ app.get('/auth/github/callback', passport.authenticate(
 app.get('/auth/heroku', passport.authenticate('heroku', {session: false}));
 
 app.get('/auth/heroku/callback',
-  passport.authenticate('heroku', {successRedirect: '/#/deploy', failureRedirect: '/auth/heroku/fail' })
+  passport.authenticate('heroku', {session: false, successRedirect: '/#/deploy', failureRedirect: '/auth/heroku/fail' })
 );
 
 app.set('port', (process.env.PORT || 3000));

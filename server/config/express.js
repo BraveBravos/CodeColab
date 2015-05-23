@@ -35,5 +35,17 @@ var express = require('express'),
     app.use(passport.initialize());
     app.use(passport.session());
 
+    // app.use(function cleanupPassportSession(req, res, next){
+    //     // hook me in right AFTER express-session
+    //     onHeaders(res, function()
+    //     {
+    //         if (Object.keys(req.session.passport).length === 0)
+    //         {
+    //             delete req.session.passport;
+    //         }
+    //     });
+
+    //     next();
+    // });
 
     }
