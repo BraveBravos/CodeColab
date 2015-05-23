@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.org/BraveBravos/CodeColab.svg?branch=master)](https://travis-ci.org/BraveBravos/CodeColab)
 
+https://code-colab.herokuapp.com
+
 ## Team Members
 
   - __Product Owner__: [phillydorn](https://github.com/phillydorn)
