@@ -11,7 +11,6 @@ module.exports = function (app) {
   app.use(bodyParser.json());
 
   app.use('/auth', userRouter);
-
   app.use('/api/repos', repoRouter);
   app.use('/api/files', fileRouter);
   app.use('/api/builds', buildRouter);
