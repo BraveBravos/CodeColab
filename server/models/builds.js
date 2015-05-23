@@ -105,9 +105,7 @@ module.exports = {
     })
   },
   showLog: function (req, res) {
-    console.log('req.url', req.url)
     var params = req.url.split('/').slice(2);
-    console.log('params', params)
     if (params.length>2) { var buildId = params.pop() }
     var repo =   params.join('/'),
         token = req.session.herokuToken;
@@ -127,7 +125,6 @@ module.exports = {
         }
       }, function (err, resp, body) {
         //Gets build log for given buildID
-        console.log('buildbody', JSON.parse(body))
           var buildId = JSON.parse(body).build.id;
           if (buildId !==null) {
               successBuild(buildId);
