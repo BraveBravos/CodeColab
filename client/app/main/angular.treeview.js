@@ -58,24 +58,24 @@ angular.module( 'angularTreeview', [] ).directive( 'treeModel', ['$compile', fun
 			    			'Add file in folder {{node.type==="folder" ? node.label : node.parentLabel}}'+
 			    	'</a>'+
 			    '</li>'+
-			    '<li data-ng-show="!node.top || node.type===\'folder\'">'+
-			    	'<a class="pointer" role="menuitem" tabindex="2"'+
-			    		'ng-click="'+treeId+'.newFolder(node)">'+
-			    			'Add subfolder in folder {{node.type==="folder" ? node.label : node.parentLabel}}'+
-			    	'</a>'+
-			    '</li>'+
+			    // '<li data-ng-show="!node.top || node.type===\'folder\'">'+
+			    // 	'<a class="pointer" role="menuitem" tabindex="2"'+
+			    // 		'ng-click="'+treeId+'.newFolder(node)">'+
+			    // 			'Add subfolder in folder {{node.type==="folder" ? node.label : node.parentLabel}}'+
+			    // 	'</a>'+
+			    // '</li>'+
 			    '<li data-ng-show="node.top && node.type!==\'folder\'">'+
 			    	'<a class="pointer" role="menuitem" tabindex="3" '+
 			         'ng-click="'+treeId+'.newFile()">' +
 			         'Add file in {{node.type==="folder" ? "folder "+node.label : "root folder"}}' +
 			      '</a>' +
 			    '</li>'+
-			    '<li data-ng-show="node.top && node.type!==\'folder\'">'+
-			      '<a class="pointer" role="menuitem" tabindex="4" '+
-			         'ng-click="'+treeId+'.newFolder()">'+
-			        'Add folder in {{node.type==="folder" ? "folder "+node.label : "root folder"}}'+
-			      '</a>' +
-			    '</li>'+
+			    // '<li data-ng-show="node.top && node.type!==\'folder\'">'+
+			    //   '<a class="pointer" role="menuitem" tabindex="4" '+
+			    //      'ng-click="'+treeId+'.newFolder()">'+
+			    //     'Add folder in {{node.type==="folder" ? "folder "+node.label : "root folder"}}'+
+			    //   '</a>' +
+			    // '</li>'+
 			    '<li data-ng-show="node.type!==\'folder\'">'+
 			      '<a class="pointer" role="menuitem" tabindex="5" '+
 			         // 'ng-click="'+treeId+'.deleteFile(node)">'+
