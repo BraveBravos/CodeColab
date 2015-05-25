@@ -1,3 +1,7 @@
+if (!process.env.CLIENT_ID) {
+  var keys = require('../../keys.js');
+  }
+
 var request = require('request'),
     atob = require('atob'),
     bcrypt = require('bcrypt');
@@ -31,7 +35,7 @@ module.exports = {
         var fileSha=JSON.parse(body).sha;
         var file = atob(JSON.parse(body).content);
         // docs.sendDoc(db, file, fileId, fileSha);
-        var salt = '$2a$10$JX4yfb1a6c0Ec6yYxkleie' //same as salt in tree
+        var salt = process.env.SALT || keys.salt; //same as salt in tree
 
         file.id = '0'+bcrypt.hashSync(repo+'/'+filePath+'Code-Colab-Extra-Salt',salt)
         file.url = 'https://api.github.com/repos/' + repo + '/contents/' + filePath
@@ -56,7 +60,7 @@ module.exports = {
       // need error handling here
       var fileSha = body.content.sha
 
-      var salt = '$2a$10$JX4yfb1a6c0Ec6yYxkleie' //same as salt in tree
+      var salt = process.env.SALT || keys.salt; //same as salt in tree
 
       fileId = '0'+bcrypt.hashSync(req.body.repo+'/'+req.body.fullPath+'Code-Colab-Extra-Salt',salt)
       fileUrl = 'https://api.github.com/repos/' + req.body.repo + '/contents/' + req.body.fullPath
@@ -84,7 +88,7 @@ module.exports = {
       // need error handling here
       // var fileSha = body.content.sha
 
-      // var salt = '$2a$10$JX4yfb1a6c0Ec6yYxkleie' //same as salt in tree
+      // var salt = process.env.SALT || keys.salt; //same as salt in tree
 
       // fileId = '0'+bcrypt.hashSync(req.body.repo+'/'+req.body.fullPath+'Code-Colab-Extra-Salt',salt)
       // fileUrl = 'https://api.github.com/repos/' + req.body.repo + '/contents/' + req.body.fullPath

@@ -1,3 +1,7 @@
+if (!process.env.CLIENT_ID) {
+  var keys = require('../../keys.js');
+  }
+
 var request = require('request'),
     bcrypt = require('bcrypt'),
     btoa = require('btoa');
@@ -76,7 +80,7 @@ module.exports = {
         },
         function (err, resp, body){
           var data = JSON.parse(body)
-          var salt = '$2a$10$JX4yfb1a6c0Ec6yYxkleie'
+          var salt = process.env.SALT || keys.salt;
           var newTree = data.tree.map(function(item) {
             item.id = '0'+bcrypt.hashSync(repo+'/'+item.path+'Code-Colab-Extra-Salt',salt)
             item.url = 'https://api.github.com/repos/'+repo+ '/contents/' + item.path
