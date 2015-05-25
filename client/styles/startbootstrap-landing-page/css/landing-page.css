@@ -240,14 +240,37 @@ p.copyright {
     text-align: center;
 }
 
+.CodeMirror-fullscreen {
+    overflow: scroll;
+}
 
 
-
-
-
-
-
-
+ 
+/* Portrait tablet to landscape and desktop */
+@media (min-width: 768px) and (max-width: 979px) { 
+    .sidebars {
+        /*width: 5%;*/
+        /*float: left;*/
+    }
+    #area {
+        /*width: 80%;*/
+        /*float: left;*/
+    }
+}
+ 
+/* Landscape phone to portrait tablet */
+/*@media (max-width: 767px) { */
+    /*.everything{*/
+        /*responsive code*/
+    /*}*/
+/*}*/
+ 
+/* Landscape phones and down */
+/*@media (max-width: 480px) { */
+    /*.everything{*/
+        /*responsive code*/
+    /*}*/
+/*}*/
 
 
 
