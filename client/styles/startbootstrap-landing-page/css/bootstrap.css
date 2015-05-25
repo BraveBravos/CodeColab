@@ -1120,13 +1120,16 @@ figure {
 img {
   vertical-align: middle;
 }
+
+
 .img-responsive,
 .thumbnail > img,
 .thumbnail a > img,
 .carousel-inner > .item > img,
 .carousel-inner > .item > a > img {
   display: block;
-  width: 120%; 
+  width: 130%;  
+  /*not good when on smaller screen*/
   /*changed from 100%*/
   height: auto;
 }
@@ -2235,7 +2238,7 @@ pre code {
     margin-left: 25%;
   }
   .col-lg-offset-2 {
-    margin-left: 16.66666667%;
+    margin-left: 10.66666667%;   /* was 16 instead of 10 */
   }
   .col-lg-offset-1 {
     margin-left: 8.33333333%;
