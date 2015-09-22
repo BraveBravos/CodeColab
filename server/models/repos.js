@@ -10,7 +10,7 @@ module.exports = {
 
   getRepos: function(req, res) {
    request({
-      url: 'https://api.github.com/user/repos?access_token='+ req.session.token+ '&type=all',
+      url: 'https://api.github.com/users/'+req.user.username+'/repos?access_token='+ req.session.token+ '&type=all',
       headers: {'User-Agent': req.user.username}
     },
     function(err,resp,body) {
