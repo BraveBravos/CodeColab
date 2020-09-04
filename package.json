@@ -25,7 +25,7 @@
     "livedb": "0.4.8",
     "livedb-mongo": "0.4.1",
     "mocha-report": "0.0.2",
-    "mongodb": "2.0.28",
+    "mongodb": "3.6.1",
     "monk": "1.0.1",
     "octonode": "0.6.17",
     "optimist": "0.6.1",
